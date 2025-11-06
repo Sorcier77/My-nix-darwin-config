@@ -1,8 +1,8 @@
 # nix-darwin Configuration
 
-Ma configuration nix-darwin pour macOS avec home-manager.
+Ma configuration nix-darwin pour macOS avec home-manager. Je suis sur MacBookPro M2.
 
-## 🚀 Installation
+## Installation
 
 ```bash
 # Première installation
@@ -12,7 +12,7 @@ darwin-rebuild switch --flake ~/.config/nix-darwin
 hms  # alias pour darwin-rebuild switch
 ```
 
-## 📁 Structure
+## Structure
 
 ```
 .
@@ -29,13 +29,13 @@ hms  # alias pour darwin-rebuild switch
     └── sublime.nix        # Configuration Sublime Text
 ```
 
-## 🔐 Gestion des secrets
+## Gestion des secrets
 
 1. Copier le template : `cp secrets.nix.example secrets.nix`
 2. Éditer avec vos vraies valeurs
 3. Le fichier `secrets.nix` est dans `.gitignore`
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 - **Shell moderne** : zsh + powerlevel10k + plugins
 - **CLI tools** : eza, bat, ripgrep, fzf, lazygit, zoxide
@@ -45,7 +45,7 @@ hms  # alias pour darwin-rebuild switch
 - **Garbage collection** : Automatique chaque dimanche
 - **Binary cache** : cache.nixos.org + nix-community
 
-## 🛠️ Commandes utiles
+## Commandes utiles
 
 ```bash
 # Rebuild système
