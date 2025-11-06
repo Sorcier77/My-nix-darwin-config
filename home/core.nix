@@ -1,6 +1,14 @@
 { config, pkgs, ... }: 
 let
-  secrets = import ../secrets.nix;
+  secretsPath = ../secrets.nix;
+  secrets = if builtins.pathExists secretsPath 
+    then import secretsPath
+    else {
+      git = {
+        userName = "YourGitHubUsername";
+        userEmail = "your.email@example.com";
+      };
+    };
 in
 {
   home.packages = with pkgs; [
