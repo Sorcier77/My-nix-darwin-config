@@ -16,8 +16,10 @@
     # pour ajouter comme demandé les icones 
     plugins.web-devicons.enable = true;
     plugins.lualine.enable = true;
-    plugins.coq-nvim.enable = true;
-    plugins.blink-cmp.enable = true;
+    plugins.blink-cmp = {
+      enable = true;
+      settings.keymap.preset = "default";
+    };
     plugins.typst-vim.enable = true;
     plugins.typst-preview.enable = true;
     plugins.typescript-tools.enable = true;
@@ -27,12 +29,16 @@
 
 	    grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
 	      bash
+	      c
+	      cpp
+	      java
 	      json
 	      lua
 	      make
 	      markdown
 	      nix
 	      regex
+	      rust
 	      toml
 	      vim
 	      vimdoc
@@ -41,7 +47,10 @@
 	      ];
    };
    plugins.treesitter-context.enable = true;
-   plugins.treesitter.settings.highlight.enable = true;
+   plugins.treesitter.settings = {
+     highlight.enable = true;
+     indent.enable = true;
+   };
    plugins.nvim-surround.enable = true;
    plugins.telescope.enable = true;
    plugins.yazi.enable = true;
