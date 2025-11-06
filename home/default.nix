@@ -5,6 +5,7 @@
     ./core.nix
     ./nixvim.nix
     ./sublime.nix
+    ./tmux.nix
   ];
 
   home = {
@@ -17,10 +18,9 @@
 
   home.sessionPath = [
     "$HOME/.nix-profile/bin"
+    "$HOME/.npm-global/bin"
   ];
 
-  # Copier votre fichier .p10k.zsh
-  home.file.".p10k.zsh".source = ./.p10k.zsh;
   programs.zsh.shellAliases = {
     copilot = "npx @github/copilot";
   };

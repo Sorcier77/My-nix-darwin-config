@@ -15,7 +15,7 @@
       show-recents = false;
       tilesize = 70;
       orientation = "left";
-      mru-spaces = false; # Don't rearrange spaces
+      mru-spaces = true; # rearrange spaces
     };
 
     # Finder settings

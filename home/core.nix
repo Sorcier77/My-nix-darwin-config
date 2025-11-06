@@ -121,6 +121,13 @@ in
         pull = {
           rebase = false;
         };
+        push = {
+          default = "simple";
+          autoSetupRemote = true;
+        };
+        core = {
+          editor = "nvim";
+        };
       };
     };
 
@@ -147,6 +154,8 @@ in
       shellAliases = {
         # Home Manager
         hms = "darwin-rebuild switch --flake ~/.config/nix-darwin";
+        hmsg = "darwin-rebuild switch --flake ~/.config/nix-darwin && darwin-rebuild --list-generations";
+        hmdiff = "darwin-rebuild --list-generations";
         
         # Git & Development
         lg = "lazygit";
@@ -167,6 +176,9 @@ in
         # Search & Help
         s = "web_search duckduckgo";
         tldr = "tldr";
+        
+        # Nix cleanup
+        clean = "nix-collect-garbage -d && nix-store --gc && nix-store --optimise";
       };
 
       oh-my-zsh = {

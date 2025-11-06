@@ -13,7 +13,7 @@
     nix.gc = {
       automatic = true;
       interval = { Weekday = 7; }; # Every Sunday
-      options = "--delete-older-than 30d";
+      options = "--delete-older-than 14d";
     };
 
     # Optimize nix store
