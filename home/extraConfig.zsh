@@ -34,7 +34,7 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 # ========================================
 
 # Python (pywal)
-export PATH="${PATH}:/Users/Sorcier77/Library/Python/3.11/lib/python/site-packages"
+export PATH="${PATH}:/Users/anselme/Library/Python/3.11/lib/python/site-packages"
 
 # Hyper Terminal
 export PATH="/Applications/Hyper.app/Contents/MacOS:$PATH"
