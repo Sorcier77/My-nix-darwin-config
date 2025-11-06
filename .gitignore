@@ -1,0 +1,19 @@
+# Secret files - never commit these
+secrets.nix
+
+# Build artifacts
+result
+result-*
+
+# Nix build outputs
+*.qcow2
+
+# macOS
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
