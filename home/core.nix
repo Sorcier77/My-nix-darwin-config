@@ -45,6 +45,7 @@ in
 
     # copilot 
     github-copilot-cli
+    #wireshark
   ];
 
   programs = {
@@ -54,8 +55,8 @@ in
       config = {
         theme = "Catppuccin Frappe";
         style = "numbers,changes,header";
-      };
-    };
+      };    
+     };
     
     
 

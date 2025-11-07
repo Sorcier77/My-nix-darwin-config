@@ -14,7 +14,7 @@
     stateVersion = "24.05";
   };
 
-  # Packages are now in core.nix or apps.nix to avoid duplicates
+  # Packages are now in core.nix or apps.nix to avoid uplicates
 
   home.sessionPath = [
     "$HOME/.nix-profile/bin"
