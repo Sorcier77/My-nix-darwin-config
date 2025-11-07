@@ -58,6 +58,7 @@
       obsidian
       pandoc
       texliveSmall
+      
     ];
     homebrew = {
       enable = true;
@@ -101,7 +102,6 @@
         "pkgconf"
         "protobuf"
         "qt"
-	"wireshark"
         "zlib"
         "zstd"
         # Utilities
@@ -116,8 +116,10 @@
         "chromedriver"
         "miniconda"
         "xquartz"
+	"raycast"
         "sublime-text"
         "tomatobar"
+	"wireshark"
       ];
 	};
 }
