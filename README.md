@@ -64,6 +64,6 @@ darwin-rebuild switch --rollback
 nix flake update
 ```
 
-## 📦 Packages installés
+## Packages installés
 
 Voir `modules/apps.nix` et `home/core.nix` pour la liste complète.
