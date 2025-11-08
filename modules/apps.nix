@@ -120,6 +120,7 @@
         "sublime-text"
         "tomatobar"
 	"wireshark"
+	"vnc-viewer"
       ];
 	};
 }
