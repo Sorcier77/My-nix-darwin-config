@@ -15,6 +15,9 @@ in
 {
   # Restore the Powerlevel10k configuration file
   home.file.".p10k.zsh".source = ./.p10k.zsh;
+  
+  # Create SSH sockets directory for connection multiplexing
+  home.file.".ssh/sockets/.keep".text = "";
 
   programs = {
     # Let Home Manager install and manage itself.
