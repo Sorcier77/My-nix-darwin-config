@@ -90,19 +90,24 @@
       pkgs = import nixpkgs {
         system = "x86_64-linux";
         config.allowUnfree = true;
+        config.permittedInsecurePackages = [
+          "gradle-7.6.6"
+        ];
       };
     in pkgs.mkShell {
       name = "ctf-env";
       
       nativeBuildInputs = with pkgs; [
+        zsh
+        eza
         # --- Binary Exploitation & Pwn (Zardus style) ---
         gdb
-        pwndbg            # Powerful GDB extension
+        # pwndbg            # Powerful GDB extension (Temporarily disabled: package not found in nixpkgs)
         gef               # Another GDB extension (good for heap)
         ropgadget         # Gadget finder
-        ropper            # Alternative gadget finder
+        # ropper            # Alternative gadget finder (redundant, in python packages)
         one_gadget        # Magic gadget finder
-        seccomp-tools     # Analyze seccomp filters
+        rubyPackages.seccomp-tools     # Analyze seccomp filters
         patchelf          # Modify ELF binaries
         elfutils
         ltrace
@@ -176,16 +181,16 @@
         # Note: Impacket is in Python packages
 
         # --- 6. OSINT & RECONNAISSANCE FRAMEWORKS ---
-        spiderfoot        # Automated OSINT collection (The "scanner" approach)
+        # spiderfoot        # Automated OSINT collection (The "scanner" approach) (Missing)
         maltego           # Link analysis & visualization (The "graph" approach)
         recon-ng          # Web Reconnaissance framework (The "Metasploit" approach)
         amass             # In-depth DNS enumeration & mapping
         
         # --- 7. TARGETED OSINT TOOLS ---
         sherlock          # Username search
-        maigret           # Advanced username search (often better than Sherlock)
+        # maigret           # Advanced username search (often better than Sherlock) (Dependency pyhanko failed build)
         theharvester      # Email/Domain gathering
-        shodan            # Search engine for devices (CLI)
+        python3Packages.shodan            # Search engine for devices (CLI)
         ghunt             # Google Account OSINT (Extract data from emails/GaiaIDs)
         holehe            # Check if email is attached to accounts (without login)
         socialscan        # Check email/username availability
@@ -206,7 +211,7 @@
           requests
           scapy           # Network packet manipulation
           impacket        # Network protocols
-          z3              # Theorem prover
+          z3-solver       # Theorem prover
           
           # AI & Automation
           google-generativeai # Le SDK officiel Gemini
@@ -230,8 +235,19 @@
         # Red prompt for "Attack Mode" to clearly distinguish from normal shell
         export PS1="\n\[\033[1;31m\][🚩 CTF-MODE:\w]\$ \[\033[0m\] "
         
-        echo "💀 CTF Environment Loaded."
-        echo "🔧 Tools: Pwn, Reverse, Crypto, Web, OSINT (Spiderfoot, Maltego, Recon-ng, etc.)"
+        # Aliases for Bash (fallback)
+        alias ls='eza --icons=auto' 
+        alias ll='eza -la --icons=auto'
+        alias grep='grep --color=auto'
+
+        echo "CTF Environment Loaded."
+        echo "Tools: Pwn, Reverse, Crypto, Web, OSINT (Spiderfoot, Maltego, Recon-ng, etc.)"
+
+        # Launch ZSH if available for full user experience
+        if command -v zsh >/dev/null 2>&1; then
+          export CTF_MODE=1
+          exec zsh
+        fi
       '';
     };
   };

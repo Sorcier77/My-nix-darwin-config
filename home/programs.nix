@@ -11,98 +11,15 @@ let
     };
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
-in{
-  # Allow unfree packages (useful for standalone home-manager on Linux)
-  nixpkgs.config.allowUnfree = true;
-
-  # Better integration for non-NixOS Linux (handles XDG_DATA_DIRS, fonts, etc.)
-  targets.genericLinux.enable = isLinux;
-
-  fonts.fontconfig.enable = true;
-
-  home.activation.installNerdFonts = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    echo "Linking Nerd Fonts to ~/.local/share/fonts..."
-    mkdir -p $HOME/.local/share/fonts
-    find $HOME/.nix-profile/share/fonts -name "*NerdFont*.ttf" -exec ln -sf {} $HOME/.local/share/fonts/ \;
-    echo "Updating font cache..."
-    ${pkgs.fontconfig}/bin/fc-cache -f $HOME/.local/share/fonts
-  '';
-
-  home.packages = with pkgs; [
-    # Fonts configuration
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.fira-code
-    nerd-fonts.meslo-lg
-    
-    # Debugging tools
-    gef
-    gdb
-    binutils
-    # CLI utilities
-    ripgrep
-    fzf
-    lazygit
-    pylint
-    pay-respects
-    
-    # Modern CLI tools
-    dust        # Better du
-    fd          # Better find
-    procs       # Better ps
-    tokei       # Count lines of code
-    tealdeer    # tldr pages
-    navi        # Interactive cheatsheets
-    
-    # SSH
-    openssh
-    # linter nvim
-
-    vimPlugins.vim-clang-format
-    rustfmt
-    google-java-format
-
-    # copilot 
-    github-copilot-cli
-    #wireshark
-
-    # ----------------------------------------------------------------
-    # Packages migrated from modules/apps.nix for cross-platform support
-    # ----------------------------------------------------------------
-    vim
-    wget
-    curl
-    htop
-    btop
-    tree
-    nodejs
-    openvpn
-    zip
-    unzip
-    p7zip
-    # Development tools
-    go
-    cmake
-    gcc
-    llvm
-    # Media tools
-    ffmpeg
-    imagemagick
-    # Network tools
-    nmap
-    # Databases
-    mysql84
-    sqlite
-    # Python
-    python312
-    # Document tools
-    typst
-    graphviz
-    obsidian
-    pandoc
-    texliveSmall
-  ];
+in
+{
+  # Restore the Powerlevel10k configuration file
+  home.file.".p10k.zsh".source = ./.p10k.zsh;
 
   programs = {
+    # Let Home Manager install and manage itself.
+    home-manager.enable = true;
+
     # Modern cat replacement with syntax highlighting
     bat = {
       enable = true;
@@ -112,11 +29,6 @@ in{
       };    
      };
     
-    
-
-
-
-
     # A modern replacement for 'ls'
     eza = {
       enable = true;
@@ -146,6 +58,7 @@ in{
     # SSH configuration
     ssh = {
       enable = true;
+      package = pkgs.openssh_gssapi;
       enableDefaultConfig = false;
       matchBlocks = {
         "*" = {
@@ -158,9 +71,7 @@ in{
         };
       };
     };
-
     
-
     # Git configuration
     git = {
       enable = true;
@@ -240,6 +151,8 @@ in{
         
         # Nix cleanup
         clean = "nix-collect-garbage -d && nix-store --gc && nix-store --optimise";
+        
+        copilot = "npx @github/copilot";
       };
 
       oh-my-zsh = {
@@ -253,22 +166,13 @@ in{
           "fzf"
           "sudo"
         ];
-        theme = "powerlevel10k/powerlevel10k";
-        custom = "$HOME/.oh-my-zsh/custom";
+        # Theme managed manually in initExtra to allow conditional loading
+        # theme = "powerlevel10k/powerlevel10k"; 
       };
 
       plugins = [
-        # Powerlevel10k theme - HASH MIS À JOUR
-        {
-          name = "powerlevel10k";
-          src = pkgs.fetchFromGitHub {
-            owner = "romkatv";
-            repo = "powerlevel10k";
-            rev = "v1.20.0";
-            hash = "sha256-ES5vJXHjAKw/VHjWs8Au/3R+/aotSbY7PWnWAMzCR8E=";
-          };
-          file = "powerlevel10k.zsh-theme";
-        }
+        # Powerlevel10k removed from here to control loading manually
+        
         # Autocompletions
         {
           name = "zsh-autosuggestions";
@@ -301,27 +205,29 @@ in{
         }
       ];
 
-      # Startup configuration (Modernized)
-      # Using lib.mkBefore ensures this runs first (for Instant Prompt)
-      initContent = lib.mkMerge [
-        (lib.mkBefore ''
-          # Powerlevel10k instant prompt
+      # Powerlevel10k Instant Prompt (Conditional)
+      initExtraFirst = ''
+        if [[ -z "$CTF_MODE" ]]; then
           if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
             source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
           fi
-        '')
-        (lib.mkAfter ''
-          # Load Powerlevel10k configuration
-          [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-          
-          # Custom keybindings
-          bindkey '^[[A' history-search-backward
-          bindkey '^[[B' history-search-forward
-        '')
-      ];
+        fi
+      '';
+
+      initExtra = ''
+        # Custom keybindings
+        bindkey '^[[A' history-search-backward
+        bindkey '^[[B' history-search-forward
+
+        if [[ -n "$CTF_MODE" ]]; then
+           # --- CTF MODE: Simple Red Prompt ---
+           PROMPT='%F{red}[🚩 CTF-MODE:%~]$ %f'
+        else
+           # --- NORMAL MODE: Load Powerlevel10k ---
+           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+           [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+        fi
+      '';
     };
   };
-
-  # Copier votre fichier .p10k.zsh
-  home.file.".p10k.zsh".source = ./.p10k.zsh;
 }
