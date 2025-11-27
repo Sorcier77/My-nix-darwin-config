@@ -24,41 +24,7 @@
 
     environment.systemPackages = with pkgs;
     [
-      vim
-      git
-      wget
-      curl
-      tmux
-      htop
-      btop
-      tree
-      nodejs
-      openvpn
-      zip
-      unzip
-      p7zip
-      # Development tools migrated from brew
-      go
-      cmake
-      gcc
-      llvm
-      # Media tools
-      ffmpeg
-      imagemagick
-      # Network tools
-      nmap
-      # Databases
-      mysql84
-      sqlite
-      # Python
-      python312
-      # Document tools
-      typst
-      graphviz
-      obsidian
-      pandoc
-      texliveSmall
-      
+      # Packages have been moved to home/core.nix for cross-platform compatibility
     ];
     homebrew = {
       enable = true;

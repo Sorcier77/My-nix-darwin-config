@@ -72,5 +72,18 @@
         }
       ];
     };
+
+    # Home Manager configuration for Fedora (Linux x86_64)
+    homeConfigurations."orion" = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      extraSpecialArgs = { inherit inputs outputs; };
+      modules = [
+        ./home
+        {
+          # Ensure unfree packages are allowed
+          nixpkgs.config.allowUnfree = true;
+        }
+      ];
+    };
   };
 }

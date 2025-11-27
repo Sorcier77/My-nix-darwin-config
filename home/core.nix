@@ -1,7 +1,7 @@
-{ config, pkgs, ... }: 
+{ config, pkgs, lib, ... }:
 let
   secretsPath = ../secrets.nix;
-  secrets = if builtins.pathExists secretsPath 
+  secrets = if builtins.pathExists secretsPath
     then import secretsPath
     else {
       git = {
@@ -9,20 +9,40 @@ let
         userEmail = "your.email@example.com";
       };
     };
-in
-{
+  isDarwin = pkgs.stdenv.isDarwin;
+  isLinux = pkgs.stdenv.isLinux;
+in{
+  # Allow unfree packages (useful for standalone home-manager on Linux)
+  nixpkgs.config.allowUnfree = true;
+
+  # Better integration for non-NixOS Linux (handles XDG_DATA_DIRS, fonts, etc.)
+  targets.genericLinux.enable = isLinux;
+
+  fonts.fontconfig.enable = true;
+
+  home.activation.installNerdFonts = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    echo "Linking Nerd Fonts to ~/.local/share/fonts..."
+    mkdir -p $HOME/.local/share/fonts
+    find $HOME/.nix-profile/share/fonts -name "*NerdFont*.ttf" -exec ln -sf {} $HOME/.local/share/fonts/ \;
+    echo "Updating font cache..."
+    ${pkgs.fontconfig}/bin/fc-cache -f $HOME/.local/share/fonts
+  '';
+
   home.packages = with pkgs; [
+    # Fonts configuration
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+    nerd-fonts.meslo-lg
+    
     # Debugging tools
     gef
     gdb
     binutils
-    eza
     # CLI utilities
     ripgrep
     fzf
     lazygit
     pylint
-    bat
     pay-respects
     
     # Modern CLI tools
@@ -30,10 +50,8 @@ in
     fd          # Better find
     procs       # Better ps
     tokei       # Count lines of code
-    delta       # Better git diff
     tealdeer    # tldr pages
     navi        # Interactive cheatsheets
-    direnv      # Per-project env
     
     # SSH
     openssh
@@ -46,6 +64,42 @@ in
     # copilot 
     github-copilot-cli
     #wireshark
+
+    # ----------------------------------------------------------------
+    # Packages migrated from modules/apps.nix for cross-platform support
+    # ----------------------------------------------------------------
+    vim
+    wget
+    curl
+    htop
+    btop
+    tree
+    nodejs
+    openvpn
+    zip
+    unzip
+    p7zip
+    # Development tools
+    go
+    cmake
+    gcc
+    llvm
+    # Media tools
+    ffmpeg
+    imagemagick
+    # Network tools
+    nmap
+    # Databases
+    mysql84
+    sqlite
+    # Python
+    python312
+    # Document tools
+    typst
+    graphviz
+    obsidian
+    pandoc
+    texliveSmall
   ];
 
   programs = {
@@ -153,10 +207,16 @@ in
       dotDir = "${config.xdg.configHome}/zsh";
 
       shellAliases = {
-        # Home Manager
-        hms = "darwin-rebuild switch --flake ~/.config/nix-darwin";
-        hmsg = "darwin-rebuild switch --flake ~/.config/nix-darwin && darwin-rebuild --list-generations";
-        hmdiff = "darwin-rebuild --list-generations";
+        # Home Manager / System Updates
+        hms = if isDarwin 
+              then "darwin-rebuild switch --flake ~/.config/nix-darwin" 
+              else "home-manager switch --flake .";
+        hmsg = if isDarwin 
+               then "darwin-rebuild switch --flake ~/.config/nix-darwin && darwin-rebuild --list-generations"
+               else "home-manager switch --flake . && home-manager generations";
+        hmdiff = if isDarwin 
+                 then "darwin-rebuild --list-generations"
+                 else "home-manager generations";
         
         # Git & Development
         lg = "lazygit";
@@ -241,20 +301,24 @@ in
         }
       ];
 
-      # Startup configuration
-      initContent = ''
-        # Powerlevel10k instant prompt
-        if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
-          source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
-        fi
-
-        # Load Powerlevel10k configuration
-        [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-        
-        # Custom keybindings
-        bindkey '^[[A' history-search-backward
-        bindkey '^[[B' history-search-forward
-      '';
+      # Startup configuration (Modernized)
+      # Using lib.mkBefore ensures this runs first (for Instant Prompt)
+      initContent = lib.mkMerge [
+        (lib.mkBefore ''
+          # Powerlevel10k instant prompt
+          if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
+            source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
+          fi
+        '')
+        (lib.mkAfter ''
+          # Load Powerlevel10k configuration
+          [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+          
+          # Custom keybindings
+          bindkey '^[[A' history-search-backward
+          bindkey '^[[B' history-search-forward
+        '')
+      ];
     };
   };
 
