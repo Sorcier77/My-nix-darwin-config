@@ -55,12 +55,27 @@ in
 
       gtk3.extraConfig = {
         gtk-application-prefer-dark-theme = 1;
+        gtk-theme-name = "adw-gtk3-dark";
       };
       
       gtk4.extraConfig = {
         gtk-application-prefer-dark-theme = 1;
+        gtk-theme-name = "adw-gtk3-dark";
       };
     };
+
+    # Force GTK theme for stubborn apps like virt-manager
+    home.sessionVariables = {
+      GTK_THEME = "adw-gtk3-dark";
+    };
+
+    # Link themes to ~/.local/share/themes for non-Nix apps
+    home.activation.linkThemes = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      mkdir -p $HOME/.local/share/themes
+      if [ -d "${pkgs.adw-gtk3}/share/themes/adw-gtk3-dark" ]; then
+        ln -sf "${pkgs.adw-gtk3}/share/themes/adw-gtk3-dark" "$HOME/.local/share/themes/adw-gtk3-dark"
+      fi
+    '';
 
     dconf.settings = {
       # --- Interface & Theming ---
