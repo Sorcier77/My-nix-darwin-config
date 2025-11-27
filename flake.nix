@@ -184,7 +184,8 @@
         # spiderfoot        # Automated OSINT collection (The "scanner" approach) (Missing)
         maltego           # Link analysis & visualization (The "graph" approach)
         recon-ng          # Web Reconnaissance framework (The "Metasploit" approach)
-        amass             # In-depth DNS enumeration & mapping
+        amass             # In-depth DNS enumeration & matching
+        maigret
         
         # --- 7. TARGETED OSINT TOOLS ---
         sherlock          # Username search

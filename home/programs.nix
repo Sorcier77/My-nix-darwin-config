@@ -5,8 +5,8 @@ let
     then import secretsPath
     else {
       git = {
-        userName = "YourGitHubUsername";
-        userEmail = "your.email@example.com";
+        userName = "Sorcier77";
+        userEmail = "ag.anselmegarnier@gmail.com";
       };
     };
   isDarwin = pkgs.stdenv.isDarwin;
@@ -58,12 +58,27 @@ in
     # SSH configuration
     ssh = {
       enable = true;
-      package = pkgs.openssh_gssapi;
       enableDefaultConfig = false;
+      
       matchBlocks = {
         "*" = {
+          # Essential defaults
           addKeysToAgent = "yes";
+          compression = true;
+          serverAliveInterval = 60;
+          serverAliveCountMax = 3;
+          
+          # Security defaults
+          forwardAgent = false;
+          forwardX11 = false;
+          forwardX11Trusted = false;
+          
+          # Connection defaults
+          controlMaster = "auto";
+          controlPath = "~/.ssh/sockets/%r@%h-%p";
+          controlPersist = "600";
         };
+        
         "github.com" = {
           hostname = "github.com";
           user = "git";
@@ -81,18 +96,34 @@ in
           name = secrets.git.userName;
           email = secrets.git.userEmail;
         };
-        init = {
-          defaultBranch = "main";
-        };
-        pull = {
-          rebase = false;
-        };
+        init.defaultBranch = "main";
+        pull.rebase = false;
         push = {
           default = "simple";
           autoSetupRemote = true;
         };
         core = {
           editor = "nvim";
+          # Performance improvements
+          preloadindex = true;
+          fscache = true;
+        };
+        gc.auto = 256;
+        # Better diff algorithm
+        diff.algorithm = "histogram";
+        # Reuse recorded resolutions
+        rerere.enabled = true;
+        
+        # Git aliases
+        alias = {
+          st = "status -sb";
+          co = "checkout";
+          br = "branch";
+          ci = "commit";
+          unstage = "reset HEAD --";
+          last = "log -1 HEAD";
+          visual = "log --graph --oneline --decorate --all";
+          amend = "commit --amend --no-edit";
         };
       };
     };
@@ -132,6 +163,7 @@ in
         # Git & Development
         lg = "lazygit";
         v = "nvim";
+        g = "git";
         
         # System
         c = "clear";
@@ -140,10 +172,14 @@ in
         
         # Modern replacements
         ls = "eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions";
+        ll = "eza -lah --git --icons";
+        la = "eza -a --icons";
+        lt = "eza --tree --level=2 --icons";
         cd = "z";
         find = "fd";
         du = "dust";
         ps = "procs";
+        grep = "rg";
         
         # Search & Help
         s = "web_search duckduckgo";
@@ -151,6 +187,11 @@ in
         
         # Nix cleanup
         clean = "nix-collect-garbage -d && nix-store --gc && nix-store --optimise";
+        
+        # Utilities
+        ports = if isDarwin then "lsof -iTCP -sTCP:LISTEN -n -P" else "netstat -tulanp";
+        myip = "curl -s ifconfig.me";
+        weather = "curl wttr.in";
         
         copilot = "npx @github/copilot";
       };
@@ -165,9 +206,8 @@ in
           "copybuffer"
           "fzf"
           "sudo"
-        ];
-        # Theme managed manually in initExtra to allow conditional loading
-        # theme = "powerlevel10k/powerlevel10k"; 
+        ] ++ lib.optionals isLinux [ "docker" "kubectl" ]
+          ++ lib.optionals isDarwin [ "macos" "brew" ];
       };
 
       plugins = [
@@ -205,23 +245,51 @@ in
         }
       ];
 
-      # Powerlevel10k Instant Prompt (Conditional)
-      initExtraFirst = ''
+      # Powerlevel10k Instant Prompt (Conditional) and other custom initializations
+      initContent = lib.mkBefore ''
+        # Powerlevel10k instant prompt
         if [[ -z "$CTF_MODE" ]]; then
-          if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
-            source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
+          if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-$USER.zsh" ]]; then
+            source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-$USER.zsh"
           fi
         fi
-      '';
 
-      initExtra = ''
+        # History configuration
+        HISTSIZE=50000
+        SAVEHIST=50000
+        setopt HIST_IGNORE_ALL_DUPS
+        setopt HIST_FIND_NO_DUPS
+        setopt HIST_SAVE_NO_DUPS
+        setopt SHARE_HISTORY
+
         # Custom keybindings
         bindkey '^[[A' history-search-backward
         bindkey '^[[B' history-search-forward
+        
+        # Platform-specific keybindings
+        ${if isDarwin then ''
+          bindkey '^[[H' beginning-of-line
+          bindkey '^[[F' end-of-line
+        '' else ''
+          bindkey '^[OH' beginning-of-line
+          bindkey '^[OF' end-of-line
+        ''}
+        bindkey '^[[3~' delete-char
+
+        # Better completion behavior
+        zstyle ':completion:*' menu select
+        zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+        zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
 
         if [[ -n "$CTF_MODE" ]]; then
+           echo "🚀 CTF Environment Detected"
            # --- CTF MODE: Simple Red Prompt ---
-           PROMPT='%F{red}[🚩 CTF-MODE:%~]$ %f'
+           function set_ctf_prompt() {
+             PROMPT='%F{red}[🚩 CTF-MODE:%~]$ %f'
+             RPROMPT=""
+           }
+           precmd_functions+=(set_ctf_prompt)
+           set_ctf_prompt
         else
            # --- NORMAL MODE: Load Powerlevel10k ---
            source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
