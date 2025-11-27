@@ -51,6 +51,7 @@ in
       cursorTheme = {
         name = "Bibata-Modern-Ice";
         package = pkgs.bibata-cursors;
+        size = 20;
       };
 
       gtk3.extraConfig = {
@@ -73,7 +74,8 @@ in
     home.activation.linkThemes = lib.hm.dag.entryAfter ["writeBoundary"] ''
       mkdir -p $HOME/.local/share/themes
       if [ -d "${pkgs.adw-gtk3}/share/themes/adw-gtk3-dark" ]; then
-        ln -sf "${pkgs.adw-gtk3}/share/themes/adw-gtk3-dark" "$HOME/.local/share/themes/adw-gtk3-dark"
+        rm -f "$HOME/.local/share/themes/adw-gtk3-dark"
+        ln -s "${pkgs.adw-gtk3}/share/themes/adw-gtk3-dark" "$HOME/.local/share/themes/adw-gtk3-dark"
       fi
     '';
 
@@ -91,6 +93,7 @@ in
         gtk-theme = lib.mkForce "adw-gtk3-dark";
         icon-theme = "Papirus-Dark";
         cursor-theme = "Bibata-Modern-Ice";
+        cursor-size = 20;
       };
 
       # --- Window Manager ---
