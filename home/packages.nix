@@ -1,118 +1,139 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   home.packages = with pkgs; [
-    # Fonts configuration
+    # =================================================================
+    #  CORE ESSENTIALS & MODERN CLI
+    # =================================================================
+    # Fonts
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
     nerd-fonts.meslo-lg
-    
-    # Debugging tools
-    gef
-    gdb
-    binutils
-    # CLI utilities
-    ripgrep
-    fzf
-    lazygit
-    pylint
-    pay-respects
-    
-    # Modern CLI tools
-    dust        # Better du
-    fd          # Better find
-    procs       # Better ps
-    tokei       # Count lines of code
-    tealdeer    # tldr pages
-    navi        # Interactive cheatsheets
-    
-    # SSH
-    # openssh replaced by programs.ssh package configuration
-    # linter nvim
 
-    vimPlugins.vim-clang-format
-    rustfmt
-    google-java-format
+    # Nix Tools
+    nh          # Nix Helper
+    ripgrep     # Grep ultra-rapide
+    fzf         # Fuzzy Finder
+    lazygit     # Git TUI
+    dust        # Usage Disque
+    fd          # Find modernisé
+    procs       # PS modernisé
+    tokei       # Code statistics
+    tealdeer    # TLDR pages
+    navi        # Cheatsheets interactives
+    bat-extras.batman # Man pages colorées
+    bat-extras.batgrep # Grep contextuel
+    fastfetch   # System Info
 
-    # copilot 
-    github-copilot-cli
-    #wireshark
+    # =================================================================
+    #  OFFENSIVE SECURITY & PENTESTING (RED TEAM)
+    # =================================================================
+    # Web & Recon
+    nmap        # Network Mapper (Standard)
+    ffuf        # Fast Web Fuzzer (Go) - Indispensable Web Pentest
+    gobuster    # Directory/DNS Brute-forcing
+    sqlmap      # SQL Injection Automation
+    nikto       # Web Server Scanner
+    whatweb     # Web Fingerprinter
 
-    # ----------------------------------------------------------------
-    # Packages migrated from modules/apps.nix for cross-platform support
-    # ----------------------------------------------------------------
+    # Brute-Force & Cracking
+    thc-hydra   # Network Logon Cracker
+    john        # Password Cracker (Jumbo)
+    hashcat     # Advanced Password Recovery (GPU)
+
+    # Network Attacks & MitM
+    dsniff      # arpspoof, etc.
+    socat       # Netcat avancé (Relais, Tunnels)
+
+    # =================================================================
+    #  FORENSICS, REVERSE & DEFENSE (BLUE TEAM)
+    # =================================================================
+    # Analyse Binaire & Debug
+    radare2     # Reverse Engineering Framework
+    gef         # GDB Enhanced Features (Exploit Dev)
+    gdb         # GNU Debugger
+    binwalk     # Firmware Analysis
+    checksec    # Binary Mitigation Checker (NX, PIE, etc.)
+    hexedit     # Hex Editor
+    
+    # Forensics
+    exiftool    # Metadata Editor
+    sleuthkit   # Filesystem Analysis Tools
+    ddrescue    # Data Recovery
+
+    # Analyse Réseau & Audit
+    tcpdump     # CLI Packet Analyzer (Root required often)
+    ngrep       # Network Grep
+    termshark   # TUI for Wireshark
+    ssh-audit   # SSH Server Configuration Auditor
+    lynis       # System Security Audit
+    # rkhunter    # Rootkit Hunter (Missing/Removed from nixpkgs)
+    # chkrootkit  # Rootkit Detector (Removed from nixpkgs: unmaintained)
+    vulnix      # NixOS/Nix Vulnerability Scanner
+    clamav      # Antivirus CLI
+
+    # =================================================================
+    #  SECURITY & HARDWARE (MINARM / GOV COMPLIANT)
+    # =================================================================
+    # Smartcards & YubiKey
+    yubikey-manager
+    yubikey-personalization
+    opensc      # Smartcard tools (CAC/PIV support)
+    ccid        # Generic USB CCID smart card reader driver
+    pcsclite    # Middleware to access a smart card using PC/SC
+
+    # Chiffrement & Privacy
+    gnupg       # GPG
+    age         # Modern File Encryption
+    tomb        # Crypto-folders (LUKS wrapper)
+    srm         # Secure Remove (DoD standard compliance)
+    mat2        # Metadata Anonymisation Toolkit
+    tor-browser # Anonymity
+    onionshare  # Secure File Sharing
+
+    # =================================================================
+    #  DEV & UTILITIES
+    # =================================================================
+    # Langages & Build
+    python312
+    nodejs
+    go
+    gcc
+    cmake
+    gnumake
+    
+    # Tools
     vim
     wget
     curl
     htop
     btop
     tree
-    nodejs
-    openvpn
     zip
     unzip
     p7zip
-    # Development tools
-    go
-    cmake
-    gcc
-    llvm
-    # Media tools
-    ffmpeg
-    imagemagick
-    # Network tools
-    nmap
-    # Databases
-    mysql84
-    sqlite
-    # Python
-    python312
-    # Document tools
-    typst
-    graphviz
-    obsidian
-    pandoc
-    texliveSmall
+    jq          # JSON Processor (Indispensable pour APIs)
     
-    # --- Hardware / Optimization (X1 Carbon Gen 12) ---
+  ] ++ lib.optionals pkgs.stdenv.isLinux [
+    # =================================================================
+    #  LINUX ONLY TOOLS (Kernel/Hardware Dependent)
+    # =================================================================
+    strace      # System Call Tracer (Linux only)
+    ltrace      # Library Call Tracer (Linux only)
+    firejail    # Sandboxing (Linux only namespaces)
+    
+    # Hardware Opti
     powertop
+    lm_sensors
+    pciutils    # lspci
+    usbutils    # lsusb
     intel-gpu-tools
     libva-utils
     vulkan-tools
-    nvtopPackages.intel
-    lm_sensors
-    pciutils
-    usbutils
-    fastfetch
-
-    # --- Security / Hardening / Privacy ---
-    keepassxc           # Coffre-fort de mots de passe (Offline)
-    yubikey-manager     # Gestion YubiKey
-    yubikey-personalization
     
-    # Chiffrement & Données
-    gnupg               # PGP standard
-    age                 # Chiffrement moderne (plus simple que GPG)
-    tomb                # Création de dossiers chiffrés (Wrapper LUKS) - Idéal pour dossiers sensibles
-    srm                 # Secure Remove (écrasement des données)
-    mat2                # Nettoyage métadonnées (OpSec)
-    
-    # Audit & Réseau
-    lynis               # Audit de sécurité système complet
-    vulnix              # Scan de vulnérabilités (CVE) des paquets Nix installés
-    clamav              # Antivirus CLI (Scan fichiers suspects)
-    termshark           # Interface Terminal pour Wireshark
-    tor-browser         # Navigation anonyme
-    onionshare          # Partage de fichiers via Tor
+    # Utilities
+    wl-clipboard # Wayland Clipboard Support
 
-    # --- Ultimate CLI Experience ---
-    bat-extras.batman   # Man pages with syntax highlighting
-    bat-extras.batgrep  # Grep with syntax highlighting
-    bat-extras.batdiff  # Diff with syntax highlighting
-
-    # --- Réseau & Privacy Avancé ---
-    macchanger          # Usurpation d'adresse MAC (Indispensable Cyber)
-    
-    # --- Backup ---
-    pika-backup         # Backup données (dédupliqué/chiffré) - Complément idéal aux snapshots BTRFS
+    # Network/Mac (Specific implementations)
+    macchanger
   ];
 }

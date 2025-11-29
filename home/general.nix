@@ -22,7 +22,7 @@ in
     prefix=''${HOME}/.npm-global
   '';
 
-  home.activation.installNerdFonts = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.installNerdFonts = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     echo "Linking Nerd Fonts to ~/.local/share/fonts..."
     mkdir -p $HOME/.local/share/fonts
     find $HOME/.nix-profile/share/fonts -name "*NerdFont*.ttf" -exec ln -sf {} $HOME/.local/share/fonts/ \;

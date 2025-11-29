@@ -1,10 +1,10 @@
 { inputs, pkgs, ... }:
 {
   imports = [ inputs.nixvim.homeModules.nixvim ];
-  
+
   programs.nixvim = {
     enable = true;
-    
+
     # Options de base
     opts = {
       number = true;
@@ -27,15 +27,15 @@
       signcolumn = "yes";
       mousescroll = "ver:3,hor:0";
     };
-    
+
     globals.mapleader = " ";
-    
+
     colorschemes.catppuccin.enable = true;
-    
+
     # Icônes et UI
     plugins.web-devicons.enable = true;
     plugins.lualine.enable = true;
-    
+
     # GitHub Copilot via copilot-lua (intégré avec blink-cmp)
     plugins.copilot-lua = {
       enable = true;
@@ -44,7 +44,7 @@
         panel.enabled = false;
       };
     };
-    
+
     # Keymaps
     keymaps = [
       # Général
@@ -103,28 +103,84 @@
           silent = true;
         };
       }
+      # Trouble Keymaps
+      {
+        mode = "n";
+        key = "<leader>xx";
+        action = "<cmd>Trouble diagnostics toggle<CR>";
+        options = {
+          desc = "Diagnostics (Trouble)";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>xX";
+        action = "<cmd>Trouble diagnostics toggle filter.buf=0<CR>";
+        options = {
+          desc = "Buffer Diagnostics (Trouble)";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>cs";
+        action = "<cmd>Trouble symbols toggle focus=false<CR>";
+        options = {
+          desc = "Symbols (Trouble)";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>cl";
+        action = "<cmd>Trouble lsp toggle focus=false win.position=right<CR>";
+        options = {
+          desc = "LSP Definitions / references / ... (Trouble)";
+          silent = true;
+        };
+      }
 
     ];
-    
+
     # Plugin pour intégrer Copilot avec blink-cmp
     plugins.blink-copilot.enable = true;
-    
+
     # Complétion avec blink-cmp
     plugins.blink-cmp = {
       enable = true;
       settings = {
         keymap = {
           preset = "default";
-          "<C-space>" = [ "show" "show_documentation" "hide_documentation" ];
+          "<C-space>" = [
+            "show"
+            "show_documentation"
+            "hide_documentation"
+          ];
           "<C-e>" = [ "hide" ];
-          "<CR>" = [ "accept" "fallback" ];
-          "<Tab>" = [ "select_next" "fallback" ];
-          "<S-Tab>" = [ "select_prev" "fallback" ];
+          "<CR>" = [
+            "accept"
+            "fallback"
+          ];
+          "<Tab>" = [
+            "select_next"
+            "fallback"
+          ];
+          "<S-Tab>" = [
+            "select_prev"
+            "fallback"
+          ];
         };
-        
+
         # Sources de complétion (incluant Copilot)
         sources = {
-          default = [ "lsp" "path" "snippets" "buffer" "copilot" ];
+          default = [
+            "lsp"
+            "path"
+            "snippets"
+            "buffer"
+            "copilot"
+          ];
           providers = {
             lsp = {
               name = "LSP";
@@ -179,7 +235,7 @@
             };
           };
         };
-        
+
         # Snippets intégrés
         snippets = {
           expand.__raw = ''
@@ -196,13 +252,13 @@
             end
           '';
         };
-        
+
         # Apparence
         appearance = {
           use_nvim_cmp_as_default = true;
           nerd_font_variant = "mono";
         };
-        
+
         # Comportement de la complétion
         completion = {
           accept = {
@@ -213,7 +269,12 @@
           menu = {
             draw = {
               columns = [
-                [ "label" "label_description" "kind_icon" "kind" ]
+                [
+                  "label"
+                  "label_description"
+                  "kind_icon"
+                  "kind"
+                ]
               ];
             };
           };
@@ -232,29 +293,29 @@
             show_on_insert_on_trigger_character = true;
           };
         };
-        
+
         # Signatures de fonction
         signature = {
           enabled = true;
         };
       };
     };
-    
+
     # friendly-snippets : collection de snippets
     extraPlugins = with pkgs.vimPlugins; [
       friendly-snippets
     ];
-    
+
     # Typst
     plugins.typst-vim.enable = true;
     plugins.typst-preview.enable = true;
-    
+
     # TypeScript
     plugins.typescript-tools.enable = true;
-    
+
     # Linting
     plugins.lint.enable = true;
-    
+
     # Treesitter
     plugins.treesitter = {
       enable = true;
@@ -282,22 +343,39 @@
       ];
     };
     plugins.treesitter-context.enable = true;
-    
+
     # Navigation et édition
     plugins.nvim-surround.enable = true;
     plugins.telescope.enable = true;
     plugins.yazi.enable = true;
     plugins.ccc.enable = true;
     plugins.comment.enable = true;
-    
+
+    # Helper pour les raccourcis (Indispensable)
+    plugins.which-key = {
+      enable = true;
+      settings = {
+        show_help = true;
+        show_keys = true;
+      };
+    };
+
+    # Meilleure gestion des erreurs/diagnostics
+    plugins.trouble = {
+      enable = true;
+      settings = {
+        auto_close = true;
+      };
+    };
+
     # Debug
     plugins.dap.enable = true;
     plugins.dap-ui.enable = true;
-    
+
     # Git
     plugins.diffview.enable = true;
     plugins.gitsigns.enable = true;
-    
+
     # LSP
     plugins.lsp = {
       enable = true;
@@ -360,7 +438,12 @@
                   "sun.*"
                   "jdk.*"
                 ];
-                importOrder = [ "java" "javax" "com" "org" ];
+                importOrder = [
+                  "java"
+                  "javax"
+                  "com"
+                  "org"
+                ];
                 maxResults = 50;
                 enabled = true;
                 guessMethodArguments = true;
@@ -412,7 +495,7 @@
         };
       };
     };
-    
+
     # Formatage
     plugins.conform-nvim = {
       enable = true;

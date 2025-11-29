@@ -5,43 +5,43 @@
     # Apparence minimaliste
     theme = "Default.sublime-theme";
     color_scheme = "Mariana.sublime-color-scheme";
-    
+
     # Interface épurée
     show_minimap = false;
     show_tabs = true;
     show_sidebar = true;
-    
+
     # Police et taille
     font_face = "SF Mono";
     font_size = 13;
-    
+
     # Lignes et espacement
     line_padding_top = 2;
     line_padding_bottom = 2;
     caret_style = "phase";
     highlight_line = true;
-    
+
     # Gestion des fichiers
     save_on_focus_lost = true;
     atomic_save = false;
     ensure_newline_at_eof_on_save = true;
     trim_trailing_white_space_on_save = "all";
-    
+
     # Indentation
     tab_size = 2;
     translate_tabs_to_spaces = true;
     detect_indentation = true;
-    
+
     # Performance et comportement
     index_files = true;
     hot_exit = true;
     remember_open_files = true;
-    
+
     # UI clean
     fade_fold_buttons = true;
     draw_white_space = "none";
     rulers = [ 80 ];
-    
+
     # Markdown
     default_line_ending = "unix";
     word_wrap = true;

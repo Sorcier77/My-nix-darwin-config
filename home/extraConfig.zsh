@@ -27,7 +27,8 @@ echo "  \\____/  |_|    |_|  \\___/  |_| |_|${RESET} "
 # ========================================
 # Powerlevel10k Configuration
 # ========================================
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+# Instant prompt is handled in programs.nix via initExtraFirst
+# typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 
 # ========================================
 # Path Exports
@@ -65,10 +66,11 @@ fi
 # SSH Agent
 # ========================================
 # Start SSH agent and add GitHub key
-if [ -z "$SSH_AUTH_SOCK" ]; then
-    eval "$(ssh-agent -s)" > /dev/null
-    ssh-add ~/.ssh/github 2>/dev/null
-fi
+# NOTE: Disabled for performance. Use system keychain or specific service.
+# if [ -z "$SSH_AUTH_SOCK" ]; then
+#     eval "$(ssh-agent -s)" > /dev/null
+#     ssh-add ~/.ssh/github 2>/dev/null
+# fi
 
 # ========================================
 # Custom Aliases
@@ -87,5 +89,5 @@ alias lsa="eza --color=always --long --git --no-filesize --icons=always --no-tim
 # Pay Respects (replacement for thefuck)
 if command -v fuck &> /dev/null; then
     eval $(fuck --alias)
-    eval $(fuck --alias fk)
+    # eval $(fuck --alias fk) # redundant
 fi
