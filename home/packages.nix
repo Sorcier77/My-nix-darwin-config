@@ -72,5 +72,47 @@
     obsidian
     pandoc
     texliveSmall
+    
+    # --- Hardware / Optimization (X1 Carbon Gen 12) ---
+    powertop
+    intel-gpu-tools
+    libva-utils
+    vulkan-tools
+    nvtopPackages.intel
+    lm_sensors
+    pciutils
+    usbutils
+    fastfetch
+
+    # --- Security / Hardening / Privacy ---
+    keepassxc           # Coffre-fort de mots de passe (Offline)
+    yubikey-manager     # Gestion YubiKey
+    yubikey-personalization
+    
+    # Chiffrement & Données
+    gnupg               # PGP standard
+    age                 # Chiffrement moderne (plus simple que GPG)
+    tomb                # Création de dossiers chiffrés (Wrapper LUKS) - Idéal pour dossiers sensibles
+    srm                 # Secure Remove (écrasement des données)
+    mat2                # Nettoyage métadonnées (OpSec)
+    
+    # Audit & Réseau
+    lynis               # Audit de sécurité système complet
+    vulnix              # Scan de vulnérabilités (CVE) des paquets Nix installés
+    clamav              # Antivirus CLI (Scan fichiers suspects)
+    termshark           # Interface Terminal pour Wireshark
+    tor-browser         # Navigation anonyme
+    onionshare          # Partage de fichiers via Tor
+
+    # --- Ultimate CLI Experience ---
+    bat-extras.batman   # Man pages with syntax highlighting
+    bat-extras.batgrep  # Grep with syntax highlighting
+    bat-extras.batdiff  # Diff with syntax highlighting
+
+    # --- Réseau & Privacy Avancé ---
+    macchanger          # Usurpation d'adresse MAC (Indispensable Cyber)
+    
+    # --- Backup ---
+    pika-backup         # Backup données (dédupliqué/chiffré) - Complément idéal aux snapshots BTRFS
   ];
 }

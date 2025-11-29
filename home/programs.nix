@@ -19,6 +19,14 @@ in
   # Create SSH sockets directory for connection multiplexing
   home.file.".ssh/sockets/.keep".text = "";
 
+  services.gpg-agent = {
+    enable = true;
+    enableZshIntegration = true;
+    pinentry.package = pkgs.pinentry-gnome3;
+    defaultCacheTtl = 600;
+    maxCacheTtl = 7200;
+  };
+
   programs = {
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
@@ -89,7 +97,36 @@ in
         };
       };
     };
-    
+
+    # GPG Configuration
+    gpg = {
+      enable = true;
+      settings = {
+        # Hardening GPG
+        personal-cipher-preferences = "AES256 AES192 AES";
+        personal-digest-preferences = "SHA512 SHA384 SHA256";
+        personal-compress-preferences = "ZLIB BZIP2 ZIP Uncompressed";
+        default-preference-list = "SHA512 SHA384 SHA256 AES256 AES192 AES ZLIB BZIP2 ZIP Uncompressed";
+        cert-digest-algo = "SHA512";
+        s2k-digest-algo = "SHA512";
+        s2k-cipher-algo = "AES256";
+        charset = "utf-8";
+        fixed-list-mode = true;
+        no-comments = true;
+        no-emit-version = true;
+        no-greeting = true;
+        keyid-format = "0xlong";
+        list-options = "show-uid-validity collapse-all";
+        verify-options = "show-uid-validity";
+        with-fingerprint = true;
+        require-cross-certification = true;
+        no-symkey-cache = true;
+        use-agent = true;
+        throw-keyids = true;
+      };
+    };
+
+
     # Git configuration
     git = {
       enable = true;
@@ -144,6 +181,12 @@ in
       nix-direnv.enable = true;
     };
 
+    # nix-index for command-not-found functionality
+    nix-index = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
     zsh = {
       enable = true;
       autosuggestion.enable = true;
@@ -190,6 +233,9 @@ in
         
         # Nix cleanup
         clean = "nix-collect-garbage -d && nix-store --gc && nix-store --optimise";
+
+        # CTF / Dev
+        ctf-init = "echo 'use flake \"path:${config.home.homeDirectory}/Documents/My-nix-darwin-config#ctf\"' > .envrc && direnv allow";
         
         # Utilities
         ports = if isDarwin then "lsof -iTCP -sTCP:LISTEN -n -P" else "netstat -tulanp";
@@ -248,15 +294,18 @@ in
         }
       ];
 
-      # Powerlevel10k Instant Prompt (Conditional) and other custom initializations
-      initContent = lib.mkBefore ''
+      # Powerlevel10k Instant Prompt (must be at the top)
+      initExtraFirst = ''
         # Powerlevel10k instant prompt
         if [[ -z "$CTF_MODE" ]]; then
           if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-$USER.zsh" ]]; then
             source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-$USER.zsh"
           fi
         fi
+      '';
 
+      # Other custom initializations
+      initExtra = lib.mkBefore ''
         # History configuration
         HISTSIZE=50000
         SAVEHIST=50000
