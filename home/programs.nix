@@ -26,7 +26,7 @@ in
   # Create SSH sockets directory for connection multiplexing
   home.file.".ssh/sockets/.keep".text = "";
 
-  services.gpg-agent = {
+    services.gpg-agent = {
     enable = true;
     enableZshIntegration = true;
     # enableSshSupport = true; # Désactivé pour permettre l'utilisation de clés SSH basées sur fichiers
@@ -39,48 +39,66 @@ in
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
 
-    # --- Firefox Hardened (Cyber Standard) ---
-    firefox = {
+    # Foot Terminal Emulator
+    foot = {
       enable = true;
-      policies = {
-        DisableTelemetry = true;
-        DisableFirefoxStudies = true;
-        EnableTrackingProtection = {
-          Value = true;
-          Locked = true;
-          Cryptomining = true;
-          Fingerprinting = true;
-        };
-        DisablePocket = true;
-        DisableFirefoxAccounts = false; # Gardé pour Sync, mettre true pour full local
-        DisableAccounts = false;
-        DisableFirefoxScreenshots = true;
-        OverrideFirstRunPage = "";
-        OverridePostUpdatePage = "";
-        DontCheckDefaultBrowser = true;
-        DisplayBookmarksToolbar = "never"; # Minimalist
-        DisplayMenuBar = "default-off";
-        SearchBar = "unified";
-        # Security
-        HttpsOnlyMode = "force_enabled";
-        DNSOverHTTPS = {
-          Enabled = true;
-          ProviderURL = "https://dns.quad9.net/dns-query"; # Quad9 (Security focused)
-          Locked = true;
+      settings = {
+        main = {
+          font = "JetBrainsMono NFM:size=10";
+
+          # You can add more foot specific settings here if desired.
+          # For example, colors, keybindings, etc.
+          # Refer to the foot documentation or the web search result for more options.
         };
       };
+
+    };
+
+    # Alacritty Terminal Emulator
+    
+    # --- Firefox Hardened (Cyber Standard) ---
+    # Disabled by user request to use system Firefox (faster on Fedora)
+    firefox = {
+      enable = false;
+      # policies = {
+      #   DisableTelemetry = true;
+      #   DisableFirefoxStudies = true;
+      #   EnableTrackingProtection = {
+      #     Value = true;
+      #     Locked = true;
+      #     Cryptomining = true;
+      #     Fingerprinting = true;
+      #   };
+      #   DisablePocket = true;
+      #   DisableFirefoxAccounts = false; # Gardé pour Sync, mettre true pour full local
+      #   DisableAccounts = false;
+      #   DisableFirefoxScreenshots = true;
+      #   OverrideFirstRunPage = "";
+      #   OverridePostUpdatePage = "";
+      #   DontCheckDefaultBrowser = true;
+      #   DisplayBookmarksToolbar = "never"; # Minimalist
+      #   DisplayMenuBar = "default-off";
+      #   SearchBar = "unified";
+      #   # Security
+      #   HttpsOnlyMode = "force_enabled";
+      #   DNSOverHTTPS = {
+      #     Enabled = true;
+      #     ProviderURL = "https://dns.quad9.net/dns-query"; # Quad9 (Security focused)
+      #     Locked = true;
+      #   };
+      # };
       
-      # Hardening avancé (about:config)
-      profiles.default.settings = {
-        "privacy.resistFingerprinting" = true; # 🛡️ Tor Browser anti-fingerprinting (Timezone UTC, etc.)
-        "privacy.fingerprintingProtection" = true;
-        "privacy.trackingprotection.fingerprinting.enabled" = true;
-        "privacy.trackingprotection.cryptomining.enabled" = true;
-        "dom.security.https_only_mode" = true;
-        "network.auth.subresource-http-auth-allow" = 1;
-        "security.ssl.require_safe_negotiation" = true;
-        "security.tls.version.min" = 3; # Force TLS 1.3 (peut casser de vieux sites)
-      };
+      # # Hardening avancé (about:config)
+      # profiles.default.settings = {
+      #   "privacy.resistFingerprinting" = true; # 🛡️ Tor Browser anti-fingerprinting (Timezone UTC, etc.)
+      #   "privacy.fingerprintingProtection" = true;
+      #   "privacy.trackingprotection.fingerprinting.enabled" = true;
+      #   "privacy.trackingprotection.cryptomining.enabled" = true;
+      #   "dom.security.https_only_mode" = true;
+      #   "network.auth.subresource-http-auth-allow" = 1;
+      #   "security.ssl.require_safe_negotiation" = true;
+      #   "security.tls.version.min" = 3; # Force TLS 1.3 (peut casser de vieux sites)
+      # };
     };
 
     # Modern cat replacement with syntax highlighting
@@ -180,6 +198,11 @@ in
           user = "git";
           identityFile = "~/.ssh/github";
         };
+        "skynet" = {
+          hostname = "skynet";
+          user = "orion";
+          identityFile = "~/.ssh/github";
+        };
       };
     };
 
@@ -201,7 +224,7 @@ in
         no-emit-version = true;
         no-greeting = true;
         keyid-format = "0xlong";
-        list-options = "show-uid-validity collapse-all";
+        list-options = "show-uid-validity";
         verify-options = "show-uid-validity";
         with-fingerprint = true;
         require-cross-certification = true;
@@ -276,27 +299,9 @@ in
     };
 
     # Modern Terminal Emulator (GPU Accelerated)
-    kitty = {
-      enable = true;
-      themeFile = "Catppuccin-Frappe";
-      font = {
-        name = "JetBrainsMono Nerd Font";
-        size = 11;
-      };
-      settings = {
-        window_padding_width = 4;
-        background_opacity = "0.90";
-        confirm_os_window_close = 0;
-        enable_audio_bell = false;
-        copy_on_select = "clipboard";
-        # Performance
-        repaint_delay = 10;
-        input_delay = 3;
-        sync_to_monitor = true;
-      };
-    };
-
-    zsh = {
+    # Disabled to use system kitty (better OpenGL support on Fedora)
+    # Configuration is managed manually below via xdg.configFile to ensure consistency
+      zsh = {
       enable = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
@@ -352,7 +357,6 @@ in
         fedora-harden = "sudo bash ${config.home.homeDirectory}/Documents/My-nix-darwin-config/home/fedora-hardening.sh";
 
         # CTF / Dev
-        ctf-init = "echo 'use flake \"path:${config.home.homeDirectory}/Documents/My-nix-darwin-config#ctf\"' > .envrc && direnv allow";
 
         # Utilities
         ports = if isDarwin then "lsof -iTCP -sTCP:LISTEN -n -P" else "netstat -tulanp";

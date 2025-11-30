@@ -14,6 +14,7 @@
     ripgrep     # Grep ultra-rapide
     fzf         # Fuzzy Finder
     lazygit     # Git TUI
+    foot        # Fast, GPU-accelerated terminal emulator
     dust        # Usage Disque
     fd          # Find modernisé
     procs       # PS modernisé
@@ -113,10 +114,16 @@
     p7zip
     jq          # JSON Processor (Indispensable pour APIs)
     
+    # Network/Mac (Specific implementations)
+    macchanger
   ] ++ lib.optionals pkgs.stdenv.isLinux [
     # =================================================================
     #  LINUX ONLY TOOLS (Kernel/Hardware Dependent)
     # =================================================================
+    # Migrated CLI/TUI Tools
+    pandoc      # Document Converter
+    helix       # Modern Editor
+    
     strace      # System Call Tracer (Linux only)
     ltrace      # Library Call Tracer (Linux only)
     firejail    # Sandboxing (Linux only namespaces)

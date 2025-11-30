@@ -91,10 +91,11 @@ pkgs.mkShell {
     certipy     # AD CS Abuse (Certificates)
 
     # --- C2 & Pivoting (Modern Red Team) ---
-    sliver      # C2 Framework (Go) - The modern standard
+    #sliver      # C2 Framework (Go) - The modern standard
     ligolo-ng   # Pivoting 2.0 (Tun interfaces, better than chisel)
     chisel      # TCP Tunneling (Classic)
     sshuttle    # VPN over SSH
+    metasploit # Metasploit (C2 + Exploits)
 
     # --- 6. OSINT & RECONNAISSANCE FRAMEWORKS ---
     # spiderfoot        # Automated OSINT collection (The "scanner" approach) (Missing)

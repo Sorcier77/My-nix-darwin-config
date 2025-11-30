@@ -144,9 +144,8 @@ in
         enabled-extensions = [
           "vitals@corecoding.com"
           "caffeine@patapon.info"
-          "pop-shell@system76.com"
+
           "just-perfection-desktop@just-perfection"
-          "blur-my-shell@aunetx"
         ];
       };
 
@@ -161,14 +160,7 @@ in
         position-in-panel = 0; # Left side of status area
       };
 
-      # --- Extension: Pop Shell (Tiling) ---
-      "org/gnome/shell/extensions/pop-shell" = {
-        tile-by-default = true;
-        show-title = false;
-        snap-to-grid = true;
-        active-hint = true;
-        active-hint-border-radius = 5;
-      };
+
 
       # --- Custom Keybindings ---
       "org/gnome/settings-daemon/plugins/media-keys" = {
@@ -178,7 +170,8 @@ in
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         binding = "<Super>Return";
-        command = "kitty";
+        # command = "foot";
+        command = "ptyxis --new-window";
         name = "Terminal";
       };
 
@@ -250,9 +243,8 @@ in
       # GNOME Extensions
       gnomeExtensions.vitals
       gnomeExtensions.caffeine
-      gnomeExtensions.pop-shell
+
       gnomeExtensions.just-perfection
-      gnomeExtensions.blur-my-shell
     ];
 
     # Note on Fingerprint (Synaptics 06cb:0123):
