@@ -152,6 +152,10 @@ pkgs.mkShell {
         langchain-community
         pandas
         numpy
+        scipy # Spatial algorithms & Gamma function (hyperspheres)
+        scikit-learn # Manifold learning (Isomap, PCA)
+        matplotlib # Visualization
+        seaborn # Statistical data visualization
 
         ipython # Interactive shell
         tqdm
