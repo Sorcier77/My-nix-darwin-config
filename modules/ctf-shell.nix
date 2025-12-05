@@ -34,7 +34,7 @@ pkgs.mkShell {
     unicorn # CPU emulator
 
     # --- Web Security ---
-    burpsuite # Intercepting Proxy
+    # burpsuite # Replaced by Burp Suite Professional in home/packages.nix
     zap # OWASP ZAP
     nuclei # Template-based vulnerability scanner
     sqlmap # SQL Injection
@@ -46,17 +46,31 @@ pkgs.mkShell {
     httpie
     curl
     wget
+    feroxbuster # Add feroxbuster here
+    seclists    # Wordlists for fuzzing
 
     # --- Forensics & Steganography ---
     volatility3 # Memory forensics
     sleuthkit # Disk forensics
     autopsy # GUI for Sleuthkit
     foremost # File carving
+    scalpel # Another file carver
+    testdisk # Partition recovery & PhotoRec
+    dc3dd # Enhanced dd for forensics
+    tcpflow # TCP stream reconstruction
+    pcapfix # Repair damaged PCAP files
     exiftool # Metadata
     zsteg # PNG/BMP stego
     steghide
     pngcheck
     ffmpeg
+
+    # --- Signal Analysis (SDR) ---
+    gqrx # SDR Receiver
+    rtl-sdr # RTL-SDR tools
+    hackrf # HackRF tools
+    inspectrum # Offline signal analysis
+    urh # Universal Radio Hacker
 
     # --- Cryptography & Cracking ---
     john # Password cracker
@@ -155,13 +169,23 @@ pkgs.mkShell {
     # Red prompt for "Attack Mode" to clearly distinguish from normal shell
     export PS1="\n[\033[1;31m][🚩 CTF-MODE:\w]\$ [\033[0m] "
 
+    # Setup Seclists Environment
+    export SECLISTS="${pkgs.seclists}/share/wordlists/seclists"
+    export FEROX_WORDLIST="$SECLISTS/Discovery/Web-Content/raft-medium-directories.txt"
+    
     # Aliases for Bash (fallback)
     alias ls='eza --icons=auto' 
     alias ll='eza -la --icons=auto'
     alias grep='grep --color=auto'
 
-    echo "💀 CTF Environment Loaded 💀"
+    # Feroxbuster shortcuts
+    alias ferox="feroxbuster"
+    alias ferox-common="feroxbuster -w $SECLISTS/Discovery/Web-Content/raft-medium-directories.txt"
+    alias ferox-full="feroxbuster -w $SECLISTS/Discovery/Web-Content/directory-list-2.3-medium.txt"
+
+    echo "CTF Environment Loaded"
     echo "Tools: Pwn, Reverse, Crypto, Web, OSINT"
+    echo "Wordlists: \$SECLISTS"
     echo "Specific Opti: X1 Carbon Gen 12"
 
     # Launch ZSH if available for full user experience

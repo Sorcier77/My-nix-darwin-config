@@ -36,9 +36,7 @@ in
     
     # Link all desktop files from ~/.nix-profile/share/applications
     if [ -d "$HOME/.nix-profile/share/applications" ]; then
-      find "$HOME/.nix-profile/share/applications" -name "*.desktop" -print0 | while IFS= read -r -d "" desktop_file; do
-        ln -sf "$desktop_file" "$HOME/.local/share/applications/$(basename "$desktop_file")"
-      done
+      find -L "$HOME/.nix-profile/share/applications" -name "*.desktop" -exec ln -sf {} "$HOME/.local/share/applications/" \;
     fi
 
     echo "Updating desktop database..."

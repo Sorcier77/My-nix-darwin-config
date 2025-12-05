@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, inputs, ... }:
 {
   home.packages = with pkgs; [
     # =================================================================
@@ -88,6 +88,8 @@
     tomb        # Crypto-folders (LUKS wrapper)
     srm         # Secure Remove (DoD standard compliance)
     mat2        # Metadata Anonymisation Toolkit
+    tor         # The Onion Router
+    proxychains-ng # Proxy chainer (redirects TCP traffic)
     tor-browser # Anonymity
     onionshare  # Secure File Sharing
 
@@ -121,6 +123,7 @@
     #  LINUX ONLY TOOLS (Kernel/Hardware Dependent)
     # =================================================================
     # Migrated CLI/TUI Tools
+    inputs.burpsuitepro.packages.${pkgs.system}.default
     pandoc      # Document Converter
     helix       # Modern Editor
     

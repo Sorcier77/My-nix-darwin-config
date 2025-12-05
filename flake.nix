@@ -13,6 +13,12 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    burpsuitepro = {
+      type = "github";
+      owner = "xiv3r";
+      repo = "Burpsuite-Professional";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

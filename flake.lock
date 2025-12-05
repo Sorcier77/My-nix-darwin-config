@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "burpsuitepro": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1762554184,
+        "narHash": "sha256-7gixVVVfOCLkhOHrdwZ5x+9P5bi07VPCwYrF3mzPFmU=",
+        "owner": "xiv3r",
+        "repo": "Burpsuite-Professional",
+        "rev": "955f9b00fdf27d91e40909bd8f2727c6e0e5cec8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xiv3r",
+        "repo": "Burpsuite-Professional",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -172,6 +192,7 @@
     },
     "root": {
       "inputs": {
+        "burpsuitepro": "burpsuitepro",
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",

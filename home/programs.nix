@@ -26,6 +26,22 @@ in
   # Create SSH sockets directory for connection multiplexing
   home.file.".ssh/sockets/.keep".text = "";
 
+  # Proxychains configuration for Tor
+  home.file.".proxychains/proxychains.conf".text = ''
+    strict_chain
+    proxy_dns
+    remote_dns_subnet 224
+    tcp_read_time_out 15000
+    tcp_connect_time_out 8000
+    [ProxyList]
+    socks5  127.0.0.1 9050
+  '';
+
+  # Feroxbuster Configuration
+  home.file.".config/feroxbuster/ferox-config.toml".text = ''
+    wordlist = "${pkgs.seclists}/share/wordlists/seclists/Discovery/Web-Content/raft-medium-directories.txt"
+  '';
+
     services.gpg-agent = {
     enable = true;
     enableZshIntegration = true;
@@ -357,6 +373,7 @@ in
         fedora-harden = "sudo bash ${config.home.homeDirectory}/Documents/My-nix-darwin-config/home/fedora-hardening.sh";
 
         # CTF / Dev
+        ctf = "nix develop ${config.home.homeDirectory}/Documents/My-nix-darwin-config#ctf";
 
         # Utilities
         ports = if isDarwin then "lsof -iTCP -sTCP:LISTEN -n -P" else "netstat -tulanp";
@@ -364,7 +381,12 @@ in
         weather = "curl wttr.in";
 
         # Security
+        bsp = "burpsuitepro > /dev/null 2>&1 &"; # Launch Burp Suite Professional silently
         av-scan = "bash ${config.home.homeDirectory}/Documents/My-nix-darwin-config/home/av-scan.sh";
+        torexec = "proxychains4"; # Execute command through Tor
+        tor-start = "tor > /dev/null 2>&1 & echo 'Tor started in background...'";
+        tor-stop = "killall tor";
+
         
         netwatch = if isDarwin 
           then "watch -n 1 'lsof -i | grep ESTABLISHED'" 
@@ -488,10 +510,10 @@ in
         zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
 
         if [[ -n "$CTF_MODE" ]]; then
-           echo "🚀 CTF Environment Detected"
+           echo "CTF Environment Detected"
            # --- CTF MODE: Simple Red Prompt ---
            function set_ctf_prompt() {
-             PROMPT='%F{red}[🚩 CTF-MODE:%~]$ %f'
+             PROMPT='%F{red}[CTF-MODE:%~]$ %f'
              RPROMPT=""
            }
            precmd_functions+=(set_ctf_prompt)
