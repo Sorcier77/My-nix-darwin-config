@@ -352,7 +352,6 @@ in
         # System
         c = "clear";
         cat = "bat";
-        fk = "fuck";
 
         # Modern replacements
         ls = "eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions";
