@@ -42,11 +42,13 @@ in
     wordlist = "${pkgs.seclists}/share/wordlists/seclists/Discovery/Web-Content/raft-medium-directories.txt"
   '';
 
-    services.gpg-agent = {
+  services.gpg-agent = {
     enable = true;
     enableZshIntegration = true;
     # enableSshSupport = true; # Désactivé pour permettre l'utilisation de clés SSH basées sur fichiers
-    pinentry.package = pkgs.pinentry-gnome3;
+    pinentry.package = if isDarwin
+  then pkgs.pinentry_mac
+  else pkgs.pinentry-gnome3;
     defaultCacheTtl = 600;
     maxCacheTtl = 7200;
   };
@@ -55,23 +57,16 @@ in
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
 
-    # Foot Terminal Emulator
-    foot = {
+    # Foot Terminal Emulator (Linux only)
+    foot = lib.mkIf isLinux {
       enable = true;
       settings = {
         main = {
           font = "JetBrainsMono NFM:size=10";
-
-          # You can add more foot specific settings here if desired.
-          # For example, colors, keybindings, etc.
-          # Refer to the foot documentation or the web search result for more options.
         };
       };
-
     };
 
-    # Alacritty Terminal Emulator
-    
     # --- Firefox Hardened (Cyber Standard) ---
     # Disabled by user request to use system Firefox (faster on Fedora)
     firefox = {
@@ -84,38 +79,37 @@ in
           Locked = true;
           Cryptomining = true;
           Fingerprinting = true;
-      #   };
-      #   DisablePocket = true;
+        };
+        # DisablePocket = true;
         DisableFirefoxAccounts = false; # Gardé pour Sync, mettre true pour full local
-      #   DisableAccounts = false;
-      #   DisableFirefoxScreenshots = true;
-      #   OverrideFirstRunPage = "";
-      #   OverridePostUpdatePage = "";
-      #   DontCheckDefaultBrowser = true;
-      #   DisplayBookmarksToolbar = "never"; # Minimalist
-      #   DisplayMenuBar = "default-off";
-      #   SearchBar = "unified";
-      #   # Security
-      #   HttpsOnlyMode = "force_enabled";
-      #   DNSOverHTTPS = {
-      #     Enabled = true;
-      #     ProviderURL = "https://dns.quad9.net/dns-query"; # Quad9 (Security focused)
-      #     Locked = true;
-      #   };
-      # };
-      
+        # DisableAccounts = false;
+        # DisableFirefoxScreenshots = true;
+        # OverrideFirstRunPage = "";
+        # OverridePostUpdatePage = "";
+        # DontCheckDefaultBrowser = true;
+        # DisplayBookmarksToolbar = "never"; # Minimalist
+        # DisplayMenuBar = "default-off";
+        # SearchBar = "unified";
+        # HttpsOnlyMode = "force_enabled";
+        # DNSOverHTTPS = {
+        #   Enabled = true;
+        #   ProviderURL = "https://dns.quad9.net/dns-query"; # Quad9 (Security focused)
+        #   Locked = true;
+        # };
+      }; # closes policies
+
       # # Hardening avancé (about:config)
       # profiles.default.settings = {
-      #   "privacy.resistFingerprinting" = true; # 🛡️ Tor Browser anti-fingerprinting (Timezone UTC, etc.)
+      #   "privacy.resistFingerprinting" = true;
       #   "privacy.fingerprintingProtection" = true;
       #   "privacy.trackingprotection.fingerprinting.enabled" = true;
       #   "privacy.trackingprotection.cryptomining.enabled" = true;
       #   "dom.security.https_only_mode" = true;
       #   "network.auth.subresource-http-auth-allow" = 1;
       #   "security.ssl.require_safe_negotiation" = true;
-      #   "security.tls.version.min" = 3; # Force TLS 1.3 (peut casser de vieux sites)
+      #   "security.tls.version.min" = 3;
       # };
-    };
+    }; # closes firefox
 
     # Modern cat replacement with syntax highlighting
     bat = {
@@ -207,6 +201,7 @@ in
           user = "git";
           identityFile = "~/.ssh/github";
         };
+
         "skynet" = {
           hostname = "skynet";
           user = "orion";
@@ -260,7 +255,7 @@ in
         };
         commit.gpgsign = true; # OBLIGATOIRE : Tout commit doit être signé
         tag.gpgsign = true;
-        
+
         init.defaultBranch = "main";
         pull.rebase = false;
         push = {
@@ -318,15 +313,12 @@ in
       enableZshIntegration = true;
     };
 
-    # Modern Terminal Emulator (GPU Accelerated)
-    # Disabled to use system kitty (better OpenGL support on Fedora)
-    # Configuration is managed manually below via xdg.configFile to ensure consistency
-      zsh = {
+    zsh = {
       enable = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       enableCompletion = true;
-      dotDir = "${config.xdg.configHome}/zsh";
+      dotDir = ".config/zsh";
 
       shellAliases = {
         # Home Manager / System Updates
@@ -391,22 +383,21 @@ in
         tor-start = "tor > /dev/null 2>&1 & echo 'Tor started in background...'";
         tor-stop = "killall tor";
 
-        
-        netwatch = if isDarwin 
-          then "watch -n 1 'lsof -i | grep ESTABLISHED'" 
+        netwatch = if isDarwin
+          then "watch -n 1 'lsof -i | grep ESTABLISHED'"
           else "watch -n 1 'ss -tupna | grep ESTAB'";
-          
+
         wipe = "srm -r"; # Suppression sécurisée
 
         # OpSec Clipboard & Utils
         clippurge = if isDarwin
           then "pbcopy < /dev/null"
           else "xsel -bc && xsel -c";
-          
+
         clip-secret = if isDarwin
           then "cat $1 | pbcopy"
           else "cat $1 | xsel -ib"; # Usage: clip-secret id_rsa
-          
+
         genpass = "tr -dc 'A-Za-z0-9!@#$%^&*' < /dev/urandom | head -c 32; echo"; # Génère mdp fort 32 chars
 
         copilot = "npx @github/copilot";
@@ -418,17 +409,13 @@ in
         plugins = [
           "git"
           "sudo"
-        ]
-        ++ lib.optionals isDarwin [
+        ] ++ lib.optionals isDarwin [
           "macos"
           "brew"
         ];
       };
 
       plugins = [
-        # Powerlevel10k removed from here to control loading manually
-
-        # Completion scroll
         {
           name = "zsh-completions";
           src = pkgs.fetchFromGitHub {
@@ -469,7 +456,7 @@ in
         bindkey '^[[B' history-search-forward
 
         # Platform-specific keybindings
-        ${
+        ${toString (
           if isDarwin then
             ''
               bindkey '^[[H' beginning-of-line
@@ -480,7 +467,7 @@ in
               bindkey '^[OH' beginning-of-line
               bindkey '^[OF' end-of-line
             ''
-        }
+        )}
         bindkey '^[[3~' delete-char
 
         # Better completion behavior
@@ -499,10 +486,11 @@ in
            set_ctf_prompt
         else
            # --- NORMAL MODE: Load Powerlevel10k ---
-           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+           source "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme"
            [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
         fi
       '';
     };
   };
 }
+

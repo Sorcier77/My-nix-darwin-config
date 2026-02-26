@@ -47,9 +47,10 @@
             shell = pkgs.zsh;
           };
 
+          nix.optimise.automatic = true;
+
           nix.settings = {
-            experimental-features = "nix-command flakes";
-            auto-optimise-store = true;
+            experimental-features = "nix-command flakes"; 
             # Binary caches for faster builds
             substituters = [
               "https://cache.nixos.org"

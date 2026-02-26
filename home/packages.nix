@@ -14,7 +14,7 @@
     ripgrep     # Grep ultra-rapide
     fzf         # Fuzzy Finder
     lazygit     # Git TUI
-    foot        # Fast, GPU-accelerated terminal emulator
+    #foot        # Fast, GPU-accelerated terminal emulator
     dust        # Usage Disque
     duf         # Disk Usage (Better df)
     fd          # Find modernisé
@@ -45,7 +45,7 @@
     hashcat     # Advanced Password Recovery (GPU)
 
     # Network Attacks & MitM
-    dsniff      # arpspoof, etc.
+    #dsniff      # arpspoof, etc.
     socat       # Netcat avancé (Relais, Tunnels)
 
     # =================================================================
@@ -56,7 +56,6 @@
     gef         # GDB Enhanced Features (Exploit Dev)
     gdb         # GNU Debugger
     binwalk     # Firmware Analysis
-    checksec    # Binary Mitigation Checker (NX, PIE, etc.)
     hexedit     # Hex Editor
     
     # Forensics & Vuln Scan
@@ -90,12 +89,10 @@
     # Chiffrement & Privacy
     gnupg       # GPG
     age         # Modern File Encryption
-    tomb        # Crypto-folders (LUKS wrapper)
     srm         # Secure Remove (DoD standard compliance)
     mat2        # Metadata Anonymisation Toolkit
     tor         # The Onion Router
     proxychains-ng # Proxy chainer (redirects TCP traffic)
-    tor-browser # Anonymity
     onionshare  # Secure File Sharing
 
     # =================================================================
@@ -144,10 +141,14 @@
     intel-gpu-tools
     libva-utils
     vulkan-tools
-    
+    dsniff
     # Utilities
     wl-clipboard # Wayland Clipboard Support
+    
+    tor-browser
 
+    tomb
+    checksec      # Linux Security Auditing Tool
     # Network/Mac (Specific implementations)
     macchanger
   ];
