@@ -76,17 +76,17 @@ in
     # Disabled by user request to use system Firefox (faster on Fedora)
     firefox = {
       enable = false;
-      # policies = {
-      #   DisableTelemetry = true;
-      #   DisableFirefoxStudies = true;
-      #   EnableTrackingProtection = {
-      #     Value = true;
-      #     Locked = true;
-      #     Cryptomining = true;
-      #     Fingerprinting = true;
+      policies = {
+        DisableTelemetry = true;
+        DisableFirefoxStudies = true;
+        EnableTrackingProtection = {
+          Value = true;
+          Locked = true;
+          Cryptomining = true;
+          Fingerprinting = true;
       #   };
       #   DisablePocket = true;
-      #   DisableFirefoxAccounts = false; # Gardé pour Sync, mettre true pour full local
+        DisableFirefoxAccounts = false; # Gardé pour Sync, mettre true pour full local
       #   DisableAccounts = false;
       #   DisableFirefoxScreenshots = true;
       #   OverrideFirstRunPage = "";
@@ -301,6 +301,12 @@ in
       enableGitIntegration = true;
     };
 
+    # Fuzzy Finder
+    fzf = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
     # direnv for per-project environments
     direnv = {
       enable = true;
@@ -383,6 +389,7 @@ in
         # Security
         bsp = "burpsuitepro > /dev/null 2>&1 &"; # Launch Burp Suite Professional silently
         av-scan = "bash ${config.home.homeDirectory}/Documents/My-nix-darwin-config/home/av-scan.sh";
+        yara-scan = "bash ${config.home.homeDirectory}/Documents/My-nix-darwin-config/home/yara-scan.sh";
         torexec = "proxychains4"; # Execute command through Tor
         tor-start = "tor > /dev/null 2>&1 & echo 'Tor started in background...'";
         tor-stop = "killall tor";
@@ -414,11 +421,6 @@ in
         plugins = [
           "git"
           "sudo"
-          "fzf"
-        ]
-        ++ lib.optionals isLinux [
-          "docker"
-          "kubectl"
         ]
         ++ lib.optionals isDarwin [
           "macos"
@@ -429,16 +431,6 @@ in
       plugins = [
         # Powerlevel10k removed from here to control loading manually
 
-        # Autocompletions
-        {
-          name = "zsh-autosuggestions";
-          src = pkgs.fetchFromGitHub {
-            owner = "zsh-users";
-            repo = "zsh-autosuggestions";
-            rev = "v0.7.1";
-            hash = "sha256-vpTyYq9ZgfgdDsWzjxVAE7FZH4MALMNZIFyEOBLm5Qo=";
-          };
-        }
         # Completion scroll
         {
           name = "zsh-completions";
@@ -447,16 +439,6 @@ in
             repo = "zsh-completions";
             rev = "0.35.0";
             hash = "sha256-GFHlZjIHUWwyeVoCpszgn4AmLPSSE8UVNfRmisnhkpg=";
-          };
-        }
-        # Highlight commands in terminal
-        {
-          name = "zsh-syntax-highlighting";
-          src = pkgs.fetchFromGitHub {
-            owner = "zsh-users";
-            repo = "zsh-syntax-highlighting";
-            rev = "0.8.0";
-            hash = "sha256-iJdWopZwHpSyYl5/FQXEW7gl/SrKaYDEtTH9cGP7iPo=";
           };
         }
       ];

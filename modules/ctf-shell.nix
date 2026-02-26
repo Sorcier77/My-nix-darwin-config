@@ -89,13 +89,10 @@ pkgs.mkShell {
     tcpdump
     netcat-gnu
     socat
-    chisel # TCP Tunneling / Pivoting
-    sshuttle # VPN over SSH (Poor man's VPN)
     bettercap # MITM framework
     aircrack-ng # WiFi auditing
 
     # --- Active Directory & Windows Attacks ---
-    metasploit  # The Framework
     kerbrute    # Kerberos pre-auth bruteforcing
     evil-winrm  # WinRM shell
     samba       # smbclient etc.
@@ -110,8 +107,6 @@ pkgs.mkShell {
     chisel      # TCP Tunneling (Classic)
     sshuttle    # VPN over SSH
     metasploit # Metasploit (C2 + Exploits)
-
-    # --- 6. OSINT & RECONNAISSANCE FRAMEWORKS ---
     # spiderfoot        # Automated OSINT collection (The "scanner" approach) (Missing)
     maltego # Link analysis & visualization (The "graph" approach)
     recon-ng # Web Reconnaissance framework (The "Metasploit" approach)

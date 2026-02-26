@@ -31,36 +31,36 @@ echo "  \\____/  |_|    |_|  \\___/  |_| |_|${RESET} "
 # typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 
 # ========================================
-# Path Exports
+# Path Exports & Environment (Darwin Specific)
 # ========================================
 
-# Python (pywal)
-export PATH="${PATH}:/Users/anselme/Library/Python/3.11/lib/python/site-packages"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # Python (pywal)
+  export PATH="${PATH}:/Users/anselme/Library/Python/3.11/lib/python/site-packages"
 
-# Hyper Terminal
-export PATH="/Applications/Hyper.app/Contents/MacOS:$PATH"
+  # Hyper Terminal
+  export PATH="/Applications/Hyper.app/Contents/MacOS:$PATH"
 
-# Tailscale
-export PATH="/Applications/Tailscale.app/Contents/MacOS:$PATH"
+  # Tailscale
+  export PATH="/Applications/Tailscale.app/Contents/MacOS:$PATH"
 
-# IDA Pro
-export PATH="/Applications/IDA Professional 9.0.app/Contents/MacOS:$PATH"
+  # IDA Pro
+  export PATH="/Applications/IDA Professional 9.0.app/Contents/MacOS:$PATH"
 
-# LM Studio CLI
-export PATH="$PATH:/Users/Sorcier77/.lmstudio/bin"
+  # LM Studio CLI
+  export PATH="$PATH:/Users/Sorcier77/.lmstudio/bin"
+
+  # Conda Integration
+  if [ -f /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh ]; then
+      . /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
+  fi
+fi
 
 # ========================================
 # FZF Configuration
 # ========================================
-# Définir le chemin FZF pour oh-my-zsh
-export FZF_BASE="$HOME/.nix-profile/bin/fzf"
-
-# ========================================
-# Conda Integration
-# ========================================
-if [ -f /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh ]; then
-    . /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
-fi
+# Path is managed by Home Manager
+# export FZF_BASE="$HOME/.nix-profile/bin/fzf"
 
 # ========================================
 # SSH Agent
@@ -87,7 +87,20 @@ alias lsa="eza --color=always --long --git --no-filesize --icons=always --no-tim
 # ========================================
 
 # Pay Respects (replacement for thefuck)
-if command -v fuck &> /dev/null; then
-    eval $(fuck --alias)
-    # eval $(fuck --alias fk) # redundant
+if command -v thefuck &> /dev/null; then
+    # Static function definition is much faster than eval $(thefuck --alias)
+    fuck() {
+        TF_PYTHONIOENCODING=$PYTHONIOENCODING;
+        export TF_SHELL=zsh;
+        export TF_ALIAS=fuck;
+        TF_SHELL_ALIASES=$(alias);
+        export TF_SHELL_ALIASES;
+        TF_HISTORY="$(fc -ln -10)";
+        export TF_HISTORY;
+        export PYTHONIOENCODING=utf-8;
+        TF_CMD=$(thefuck THEFUCK_ARGUMENT_PLACEHOLDER "$@") && eval "$TF_CMD";
+        unset TF_HISTORY;
+        export PYTHONIOENCODING=$TF_PYTHONIOENCODING;
+        test -n "$TF_CMD" && print -s "$TF_CMD"
+    }
 fi

@@ -16,6 +16,7 @@
     lazygit     # Git TUI
     foot        # Fast, GPU-accelerated terminal emulator
     dust        # Usage Disque
+    duf         # Disk Usage (Better df)
     fd          # Find modernisé
     procs       # PS modernisé
     tokei       # Code statistics
@@ -35,6 +36,8 @@
     sqlmap      # SQL Injection Automation
     nikto       # Web Server Scanner
     whatweb     # Web Fingerprinter
+    doggo       # DNS Client (DoH/DoT support)
+    gping       # Visual Ping
 
     # Brute-Force & Cracking
     thc-hydra   # Network Logon Cracker
@@ -56,10 +59,12 @@
     checksec    # Binary Mitigation Checker (NX, PIE, etc.)
     hexedit     # Hex Editor
     
-    # Forensics
+    # Forensics & Vuln Scan
     exiftool    # Metadata Editor
     sleuthkit   # Filesystem Analysis Tools
     ddrescue    # Data Recovery
+    trivy       # Vulnerability Scanner (Projects/Containers)
+    yara        # The pattern matching swiss knife for malware researchers
 
     # Analyse Réseau & Audit
     tcpdump     # CLI Packet Analyzer (Root required often)
@@ -110,6 +115,7 @@
     curl
     htop
     btop
+    bottom      # Lightweight system monitor
     tree
     zip
     unzip
@@ -117,7 +123,6 @@
     jq          # JSON Processor (Indispensable pour APIs)
     
     # Network/Mac (Specific implementations)
-    macchanger
   ] ++ lib.optionals pkgs.stdenv.isLinux [
     # =================================================================
     #  LINUX ONLY TOOLS (Kernel/Hardware Dependent)
