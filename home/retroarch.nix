@@ -43,22 +43,13 @@
       screenshot_directory = "~/Pictures/RetroArch";         # Captures d'écran
       assets_directory = "~/.config/retroarch/assets";
       
-      # --- RetroAchievements (Cheevos) ---
-      cheevos_enable = true;
-      cheevos_username = "VOTRE_PSEUDO"; # REMPLACER PAR VOTRE PSEUDO
-      cheevos_password = "VOTRE_PASSWORD"; # REMPLACER PAR VOTRE PASSWORD (OU API KEY)
-      cheevos_hardcore_mode_enable = true; # Active le mode hardcore (pas de savestates/cheats)
-      cheevos_rich_presence_enable = true; # Affiche votre activité sur le site
-      cheevos_unlock_sound_enable = true;  # Petit son lors d'un succès
-      cheevos_verbose_enable = true;       # Notifications à l'écran
-      
       # --- Entrées & Raccourcis ---
       input_menu_toggle_gamepad_combo = 6; # L3 + R3 (Presser les deux sticks) pour le menu
       input_overlay_enable = true;
       input_autodetect_enable = true;
       
       # --- Performance & Divers ---
-      rewind_enable = false;               # Désactivé par défaut car gourmand (et inutile en Cheevos Hardcore)
+      rewind_enable = false;               # Désactivé par défaut car gourmand
       autosave_interval = 300;             # Sauvegarde de la SRAM toutes les 5 minutes
       block_extract_archives = false;      # Permet de lire les .zip directement
     };
