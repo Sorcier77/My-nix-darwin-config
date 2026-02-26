@@ -2,22 +2,28 @@
 # Script wrapper pour YARA
 # Usage: yara-scan [dossier]
 
-RULES_DIR="$HOME/.yara-rules"
-mkdir -p "$RULES_DIR"
+RULES_DIR="$HOME/.yara-rules/signature-base"
 
 # Téléchargement/Mise à jour des règles (Florian Roth - Neo23x0 est une référence)
 update_rules() {
-    echo "📥 Mise à jour des règles YARA (Signature-Base subset)..."
-    # On récupère un index de règles fiables pour éviter de tout cloner (plusieurs GB sinon)
-    curl -s -L https://raw.githubusercontent.com/Neo23x0/signature-base/master/yara/general_index.yar -o "$RULES_DIR/index.yar"
-    # Note: Dans un setup complet, on clonerait le repo, mais pour un début, l'index suffit si on pointe les URLs
-    echo "✅ Index des règles mis à jour."
+    echo "📥 Mise à jour des règles YARA (Signature-Base)..."
+    if [ -d "$RULES_DIR/.git" ]; then
+        # Mettre à jour le dépôt existant
+        git -C "$RULES_DIR" pull --ff-only
+    else
+        # Cloner le dépôt complet (shallow pour limiter la taille)
+        mkdir -p "$(dirname "$RULES_DIR")"
+        git clone --depth=1 https://github.com/Neo23x0/signature-base.git "$RULES_DIR"
+    fi
+    echo "✅ Règles YARA mises à jour."
 }
 
-# Si l'index n'existe pas ou a plus de 7 jours, on met à jour
-if [ ! -f "$RULES_DIR/index.yar" ] || [ -n "$(find "$RULES_DIR/index.yar" -mtime +7)" ]; then
+# Si le dépôt n'existe pas ou a plus de 7 jours, on met à jour
+if [ ! -d "$RULES_DIR/.git" ] || [ -n "$(find "$RULES_DIR/.git/FETCH_HEAD" -mtime +7 2>/dev/null)" ]; then
     update_rules
 fi
+
+INDEX_FILE="$RULES_DIR/yara/general_index.yar"
 
 TARGET="${1:-$HOME/Downloads}"
 
@@ -27,10 +33,10 @@ if [ ! -d "$TARGET" ] && [ ! -f "$TARGET" ]; then
 fi
 
 echo "🔍 Scan YARA en cours sur : $TARGET"
-echo "   (Utilisation des règles locales : $RULES_DIR/index.yar)"
+echo "   (Utilisation des règles locales : $INDEX_FILE)"
 
 # Scan récursif
-# -r : récursif, -w : pas d'avertissements, -p : nombre de threads (facultatif mais aide la perf)
-yara -r -w "$RULES_DIR/index.yar" "$TARGET"
+# -r : récursif, -w : pas d'avertissements
+yara -r -w "$INDEX_FILE" "$TARGET"
 
 echo "✅ Scan terminé."

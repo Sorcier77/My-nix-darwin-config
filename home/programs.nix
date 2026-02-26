@@ -175,8 +175,6 @@ in
 
                               hashKnownHosts = true; # 🛡️ Hache les IP/Noms des serveurs (Anti-Forensics)
 
-                              
-
                               # Hardened Ciphers & MACs (Cyber Standard)
                               extraOptions = {
                                 VisualHostKey = "yes";
