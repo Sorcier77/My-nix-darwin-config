@@ -10,17 +10,17 @@
     environment.variables.EDITOR = "nvim";
 
     # Nix garbage collection
-    nix.gc = {
-      automatic = true;
-      interval = { Weekday = 7; }; # Every Sunday
-      options = "--delete-older-than 14d";
-    };
+    # nix.gc = {
+    #   automatic = true;
+    #   interval = { Weekday = 7; }; # Every Sunday
+    #   options = "--delete-older-than 14d";
+    # };
 
     # Optimize nix store
-    nix.optimise = {
-      automatic = true;
-      interval = { Weekday = 7; };
-    };
+    # nix.optimise = {
+    #   automatic = true;
+    #   interval = { Weekday = 7; };
+    # };
 
     environment.systemPackages = with pkgs;
     [
@@ -29,9 +29,12 @@
       wget
       curl
       tmux
-      htop
       btop
+      bottom
+      caido # burp like
+      exegol #cyber tools
       tree
+      magic-wormhole
       nodejs
       openvpn
       zip
@@ -41,14 +44,12 @@
       go
       cmake
       gcc
-      llvm
       # Media tools
       ffmpeg
       imagemagick
       # Network tools
       nmap
       # Databases
-      mysql84
       sqlite
       # Python
       python312
@@ -56,8 +57,15 @@
       typst
       graphviz
       obsidian
+      ffuf
       pandoc
       texliveSmall
+      fastfetch
+      rustscan
+      # Ai -assistant tools
+      claude-code
+      opencode
+      
       
     ];
     homebrew = {
@@ -105,22 +113,28 @@
         "zlib"
         "zstd"
         # Utilities
-        "awscli"
         "hexedit"
         "rsync"
+        #test C++ and benchmarking
+      #"googletest"
+      # "google-benchmark"
+      # "zstd"
+        # AI assistant tools
+      # "gemini-cli"
+        "mistral-vibe"
       ];
 
       casks = [
         "temurin@11"
-        "android-platform-tools"
         "chromedriver"
-        "miniconda"
         "xquartz"
-	"raycast"
+	      "raycast"
         "sublime-text"
         "tomatobar"
-	"wireshark"
-	"vnc-viewer"
+	      "wireshark-app"
+        # exif cleanup
+        "exifcleaner"
+        # ai browser
       ];
 	};
 }

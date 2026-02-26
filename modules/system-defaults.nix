@@ -33,7 +33,7 @@
     NSGlobalDomain = {
       AppleShowAllExtensions = true;
       AppleShowScrollBars = "Automatic";
-      # Natural scrolling off for mice
+      # Natural scrolling on (Apple default)
       "com.apple.swipescrolldirection" = false;
       # Expand save and print panels by default
       NSNavPanelExpandedStateForSaveMode = true;

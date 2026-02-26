@@ -30,6 +30,8 @@
         isHidden = false;
         shell = pkgs.zsh;
       };
+
+      nix.enable = false;
       
       nix.settings = {
         experimental-features = "nix-command flakes";
@@ -48,6 +50,12 @@
       system.stateVersion = 6;
 
       nixpkgs.hostPlatform = "aarch64-darwin";
+      nixpkgs.config.allowUnfree = true;
+      nixpkgs.overlays = [
+        (final: prev: {
+          caido = prev.callPackage ./pkgs/caido.nix { };
+        })
+      ];
       nix.extraOptions = ''
         extra-platforms = x86_64-darwin aarch64-darwin
       '';
@@ -71,6 +79,13 @@
           
         }
       ];
+    };
+
+    devShells."aarch64-darwin".ctf = import ./ctf.nix {
+      pkgs = import nixpkgs {
+        system = "aarch64-darwin";
+        config.allowUnfree = true;
+      };
     };
   };
 }

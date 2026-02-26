@@ -36,9 +36,6 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 # Python (pywal)
 export PATH="${PATH}:/Users/anselme/Library/Python/3.11/lib/python/site-packages"
 
-# Hyper Terminal
-export PATH="/Applications/Hyper.app/Contents/MacOS:$PATH"
-
 # Tailscale
 export PATH="/Applications/Tailscale.app/Contents/MacOS:$PATH"
 
@@ -47,6 +44,11 @@ export PATH="/Applications/IDA Professional 9.0.app/Contents/MacOS:$PATH"
 
 # LM Studio CLI
 export PATH="$PATH:/Users/Sorcier77/.lmstudio/bin"
+
+export PATH="$HOME/.local/bin:$PATH"
+
+# add homebrew
+export PATH="/opt/homebrew/bin:$PATH"
 
 # ========================================
 # FZF Configuration

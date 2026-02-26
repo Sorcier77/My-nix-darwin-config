@@ -44,7 +44,7 @@ in
     google-java-format
 
     # copilot 
-    github-copilot-cli
+    #github-copilot-cli 
     #wireshark
   ];
 
