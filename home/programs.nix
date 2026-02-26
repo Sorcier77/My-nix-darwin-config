@@ -246,6 +246,11 @@ in
         require-cross-certification = true;
         no-symkey-cache = true;
         use-agent = true;
+        # Hide recipient key IDs in encrypted messages.
+        # This improves privacy (obscures which key a message is intended for),
+        # but can slow decryption or cause inconvenience if you have many secret
+        # keys, since GPG must try each key in turn. Remove or set this option
+        # differently if you run into decryption delays or multi-key issues.
         throw-keyids = true;
       };
     };
