@@ -27,7 +27,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    # Packages have been moved to home/core.nix for cross-platform compatibility
+    # Packages have been moved to home/packages.nix for cross-platform compatibility
   ];
   homebrew = {
     enable = true;
