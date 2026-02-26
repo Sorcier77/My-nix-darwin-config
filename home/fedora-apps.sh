@@ -11,7 +11,16 @@ echo "📦 Installing Fedora Desktop Applications..."
 # Ensure RPM Fusion is enabled (often required for Discord, etc.)
 if ! dnf repolist | grep -q "rpmfusion-nonfree"; then
     echo "⚠️  RPM Fusion Non-Free repository not found. Enabling..."
-    sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    if ! sudo dnf install -y \
+        "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" \
+        "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"; then
+        echo "❌ Failed to install RPM Fusion repositories. Check your network connection and Fedora version." >&2
+        exit 1
+    fi
+    if ! dnf repolist | grep -q "rpmfusion-nonfree"; then
+        echo "❌ RPM Fusion Non-Free repository is not enabled after installation. Aborting." >&2
+        exit 1
+    fi
     sudo dnf groupupdate core
 fi
 

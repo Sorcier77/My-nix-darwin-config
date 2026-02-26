@@ -165,42 +165,37 @@ in
           serverAliveInterval = 60;
           serverAliveCountMax = 3;
 
-                              # Security defaults
+          # Security defaults
+          forwardAgent = false;
+          forwardX11 = false;
+          forwardX11Trusted = false;
+          hashKnownHosts = true; # 🛡️ Hache les IP/Noms des serveurs (Anti-Forensics)
 
-                              forwardAgent = false;
-
-                              forwardX11 = false;
-
-                              forwardX11Trusted = false;
-
-                              hashKnownHosts = true; # 🛡️ Hache les IP/Noms des serveurs (Anti-Forensics)
-
-                              # Hardened Ciphers & MACs (Cyber Standard)
-                              extraOptions = {
-                                VisualHostKey = "yes";
-                                Ciphers = builtins.concatStringsSep "," [
-                                  "chacha20-poly1305@openssh.com"
-                                  "aes256-gcm@openssh.com"
-                                  "aes128-gcm@openssh.com"
-                                  "aes256-ctr"
-                                  "aes192-ctr"
-                                  "aes128-ctr"
-                                ];
-                                KexAlgorithms = builtins.concatStringsSep "," [
-                                  "curve25519-sha256"
-                                  "curve25519-sha256@libssh.org"
-                                  "diffie-hellman-group16-sha512"
-                                  "diffie-hellman-group18-sha512"
-                                  "diffie-hellman-group-exchange-sha256"
-                                ];
-                                MACs = builtins.concatStringsSep "," [
-                                  "hmac-sha2-256-etm@openssh.com"
-                                  "hmac-sha2-512-etm@openssh.com"
-                                  "hmac-sha2-256"
-                                  "hmac-sha2-512"
-                                ];
-                              };
-
+          # Hardened Ciphers & MACs (Cyber Standard)
+          extraOptions = {
+            VisualHostKey = "yes";
+            Ciphers = builtins.concatStringsSep "," [
+              "chacha20-poly1305@openssh.com"
+              "aes256-gcm@openssh.com"
+              "aes128-gcm@openssh.com"
+              "aes256-ctr"
+              "aes192-ctr"
+              "aes128-ctr"
+            ];
+            KexAlgorithms = builtins.concatStringsSep "," [
+              "curve25519-sha256"
+              "curve25519-sha256@libssh.org"
+              "diffie-hellman-group16-sha512"
+              "diffie-hellman-group18-sha512"
+              "diffie-hellman-group-exchange-sha256"
+            ];
+            MACs = builtins.concatStringsSep "," [
+              "hmac-sha2-256-etm@openssh.com"
+              "hmac-sha2-512-etm@openssh.com"
+              "hmac-sha2-256"
+              "hmac-sha2-512"
+            ];
+          };
           # Connection defaults
           controlMaster = "auto";
           controlPath = "~/.ssh/sockets/%r@%h-%p";

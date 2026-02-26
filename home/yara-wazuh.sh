@@ -4,7 +4,8 @@
 
 LOG_FILE="/var/ossec/logs/active-responses.log"
 YARA_BIN="/run/current-system/sw/bin/yara" # Path NixOS/HomeManager
-RULES="/home/orion/.yara-rules/index.yar"
+RULES_DIR="${YARA_RULES_DIR:-$HOME/.yara-rules}"
+RULES="$RULES_DIR/index.yar"
 
 # Lire l'input JSON de Wazuh
 read -r INPUT
