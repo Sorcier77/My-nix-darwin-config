@@ -83,7 +83,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.anselme = import ./home;
+            home-manager.users.anselme = import ./hosts/darwin/home.nix;
             home-manager.extraSpecialArgs = { inherit inputs outputs; };
 
           }
@@ -95,7 +95,7 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         extraSpecialArgs = { inherit inputs outputs; };
         modules = [
-          ./home
+          ./hosts/fedora/home.nix
           {
             # Ensure unfree packages are allowed
             nixpkgs.config.allowUnfree = true;
