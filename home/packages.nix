@@ -37,6 +37,9 @@
     # Web & Recon
     nmap # Network Mapper (Standard)
     ffuf # Fast Web Fuzzer (Go) - Indispensable Web Pentest
+    caido # Modern Web Proxy (Caido CLI/App)
+    subfinder # Subdomain Discovery
+    httpx # Fast HTTP Toolkit
     gobuster # Directory/DNS Brute-forcing
     sqlmap # SQL Injection Automation
     nikto # Web Server Scanner
@@ -48,9 +51,14 @@
     thc-hydra # Network Logon Cracker
     john # Password Cracker (Jumbo)
     hashcat # Advanced Password Recovery (GPU)
+    netexec # Modern Successor to CrackMapExec
+    bloodhound-py # Python Ingestor for BloodHound
+    bloodhound-ce # Modern BloodHound Community Edition
 
     # Network Attacks & MitM
     socat # Netcat avancé (Relais, Tunnels)
+    bore # Modern TCP Tunneling
+    jwt-cli # JWT Manipulation Tool
 
     # =================================================================
     #  FORENSICS, REVERSE & DEFENSE (BLUE TEAM)
@@ -69,6 +77,7 @@
     ddrescue # Data Recovery
     trivy # Vulnerability Scanner (Projects/Containers)
     yara # The pattern matching swiss knife for malware researchers
+    audit # Auditd CLI tools (auditctl, aureport)
 
     # Analyse Réseau & Audit
     tcpdump # CLI Packet Analyzer (Root required often)
@@ -80,6 +89,7 @@
     # chkrootkit  # Rootkit Detector (Removed from nixpkgs: unmaintained)
     vulnix # NixOS/Nix Vulnerability Scanner
     clamav # Antivirus CLI
+    dnscrypt-proxy2 # Hardened DNS (DoH/DNSCrypt)
 
     # =================================================================
     #  SECURITY & HARDWARE (MINARM / GOV COMPLIANT)
@@ -103,8 +113,19 @@
     onionshare # Secure File Sharing
     magic-wormhole # Secure File Transfer (End-to-End Encryption)
     # =================================================================
-    #  DEV & UTILITIES
+    #  DEV, DATA & UTILITIES
     # =================================================================
+    # Data Engineering & Log Analysis
+    clickhouse # ClickHouse Client/Server for massive log analysis
+    dasel # Query & update JSON, YAML, TOML, XML, CSV
+    yq # jq wrapper for YAML, XML, TOML
+    uv # Ultra-fast Python package installer and resolver
+
+    # Platform & Containers
+    docker-compose # Multi-container orchestration
+    podman # Daemonless container engine
+    podman-compose # Docker-compose for podman
+
     # Langages & Build
     python312
     nodejs

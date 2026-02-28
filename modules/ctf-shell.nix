@@ -21,6 +21,8 @@ pkgs.mkShell {
     ltrace
     strace
     checksec
+    nasm # Assembler for shellcode crafting
+    qemu # Emulation for cross-arch exploit dev
 
     # --- Reverse Engineering ---
     radare2
@@ -35,8 +37,11 @@ pkgs.mkShell {
 
     # --- Web Security ---
     # burpsuite # Replaced by Burp Suite Professional in home/packages.nix
+    caido # Modern Web Proxy
     zap # OWASP ZAP
     nuclei # Template-based vulnerability scanner
+    subfinder # Subdomain discovery
+    httpx # Fast HTTP toolkit
     sqlmap # SQL Injection
     ffuf # Fast web fuzzer
     gobuster # Directory brute-forcing
@@ -65,63 +70,32 @@ pkgs.mkShell {
     pngcheck
     ffmpeg
 
-    # --- Signal Analysis (SDR) ---
+    # --- Signal Analysis (SIGINT/SDR) ---
+    gnuradio # The standard for signal processing
     gqrx # SDR Receiver
     rtl-sdr # RTL-SDR tools
     hackrf # HackRF tools
     inspectrum # Offline signal analysis
     urh # Universal Radio Hacker
+    kismet # Wireless network sniffer & monitor (Essential SIGINT)
 
-    # --- Cryptography & Cracking ---
-    john # Password cracker
-    hashcat # Advanced password recovery
-    thc-hydra # Network login cracker
-    cyberchef # The Swiss Army Knife
-    xortool # XOR analysis
-    fcrackzip
-
-    # --- Network Scanning & Pivoting ---
-    nmap
-    rustscan # Faster Nmap
-    naabu # Fast port scanner (ProjectDiscovery)
-    masscan # Mass IP scanner
-    wireshark
-    tcpdump
-    netcat-gnu
-    socat
-    bettercap # MITM framework
-    aircrack-ng # WiFi auditing
-
-    # --- Active Directory & Windows Attacks ---
-    kerbrute # Kerberos pre-auth bruteforcing
-    evil-winrm # WinRM shell
-    samba # smbclient etc.
-    cifs-utils # mounting smb
-    bloodhound # AD Relations Visualizer (Indispensable AD)
-    neo4j # Backend for Bloodhound
-    certipy # AD CS Abuse (Certificates)
+    # --- Stealth, Anonymity & P2P (Military Style) ---
+    i2pd # C++ implementation of I2P (Lightweight & Fast)
+    zeronet-conservancy # P2P decentralized network
+    tor # Tor CLI
+    proxychains-ng # Traffic redirection
 
     # --- C2 & Pivoting (Modern Red Team) ---
+    havoc # Modern C2 framework (Golang/C++)
     #sliver      # C2 Framework (Go) - The modern standard
     ligolo-ng # Pivoting 2.0 (Tun interfaces, better than chisel)
     chisel # TCP Tunneling (Classic)
     sshuttle # VPN over SSH
     metasploit # Metasploit (C2 + Exploits)
-    # spiderfoot        # Automated OSINT collection (The "scanner" approach) (Missing)
-    maltego # Link analysis & visualization (The "graph" approach)
-    recon-ng # Web Reconnaissance framework (The "Metasploit" approach)
-    amass # In-depth DNS enumeration & matching
-    maigret
-
-    # --- 7. TARGETED OSINT TOOLS ---
-    sherlock # Username search
-    # maigret           # Advanced username search (often better than Sherlock) (Dependency pyhanko failed build)
-    theharvester # Email/Domain gathering
-    python3Packages.shodan # Search engine for devices (CLI)
-    ghunt # Google Account OSINT (Extract data from emails/GaiaIDs)
-    holehe # Check if email is attached to accounts (without login)
-    socialscan # Check email/username availability
-    metadata-cleaner # Clean metadata before sharing
+    gitleaks # Secrets scanning
+    trufflehog # Secrets scanning
+    prowler # Cloud security assessment (AWS/Azure/GCP)
+    osv-scanner # OSV Vulnerability Scanner
 
     # --- 8. MISC & UTILS ---
     jq # JSON processor
@@ -141,16 +115,21 @@ pkgs.mkShell {
         impacket # Network protocols
         z3-solver # Theorem prover
 
-        # AI & Automation
+        # AI, Data Analysis & Platform Building
         google-generativeai # Le SDK officiel Gemini
         langchain
         langchain-community
         pandas
+        polars # Fast DataFrame library for large datasets
         numpy
         scipy # Spatial algorithms & Gamma function (hyperspheres)
         scikit-learn # Manifold learning (Isomap, PCA)
         matplotlib # Visualization
         seaborn # Statistical data visualization
+        jupyterlab # Notebook environment for analysts
+        fastapi # For building internal tools/platforms
+        uvicorn # ASGI server for FastAPI
+        flask # Microframework for quick platforms
 
         ipython # Interactive shell
         tqdm
