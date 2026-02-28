@@ -73,7 +73,6 @@ in
     # Alacritty Terminal Emulator
     
     # --- Firefox Hardened (Cyber Standard) ---
-    # Disabled by user request to use system Firefox (faster on Fedora)
     firefox = {
       enable = false;
       policies = {
@@ -84,25 +83,25 @@ in
           Locked = true;
           Cryptomining = true;
           Fingerprinting = true;
-      #   };
-      #   DisablePocket = true;
+        }; # <-- Restored
+        # DisablePocket = true;
         DisableFirefoxAccounts = false; # Gardé pour Sync, mettre true pour full local
-      #   DisableAccounts = false;
-      #   DisableFirefoxScreenshots = true;
-      #   OverrideFirstRunPage = "";
-      #   OverridePostUpdatePage = "";
-      #   DontCheckDefaultBrowser = true;
-      #   DisplayBookmarksToolbar = "never"; # Minimalist
-      #   DisplayMenuBar = "default-off";
-      #   SearchBar = "unified";
-      #   # Security
-      #   HttpsOnlyMode = "force_enabled";
-      #   DNSOverHTTPS = {
-      #     Enabled = true;
-      #     ProviderURL = "https://dns.quad9.net/dns-query"; # Quad9 (Security focused)
-      #     Locked = true;
-      #   };
-      # };
+        # DisableAccounts = false;
+        # DisableFirefoxScreenshots = true;
+        # OverrideFirstRunPage = "";
+        # OverridePostUpdatePage = "";
+        # DontCheckDefaultBrowser = true;
+        # DisplayBookmarksToolbar = "never"; # Minimalist
+        # DisplayMenuBar = "default-off";
+        # SearchBar = "unified";
+        # # Security
+        # HttpsOnlyMode = "force_enabled";
+        # DNSOverHTTPS = {
+        #   Enabled = true;
+        #   ProviderURL = "https://dns.quad9.net/dns-query"; # Quad9 (Security focused)
+        #   Locked = true;
+        # };
+      }; # <-- Restored
       
       # # Hardening avancé (about:config)
       # profiles.default.settings = {
@@ -115,9 +114,7 @@ in
       #   "security.ssl.require_safe_negotiation" = true;
       #   "security.tls.version.min" = 3; # Force TLS 1.3 (peut casser de vieux sites)
       # };
-    };
-
-    # Modern cat replacement with syntax highlighting
+    };   # Modern cat replacement with syntax highlighting
     bat = {
       enable = true;
       config = {
@@ -137,6 +134,7 @@ in
     # terminal file manager
     yazi = {
       enable = true;
+      shellWrapperName = "y";
       enableZshIntegration = true;
       settings = {
         manager = {
@@ -444,7 +442,7 @@ in
       ];
 
       # Zsh initialization
-      initExtra = lib.mkBefore ''
+      initContent = lib.mkBefore ''
         # Powerlevel10k instant prompt
         if [[ -z "$CTF_MODE" ]]; then
           if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-$USER.zsh" ]]; then

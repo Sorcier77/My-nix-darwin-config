@@ -45,7 +45,6 @@
     hashcat     # Advanced Password Recovery (GPU)
 
     # Network Attacks & MitM
-    dsniff      # arpspoof, etc.
     socat       # Netcat avancé (Relais, Tunnels)
 
     # =================================================================
@@ -97,7 +96,7 @@
     proxychains-ng # Proxy chainer (redirects TCP traffic)
     tor-browser # Anonymity
     onionshare  # Secure File Sharing
-
+    magic-wormhole # Secure File Transfer (End-to-End Encryption)
     # =================================================================
     #  DEV & UTILITIES
     # =================================================================
@@ -128,7 +127,7 @@
     #  LINUX ONLY TOOLS (Kernel/Hardware Dependent)
     # =================================================================
     # Migrated CLI/TUI Tools
-    inputs.burpsuitepro.packages.${pkgs.system}.default
+    inputs.burpsuitepro.packages.${pkgs.stdenv.hostPlatform.system}.default
     pandoc      # Document Converter
     helix       # Modern Editor
     
