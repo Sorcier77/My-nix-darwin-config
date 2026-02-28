@@ -16,8 +16,6 @@ let
           userEmail = "ag.anselmegarnier@gmail.com";
         };
       };
-  isDarwin = pkgs.stdenv.isDarwin;
-  isLinux = pkgs.stdenv.isLinux;
 in
 {
   # Restore the Powerlevel10k configuration file
@@ -42,7 +40,7 @@ in
     wordlist = "${pkgs.seclists}/share/wordlists/seclists/Discovery/Web-Content/raft-medium-directories.txt"
   '';
 
-    services.gpg-agent = {
+  services.gpg-agent = {
     enable = true;
     enableZshIntegration = true;
     # enableSshSupport = true; # Désactivé pour permettre l'utilisation de clés SSH basées sur fichiers
@@ -71,7 +69,7 @@ in
     };
 
     # Alacritty Terminal Emulator
-    
+
     # --- Firefox Hardened (Cyber Standard) ---
     firefox = {
       enable = false;
@@ -102,7 +100,7 @@ in
         #   Locked = true;
         # };
       }; # <-- Restored
-      
+
       # # Hardening avancé (about:config)
       # profiles.default.settings = {
       #   "privacy.resistFingerprinting" = true; # 🛡️ Tor Browser anti-fingerprinting (Timezone UTC, etc.)
@@ -114,7 +112,7 @@ in
       #   "security.ssl.require_safe_negotiation" = true;
       #   "security.tls.version.min" = 3; # Force TLS 1.3 (peut casser de vieux sites)
       # };
-    };   # Modern cat replacement with syntax highlighting
+    }; # Modern cat replacement with syntax highlighting
     bat = {
       enable = true;
       config = {
@@ -163,43 +161,41 @@ in
           serverAliveInterval = 60;
           serverAliveCountMax = 3;
 
-                              # Security defaults
+          # Security defaults
 
-                              forwardAgent = false;
+          forwardAgent = false;
 
-                              forwardX11 = false;
+          forwardX11 = false;
 
-                              forwardX11Trusted = false;
+          forwardX11Trusted = false;
 
-                              hashKnownHosts = true; # 🛡️ Hache les IP/Noms des serveurs (Anti-Forensics)
+          hashKnownHosts = true; # 🛡️ Hache les IP/Noms des serveurs (Anti-Forensics)
 
-                              
-
-                              # Hardened Ciphers & MACs (Cyber Standard)
-                              extraOptions = {
-                                VisualHostKey = "yes";
-                                Ciphers = builtins.concatStringsSep "," [
-                                  "chacha20-poly1305@openssh.com"
-                                  "aes256-gcm@openssh.com"
-                                  "aes128-gcm@openssh.com"
-                                  "aes256-ctr"
-                                  "aes192-ctr"
-                                  "aes128-ctr"
-                                ];
-                                KexAlgorithms = builtins.concatStringsSep "," [
-                                  "curve25519-sha256"
-                                  "curve25519-sha256@libssh.org"
-                                  "diffie-hellman-group16-sha512"
-                                  "diffie-hellman-group18-sha512"
-                                  "diffie-hellman-group-exchange-sha256"
-                                ];
-                                MACs = builtins.concatStringsSep "," [
-                                  "hmac-sha2-256-etm@openssh.com"
-                                  "hmac-sha2-512-etm@openssh.com"
-                                  "hmac-sha2-256"
-                                  "hmac-sha2-512"
-                                ];
-                              };
+          # Hardened Ciphers & MACs (Cyber Standard)
+          extraOptions = {
+            VisualHostKey = "yes";
+            Ciphers = builtins.concatStringsSep "," [
+              "chacha20-poly1305@openssh.com"
+              "aes256-gcm@openssh.com"
+              "aes128-gcm@openssh.com"
+              "aes256-ctr"
+              "aes192-ctr"
+              "aes128-ctr"
+            ];
+            KexAlgorithms = builtins.concatStringsSep "," [
+              "curve25519-sha256"
+              "curve25519-sha256@libssh.org"
+              "diffie-hellman-group16-sha512"
+              "diffie-hellman-group18-sha512"
+              "diffie-hellman-group-exchange-sha256"
+            ];
+            MACs = builtins.concatStringsSep "," [
+              "hmac-sha2-256-etm@openssh.com"
+              "hmac-sha2-512-etm@openssh.com"
+              "hmac-sha2-256"
+              "hmac-sha2-512"
+            ];
+          };
 
           # Connection defaults
           controlMaster = "auto";
@@ -260,7 +256,7 @@ in
         };
         commit.gpgsign = true; # OBLIGATOIRE : Tout commit doit être signé
         tag.gpgsign = true;
-        
+
         init.defaultBranch = "main";
         pull.rebase = false;
         push = {
@@ -321,7 +317,7 @@ in
     # Modern Terminal Emulator (GPU Accelerated)
     # Disabled to use system kitty (better OpenGL support on Fedora)
     # Configuration is managed manually below via xdg.configFile to ensure consistency
-      zsh = {
+    zsh = {
       enable = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
@@ -329,19 +325,6 @@ in
       dotDir = "${config.xdg.configHome}/zsh";
 
       shellAliases = {
-        # Home Manager / System Updates
-        hms =
-          if isDarwin then
-            "darwin-rebuild switch --flake ~/.config/nix-darwin"
-          else
-            "home-manager switch --flake .";
-        hmsg =
-          if isDarwin then
-            "darwin-rebuild switch --flake ~/.config/nix-darwin && darwin-rebuild --list-generations"
-          else
-            "home-manager switch --flake . && home-manager generations";
-        hmdiff = if isDarwin then "darwin-rebuild --list-generations" else "home-manager generations";
-
         # Git & Development
         lg = "lazygit";
         v = "nvim";
@@ -380,7 +363,6 @@ in
         ctf = "nix develop ${config.home.homeDirectory}/Documents/My-nix-darwin-config#ctf";
 
         # Utilities
-        ports = if isDarwin then "lsof -iTCP -sTCP:LISTEN -n -P" else "netstat -tulanp";
         myip = "curl -s ifconfig.me";
         weather = "curl wttr.in";
 
@@ -392,22 +374,8 @@ in
         tor-start = "tor > /dev/null 2>&1 & echo 'Tor started in background...'";
         tor-stop = "killall tor";
 
-        
-        netwatch = if isDarwin 
-          then "watch -n 1 'lsof -i | grep ESTABLISHED'" 
-          else "watch -n 1 'ss -tupna | grep ESTAB'";
-          
         wipe = "srm -r"; # Suppression sécurisée
 
-        # OpSec Clipboard & Utils
-        clippurge = if isDarwin
-          then "pbcopy < /dev/null"
-          else "xsel -bc && xsel -c";
-          
-        clip-secret = if isDarwin
-          then "cat $1 | pbcopy"
-          else "cat $1 | xsel -ib"; # Usage: clip-secret id_rsa
-          
         genpass = "tr -dc 'A-Za-z0-9!@#$%^&*' < /dev/urandom | head -c 32; echo"; # Génère mdp fort 32 chars
 
         copilot = "npx @github/copilot";
@@ -419,10 +387,6 @@ in
         plugins = [
           "git"
           "sudo"
-        ]
-        ++ lib.optionals isDarwin [
-          "macos"
-          "brew"
         ];
       };
 
@@ -469,19 +433,6 @@ in
         bindkey '^[[A' history-search-backward
         bindkey '^[[B' history-search-forward
 
-        # Platform-specific keybindings
-        ${
-          if isDarwin then
-            ''
-              bindkey '^[[H' beginning-of-line
-              bindkey '^[[F' end-of-line
-            ''
-          else
-            ''
-              bindkey '^[OH' beginning-of-line
-              bindkey '^[OF' end-of-line
-            ''
-        }
         bindkey '^[[3~' delete-char
 
         # Better completion behavior

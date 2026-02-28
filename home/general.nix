@@ -28,7 +28,7 @@
   home.activation.linkDesktopApplications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     echo "Linking Home Manager desktop files to ~/.local/share/applications..."
     mkdir -p $HOME/.local/share/applications
-    
+
     # Link all desktop files from ~/.nix-profile/share/applications
     if [ -d "$HOME/.nix-profile/share/applications" ]; then
       find -L "$HOME/.nix-profile/share/applications" -name "*.desktop" -exec ln -sf {} "$HOME/.local/share/applications/" \;

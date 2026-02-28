@@ -3,6 +3,9 @@
 {
   imports = [
     ../../home
+    ../../home/gnome.nix
+    ./programs.nix
+    ./packages.nix
   ];
 
   # Essential for non-NixOS Linux (Fedora, Ubuntu, etc.)

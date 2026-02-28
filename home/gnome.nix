@@ -1,8 +1,6 @@
 { pkgs, lib, ... }:
 
 let
-  isLinux = pkgs.stdenv.isLinux;
-
   # Script to help debug/fix fingerprint issues
   fix-fingerprint = pkgs.writeShellScriptBin "fix-fingerprint" ''
     echo "=== Fingerprint Reader Troubleshooting for ThinkPad X1 Carbon Gen 12 ==="
@@ -62,7 +60,7 @@ let
   '';
 in
 {
-  config = lib.mkIf isLinux {
+  config = {
     # ===========================================================================
     #  GNOME Desktop Configuration (Clean & Polished)
     # ===========================================================================
@@ -159,8 +157,6 @@ in
         show-system = true;
         position-in-panel = 0; # Left side of status area
       };
-
-
 
       # --- Custom Keybindings ---
       "org/gnome/settings-daemon/plugins/media-keys" = {

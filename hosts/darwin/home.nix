@@ -3,6 +3,7 @@
 {
   imports = [
     ../../home
+    ./programs.nix
   ];
 
   home = {

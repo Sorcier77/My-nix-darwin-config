@@ -47,7 +47,7 @@ pkgs.mkShell {
     curl
     wget
     feroxbuster # Add feroxbuster here
-    seclists    # Wordlists for fuzzing
+    seclists # Wordlists for fuzzing
 
     # --- Forensics & Steganography ---
     volatility3 # Memory forensics
@@ -93,19 +93,19 @@ pkgs.mkShell {
     aircrack-ng # WiFi auditing
 
     # --- Active Directory & Windows Attacks ---
-    kerbrute    # Kerberos pre-auth bruteforcing
-    evil-winrm  # WinRM shell
-    samba       # smbclient etc.
-    cifs-utils  # mounting smb
-    bloodhound  # AD Relations Visualizer (Indispensable AD)
-    neo4j       # Backend for Bloodhound
-    certipy     # AD CS Abuse (Certificates)
+    kerbrute # Kerberos pre-auth bruteforcing
+    evil-winrm # WinRM shell
+    samba # smbclient etc.
+    cifs-utils # mounting smb
+    bloodhound # AD Relations Visualizer (Indispensable AD)
+    neo4j # Backend for Bloodhound
+    certipy # AD CS Abuse (Certificates)
 
     # --- C2 & Pivoting (Modern Red Team) ---
     #sliver      # C2 Framework (Go) - The modern standard
-    ligolo-ng   # Pivoting 2.0 (Tun interfaces, better than chisel)
-    chisel      # TCP Tunneling (Classic)
-    sshuttle    # VPN over SSH
+    ligolo-ng # Pivoting 2.0 (Tun interfaces, better than chisel)
+    chisel # TCP Tunneling (Classic)
+    sshuttle # VPN over SSH
     metasploit # Metasploit (C2 + Exploits)
     # spiderfoot        # Automated OSINT collection (The "scanner" approach) (Missing)
     maltego # Link analysis & visualization (The "graph" approach)
@@ -171,7 +171,7 @@ pkgs.mkShell {
     # Setup Seclists Environment
     export SECLISTS="${pkgs.seclists}/share/wordlists/seclists"
     export FEROX_WORDLIST="$SECLISTS/Discovery/Web-Content/raft-medium-directories.txt"
-    
+
     # Aliases for Bash (fallback)
     alias ls='eza --icons=auto' 
     alias ll='eza -la --icons=auto'
