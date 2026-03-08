@@ -8,6 +8,5 @@
     ./nixvim.nix
     ./sublime.nix
     ./tmux.nix
-    ./retroarch.nix
   ];
 }

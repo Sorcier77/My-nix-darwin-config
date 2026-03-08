@@ -3,20 +3,20 @@
 {
   programs.retroarch = {
     enable = true;
-    # On installe les cores essentiels et performants
-    cores = with pkgs.libretro; [
-      snes9x # Super Nintendo (Excellent équilibre perf/compat)
-      mgba # GameBoy Advance (Le standard)
-      genesis-plus-gx # Megadrive / Master System
-      beetle-psx-hw # PlayStation 1 (Version hardware pour l'upscaling)
-      picodrive # Megadrive / 32X (Très rapide)
-      fbneo # Arcade (Neo Geo, CPS1/2/3)
-      mame # Arcade (Général)
-      parallel-n64 # Nintendo 64 (Optimisé avec ParaLLEl-RDP)
-      stella-2014 # Atari 2600
-      gambatte # GameBoy / GB Color
-      desmume # Nintendo DS
-    ];
+    # On active les cores via des sous-modules
+    cores = {
+      snes9x.enable = true;
+      mgba.enable = true;
+      genesis-plus-gx.enable = true;
+      beetle-psx-hw.enable = true;
+      picodrive.enable = true;
+      fbneo.enable = true;
+      mame.enable = true;
+      parallel-n64.enable = true;
+      stella2014.enable = true;
+      gambatte.enable = true;
+      desmume.enable = true;
+    };
 
     # Configuration fine de RetroArch (retroarch.cfg)
     settings = {

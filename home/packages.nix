@@ -89,10 +89,10 @@
     # chkrootkit  # Rootkit Detector (Removed from nixpkgs: unmaintained)
     vulnix # NixOS/Nix Vulnerability Scanner
     clamav # Antivirus CLI
-    dnscrypt-proxy2 # Hardened DNS (DoH/DNSCrypt)
+    dnscrypt-proxy # Hardened DNS (DoH/DNSCrypt)
 
     # =================================================================
-    #  SECURITY & HARDWARE (MINARM / GOV COMPLIANT)
+    #  SECURITY & HARDWARE (PROFESSIONAL COMPLIANCE)
     # =================================================================
     # Smartcards & YubiKey
     yubikey-manager

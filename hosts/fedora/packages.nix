@@ -23,7 +23,6 @@
     lm_sensors
     pciutils # lspci
     usbutils # lsusb
-    usbguard # USB Device Whitelisting (Security)
     intel-gpu-tools
     libva-utils
     vulkan-tools

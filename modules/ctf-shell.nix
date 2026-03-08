@@ -2,6 +2,25 @@
   pkgs ? import <nixpkgs> { },
 }:
 
+let
+  # Définition locale de PyMeta (non présent dans nixpkgs)
+  pymeta = pkgs.python3Packages.buildPythonApplication rec {
+    pname = "pymeta";
+    version = "1.1.1";
+    pyproject = false; # Utilise setup.py
+    src = pkgs.fetchPypi {
+      pname = "pymetasec";
+      inherit version;
+      sha256 = "sha256-lpUkGJnYbZ7noKWpNZAXi1FwUJuBLRaxwvQJdL0DWzk=";
+    };
+    propagatedBuildInputs = with pkgs.python3Packages; [
+      requests
+      beautifulsoup4
+      pkgs.exiftool
+    ];
+    doCheck = false;
+  };
+in
 pkgs.mkShell {
   name = "ctf-env";
 
@@ -25,6 +44,8 @@ pkgs.mkShell {
     qemu # Emulation for cross-arch exploit dev
 
     # --- Reverse Engineering ---
+    jadx # Decompiler
+    android-tools # adb, fastboot
     radare2
     rizin
     ghidra # NSA tool suite
@@ -54,6 +75,27 @@ pkgs.mkShell {
     feroxbuster # Add feroxbuster here
     seclists # Wordlists for fuzzing
 
+    # --- Intelligence & Advanced Recon ---
+    sn0int # Semi-automatic OSINT framework
+    katana # Next-generation crawler (Go)
+    gau # Get All URLs (Go)
+    waybackurls # Wayback machine discovery (Go)
+    metabigor # Search engine intelligence
+    cloudfox # Cloud infrastructure recon
+    cloudbrute # Cloud resource brute-forcing
+    # theharvester # BROKEN ON UNSTABLE (psycopg build failure)
+    amass # In-depth DNS enumeration & matching
+    sherlock # Username search
+    # maigret # BROKEN ON UNSTABLE (timing tests failure)
+    ghunt # Google account intelligence
+    holehe # Email registration check
+    socialscan # Social media check
+    python3Packages.shodan # Shodan CLI
+    recon-ng # OSINT framework (Metasploit style)
+    maltego # Link analysis & visualization
+    metadata-cleaner # Clean metadata
+    exiftool # File metadata analysis
+
     # --- Forensics & Steganography ---
     volatility3 # Memory forensics
     sleuthkit # Disk forensics
@@ -61,10 +103,11 @@ pkgs.mkShell {
     foremost # File carving
     scalpel # Another file carver
     testdisk # Partition recovery & PhotoRec
-    dc3dd # Enhanced dd for forensics
+    # dc3dd # BROKEN ON UNSTABLE (compile error)
     tcpflow # TCP stream reconstruction
     pcapfix # Repair damaged PCAP files
     exiftool # Metadata
+    pymeta # Document metadata discovery & extraction (PyMeta rewrite)
     zsteg # PNG/BMP stego
     steghide
     pngcheck
@@ -72,18 +115,45 @@ pkgs.mkShell {
 
     # --- Signal Analysis (SIGINT/SDR) ---
     gnuradio # The standard for signal processing
-    gqrx # SDR Receiver
+    # gqrx # BROKEN ON UNSTABLE (boost/gr-osmosdr error)
     rtl-sdr # RTL-SDR tools
     hackrf # HackRF tools
     inspectrum # Offline signal analysis
     urh # Universal Radio Hacker
     kismet # Wireless network sniffer & monitor (Essential SIGINT)
 
-    # --- Stealth, Anonymity & P2P (Military Style) ---
+    # --- Stealth, Anonymity & P2P (High-Security) ---
     i2pd # C++ implementation of I2P (Lightweight & Fast)
     zeronet-conservancy # P2P decentralized network
     tor # Tor CLI
     proxychains-ng # Traffic redirection
+
+    # --- Network Scanning & Pivoting ---
+    nmap
+    rustscan # Faster Nmap
+    naabu # Fast port scanner (ProjectDiscovery)
+    masscan # Mass IP scanner
+    wireshark-cli # tshark & CLI Wireshark
+    tcpdump
+    netcat-gnu
+    socat
+    bettercap # MITM framework
+    aircrack-ng # WiFi auditing
+    responder # LLMNR/NBT-NS/mDNS Poisoner (Essential AD)
+    bore # Modern tunneling
+    jwt-cli # JWT Manipulation Tool
+
+    # --- Active Directory & Windows Attacks ---
+    netexec # Modern successor to CrackMapExec
+    bloodhound-py # Python Ingestor
+    bloodhound-ce # Modern BloodHound (Community Edition)
+    kerbrute # Kerberos pre-auth bruteforcing
+    evil-winrm # WinRM shell
+    samba # smbclient etc.
+    cifs-utils # mounting smb
+    bloodhound # AD Relations Visualizer (Classic)
+    neo4j # Backend for Bloodhound
+    certipy # AD CS Abuse (Certificates)
 
     # --- C2 & Pivoting (Modern Red Team) ---
     havoc # Modern C2 framework (Golang/C++)
@@ -94,7 +164,7 @@ pkgs.mkShell {
     metasploit # Metasploit (C2 + Exploits)
     gitleaks # Secrets scanning
     trufflehog # Secrets scanning
-    prowler # Cloud security assessment (AWS/Azure/GCP)
+    # prowler # BROKEN ON UNSTABLE (azure-mgmt-network build failure)
     osv-scanner # OSV Vulnerability Scanner
 
     # --- 8. MISC & UTILS ---
@@ -117,8 +187,8 @@ pkgs.mkShell {
 
         # AI, Data Analysis & Platform Building
         google-generativeai # Le SDK officiel Gemini
-        langchain
-        langchain-community
+        # langchain # BROKEN ON UNSTABLE (psycopg build failure)
+        # langchain-community
         pandas
         polars # Fast DataFrame library for large datasets
         numpy
