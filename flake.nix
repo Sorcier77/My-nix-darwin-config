@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager = {
@@ -26,6 +27,7 @@
       self,
       nix-darwin,
       nixpkgs,
+      nixpkgs-stable,
       home-manager,
       nixvim,
       ...
@@ -112,7 +114,11 @@
               "gradle-7.6.6"
             ];
           };
+          stable = import nixpkgs-stable {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
         in
-        import ./modules/ctf-shell.nix { inherit pkgs; };
+        import ./modules/ctf-shell.nix { inherit pkgs stable; };
     };
 }

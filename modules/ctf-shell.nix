@@ -1,5 +1,6 @@
 {
   pkgs ? import <nixpkgs> { },
+  stable ? pkgs,
 }:
 
 let
@@ -44,7 +45,7 @@ pkgs.mkShell {
     qemu # Emulation for cross-arch exploit dev
 
     # --- Reverse Engineering ---
-    jadx # Decompiler
+    stable.jadx # Decompiler
     android-tools # adb, fastboot
     radare2
     rizin
@@ -83,7 +84,7 @@ pkgs.mkShell {
     metabigor # Search engine intelligence
     cloudfox # Cloud infrastructure recon
     cloudbrute # Cloud resource brute-forcing
-    # theharvester # BROKEN ON UNSTABLE (psycopg build failure)
+    stable.theharvester # BROKEN ON UNSTABLE (psycopg build failure)
     amass # In-depth DNS enumeration & matching
     sherlock # Username search
     # maigret # BROKEN ON UNSTABLE (timing tests failure)
