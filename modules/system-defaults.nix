@@ -40,31 +40,44 @@
       NSNavPanelExpandedStateForSaveMode2 = true;
       PMPrintingExpandedStateForPrint = true;
       PMPrintingExpandedStateForPrint2 = true;
-      # Key repeat speed
-      KeyRepeat = 2;
-      InitialKeyRepeat = 15;
+      # InitialKeyRepeat = 10;
+      # KeyRepeat = 1;
       # Disable press-and-hold for accent characters
       ApplePressAndHoldEnabled = false;
+      
+      # OpSec: Disable Siri and Telemetry
+      AppleEnableSwipeNavigateWithScrolls = false;
     };
 
-    # Screenshots
-    screencapture = {
-      location = "~/Pictures/Screenshots";
-      type = "png";
-      disable-shadow = false;
+    # Custom Settings for Privacy & Anti-Forensics
+    CustomSystemPreferences = {
+      "com.apple.AdLib" = { allowApplePersonalizedAdvertising = false; };
+      "com.apple.Siri" = {
+        "UA_Enabled" = false;
+        "Assistant Enabled" = false;
+      };
+      "com.apple.desktopservices" = {
+        # Disable .DS_Store creation on network and USB volumes
+        DSDontWriteNetworkStores = true;
+        DSDontWriteUSBStores = true;
+      };
     };
+  };
 
-    # Trackpad
-    trackpad = {
-      Clicking = true; # Tap to click
-      TrackpadThreeFingerDrag = true;
+  networking.applicationFirewall = {
+    enable = true;
+    allowSigned = true;
+    allowSignedApp = true;
+    enableStealthMode = true;
+  };
+
+  system.defaults.CustomUserPreferences = {
+    "com.apple.finder" = {
+      # Disable recently opened documents in Finder
+      "FXRecentFoldersMaxCount" = 0;
     };
-
-    # Menu bar
-    menuExtraClock = {
-      ShowAMPM = false;
-      ShowDate = 1;
-      ShowDayOfWeek = true;
+    "com.apple.spotlight" = {
+      # Limit Spotlight indexing to exclude sensitive areas (manual config usually better)
     };
   };
 

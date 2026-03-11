@@ -58,6 +58,7 @@ pkgs.mkShell {
     # === NETWORK & RECON ===
     nmap
     rustscan
+    sliver
     tcpdump
     tshark
     netcat
@@ -120,6 +121,7 @@ pkgs.mkShell {
     ripgrep
     fd
     bat
+    rage
     fzf
     tmux
     neovim

@@ -6,6 +6,8 @@
     ./nixvim.nix
     ./sublime.nix
     ./tmux.nix
+    ./ghostty.nix
+    #./aerospace.nix
   ];
 
   home = {

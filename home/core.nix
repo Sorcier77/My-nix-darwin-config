@@ -7,14 +7,15 @@ let
       git = {
         userName = "YourGitHubUsername";
         userEmail = "your.email@example.com";
+        signingKey = "";
       };
     };
 in
 {
   home.packages = with pkgs; [
     # Debugging tools
-    gef
-    gdb
+    #gef not working on macos arm
+    #gdb
     binutils
     eza
     # CLI utilities
@@ -25,6 +26,10 @@ in
     bat
     pay-respects
     
+    # Fonts
+    jetbrains-mono
+    nerd-fonts.jetbrains-mono
+    
     # Modern CLI tools
     dust        # Better du
     fd          # Better find
@@ -32,6 +37,7 @@ in
     tokei       # Count lines of code
     delta       # Better git diff
     tealdeer    # tldr pages
+    rage        # Modern replacement for age/GPG
     navi        # Interactive cheatsheets
     direnv      # Per-project env
     
@@ -49,6 +55,9 @@ in
   ];
 
   programs = {
+    # GPG configuration
+    gpg.enable = true;
+
     # Modern cat replacement with syntax highlighting
     bat = {
       enable = true;
@@ -75,6 +84,7 @@ in
     yazi = {
       enable = true;
       enableZshIntegration = true;
+      shellWrapperName = "y";
       settings = {
         manager = {
           show_hidden = true;
@@ -89,6 +99,36 @@ in
       enableZshIntegration = true;
     };
 
+    # System monitor (btop)
+    btop = {
+      enable = true;
+      settings = {
+        color_theme = "catppuccin_mocha";
+        theme_background = false;
+        truecolor = true;
+        force_tty = false;
+        presets = "cpu:1:default,proc:0:default cpu:0:default,mem:0:default,net:0:default cpu:0:block,net:0:tty";
+        vim_keys = true;
+        rounded_corners = true;
+        graph_symbol = "braille";
+        shown_boxes = "cpu mem net proc";
+        update_ms = 1000;
+        proc_sorting = "cpu lazy";
+      };
+    };
+
+    # Magical shell history (SQLite backed)
+    atuin = {
+      enable = true;
+      enableZshIntegration = true;
+      settings = {
+        auto_sync = false; # OpSec: Keep history purely local
+        style = "compact";
+        inline_height = 20;
+        show_preview = true;
+      };
+    };
+
     # SSH configuration
     ssh = {
       enable = true;
@@ -97,10 +137,24 @@ in
         "*" = {
           addKeysToAgent = "yes";
         };
+        "skynet" = {
+          hostname = "skynet.local"; # Remplacez par l'IP ou le domaine réel si nécessaire
+          user = "root";             # Ajustez l'utilisateur
+          identityFile = "~/.ssh/id_rsa"; # Ou la clé spécifique
+          forwardAgent = true;       # Pratique pour rebondir depuis skynet
+          extraOptions = {
+            "ServerAliveInterval" = "60";
+          };
+        };
         "github.com" = {
           hostname = "github.com";
           user = "git";
           identityFile = "~/.ssh/github";
+        };
+        "clef git NTNU secu" = {
+          hostname = "git.ntnu.no";
+          user = "git";
+          identityFile = "~/.ssh/ntnu-security";
         };
       };
     };
@@ -115,6 +169,10 @@ in
         user = {
           name = secrets.git.userName;
           email = secrets.git.userEmail;
+          signingkey = secrets.git.signingKey;
+        };
+        commit = {
+          gpgsign = if secrets.git.signingKey != "" then true else false;
         };
         init = {
           defaultBranch = "main";
@@ -143,6 +201,12 @@ in
       enable = true;
       enableZshIntegration = true;
       nix-direnv.enable = true;
+      # Quiet mode for direnv
+      config = {
+        global = {
+          hide_env_diff = true;
+        };
+      };
     };
 
     zsh = {
@@ -162,7 +226,7 @@ in
         lg = "lazygit";
         v = "nvim";
         
-        # System
+        # System (Turbo Mode)
         c = "clear";
         cat = "bat";
         fk = "fuck";
@@ -178,6 +242,29 @@ in
         s = "web_search duckduckgo";
         tldr = "tldr";
         
+        # --- INTELLIGENCE / OPSEC ALIASES ---
+        # Search through EVERYTHING (PDFs, docs, zips)
+        grep-all = "rga";
+        # Secure, proxy-routed network tools (Requires configuring proxychains.conf)
+        px = "proxychains4 -q";
+        # Fast metadata strip (OpSec)
+        strip-meta = "exiftool -all= --keep=Orientation";
+        # Quick ports check
+        open-ports = "sudo lsof -i -P -n | grep LISTEN";
+        
+        # --- IA LOCAL (NSA/CYBER MODELS) ---
+        ai = "ollama run";
+        ai-list = "ollama list";
+        # Codestral (Mistral 22B): Best for Code & Vulnerability Research
+        codestral = "ollama run codestral";
+        # DeepSeek Coder V2 (Lite): Logical reasoning and RE
+        deepseek = "ollama run deepseek-coder-v2:lite";
+        # Nemo (12B): NVIDIA+Mistral for massive context (128k)
+        nemo = "ollama run mistral-nemo";
+        
+        # --- WORKSPACE MANAGEMENT ---
+        workspace = "cd ~/ops";
+        
         # Nix cleanup
         clean = "nix-collect-garbage -d && nix-store --gc && nix-store --optimise";
       };
@@ -192,6 +279,7 @@ in
           "copybuffer"
           "fzf"
           "sudo"
+          "history-substring-search" # Search only matching history
         ];
         theme = "powerlevel10k/powerlevel10k";
         custom = "$HOME/.oh-my-zsh/custom";
@@ -254,6 +342,9 @@ in
         # Custom keybindings
         bindkey '^[[A' history-search-backward
         bindkey '^[[B' history-search-forward
+        
+        # DIRENV SILENCE (Custom)
+        export DIRENV_LOG_FORMAT=""
       '';
     };
   };

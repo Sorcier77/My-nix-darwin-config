@@ -31,8 +31,6 @@
         shell = pkgs.zsh;
       };
 
-      nix.enable = false;
-      
       nix.settings = {
         experimental-features = "nix-command flakes";
         # Binary caches for faster builds
@@ -54,6 +52,7 @@
       nixpkgs.overlays = [
         (final: prev: {
           caido = prev.callPackage ./pkgs/caido.nix { };
+          sliver = prev.callPackage ./pkgs/sliver.nix { };
         })
       ];
       nix.extraOptions = ''
@@ -74,6 +73,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "backup";
           home-manager.users.anselme = import ./home;
           home-manager.extraSpecialArgs = { inherit inputs outputs; };
           
@@ -85,6 +85,25 @@
       pkgs = import nixpkgs {
         system = "aarch64-darwin";
         config.allowUnfree = true;
+        overlays = [
+          (final: prev: {
+            caido = prev.callPackage ./pkgs/caido.nix { };
+            sliver = prev.callPackage ./pkgs/sliver.nix { };
+          })
+        ];
+      };
+    };
+
+    devShells."aarch64-darwin".ops = import ./ops.nix {
+      pkgs = import nixpkgs {
+        system = "aarch64-darwin";
+        config.allowUnfree = true;
+        overlays = [
+          (final: prev: {
+            caido = prev.callPackage ./pkgs/caido.nix { };
+            sliver = prev.callPackage ./pkgs/sliver.nix { };
+          })
+        ];
       };
     };
   };

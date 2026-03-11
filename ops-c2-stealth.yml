@@ -1,0 +1,111 @@
+---
+- name: Deploy Covert C2 Infrastructure (NSA/Elite Standard)
+  hosts: c2_servers
+  become: yes
+  vars:
+    sliver_dir: "/opt/sliver"
+    ssh_port: 65022 # Obscure SSH port
+    c2_domain: "cdn-update-services.com" # Fake domain for redirector
+
+  tasks:
+    - name: Ensure APT cache is updated
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install hardened dependencies
+      apt:
+        name:
+          - ufw
+          - fail2ban
+          - curl
+          - wget
+          - git
+          - tor
+          - obfs4proxy
+          - nginx
+          - certbot
+          - python3-certbot-nginx
+        state: present
+
+    # --- 1. HARDENING (ANTI-FORENSICS & OPSEC) ---
+    - name: Disable SSH Password Authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+      notify: Restart SSH
+
+    - name: Change SSH Port for stealth
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?Port'
+        line: "Port {{ ssh_port }}"
+      notify: Restart SSH
+
+    - name: Disable Root Login (if ops user exists)
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin prohibit-password' # Only keys allowed
+
+    # --- 2. FIREWALL (UFW) ---
+    - name: Configure Default UFW Policies
+      ufw:
+        direction: "{{ item.dir }}"
+        policy: "{{ item.pol }}"
+      loop:
+        - { dir: 'incoming', pol: 'deny' }
+        - { dir: 'outgoing', pol: 'allow' }
+
+    - name: Allow SSH on Custom Port
+      ufw:
+        rule: allow
+        port: "{{ ssh_port }}"
+        proto: tcp
+
+    - name: Allow HTTPS (C2 Traffic)
+      ufw:
+        rule: allow
+        port: 443
+        proto: tcp
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+
+    # --- 3. COVERT COMMS (TOR + OBFS4) ---
+    - name: Configure Tor Hidden Service for Admin Access (Untraceable SSH)
+      blockinfile:
+        path: /etc/tor/torrc
+        block: |
+          HiddenServiceDir /var/lib/tor/hidden_ssh/
+          HiddenServicePort 22 127.0.0.1:{{ ssh_port }}
+      notify: Restart Tor
+
+    # --- 4. SLIVER C2 INSTALLATION ---
+    - name: Check if Sliver is installed
+      stat:
+        path: /usr/local/bin/sliver-server
+      register: sliver_bin
+
+    - name: Download and Install Sliver
+      shell: curl https://sliver.sh/install.sh | bash
+      when: not sliver_bin.stat.exists
+
+    - name: Enable and Start Sliver Service
+      systemd:
+        name: sliver
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: sshd
+        state: restarted
+
+    - name: Restart Tor
+      service:
+        name: tor
+        state: restarted

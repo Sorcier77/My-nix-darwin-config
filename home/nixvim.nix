@@ -50,6 +50,15 @@
       # Général
       {
         mode = "n";
+        key = "<leader>u";
+        action = "<cmd>UndotreeToggle<CR>";
+        options = {
+          desc = "Toggle UndoTree";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
         key = "<leader>w";
         action = ":w<CR>";
         options = {
@@ -252,9 +261,6 @@
     # TypeScript
     plugins.typescript-tools.enable = true;
     
-    # Linting
-    plugins.lint.enable = true;
-    
     # Treesitter
     plugins.treesitter = {
       enable = true;
@@ -289,6 +295,13 @@
     plugins.yazi.enable = true;
     plugins.ccc.enable = true;
     plugins.comment.enable = true;
+    plugins.undotree = {
+      enable = true;
+      settings = {
+        FocusOnOpen = true;
+        WindowLayout = 2;
+      };
+    };
     
     # Debug
     plugins.dap.enable = true;
@@ -410,6 +423,16 @@
           installRustc = true;
           installCargo = true;
         };
+        # --- CYBER & MALWARE DEV LSPs ---
+        zls.enable = true;      # Zig (High-performance implants)
+        gopls.enable = true;    # Go (C2 servers like Sliver)
+        pyright.enable = true;  # Python (Exploit scripting)
+        bashls.enable = true;   # Bash (Shell scripting)
+        
+        # --- IaC & AUTOMATION LSPs ---
+        # ansiblels.enable = true;  # Ansible (Removed from nixpkgs)
+        terraformls.enable = true; # Terraform (Infrastructure deployment)
+        nixd.enable = true;       # Nix (Configuration management)
       };
     };
     
@@ -422,7 +445,29 @@
           cpp = [ "clang-format" ];
           rust = [ "rustfmt" ];
           java = [ "google-java-format" ];
+          zig = [ "zigfmt" ];
+          go = [ "goimports" "gofmt" ];
+          python = [ "black" ];
+          nix = [ "nixfmt" ];
+          terraform = [ "terraform_fmt" ];
+          sh = [ "shfmt" ];
         };
+        format_on_save = {
+          lsp_fallback = true;
+          timeout_ms = 500;
+        };
+      };
+    };
+    
+    # Linting
+    plugins.lint = {
+      enable = true;
+      lintersByFt = {
+        python = [ "pylint" ];
+        cpp = [ "clangtidy" ];
+        go = [ "golangcilint" ];
+        nix = [ "nix" ];
+        sh = [ "shellcheck" ];
       };
     };
   };
