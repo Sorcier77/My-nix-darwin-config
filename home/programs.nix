@@ -5,19 +5,32 @@
   ...
 }:
 let
-  secretsPath = ../secrets.nix;
-  secrets =
-    if builtins.pathExists secretsPath then
-      import secretsPath
-    else
-      {
-        git = {
-          userName = "Sorcier77";
-          userEmail = "ag.anselmegarnier@gmail.com";
-        };
-      };
+  # secretsPath = ../secrets.nix;
+  # secrets =
+  #   if builtins.pathExists secretsPath then
+  #     import secretsPath
+  #   else
+  #     {
+  #       git = {
+  #         userName = "Sorcier77";
+  #         userEmail = "ag.anselmegarnier@gmail.com";
+  #       };
+  #     };
 in
 {
+  # SOPS Configuration for Home Manager
+  sops.secrets = {
+    "git/name" = { };
+    "git/email" = { };
+  };
+
+  # Template pour générer un fichier de config Git propre à partir des secrets
+  sops.templates."git-config".content = ''
+    [user]
+      name = "${config.sops.placeholder."git/name"}"
+      email = "${config.sops.placeholder."git/email"}"
+  '';
+
   # Restore the Powerlevel10k configuration file
   home.file.".p10k.zsh".source = ./.p10k.zsh;
 
@@ -252,13 +265,12 @@ in
     # Git configuration
     git = {
       enable = true;
+      # Includes from SOPS template if it exists
+      includes = [
+        { path = config.sops.templates."git-config".path; }
+      ];
 
       settings = {
-        user = {
-          name = secrets.git.userName;
-          email = secrets.git.userEmail;
-          # signingkey = null; # Removed: null is not valid. GPG defaults will be used.
-        };
         commit.gpgsign = true; # OBLIGATOIRE : Tout commit doit être signé
         tag.gpgsign = true;
 

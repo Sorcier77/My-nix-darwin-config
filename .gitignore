@@ -1,19 +1,21 @@
-# Secret files - never commit these
-secrets.nix
-
-# Build artifacts
+# Nix
 result
 result-*
+.direnv/
+.venv/
 
-# Nix build outputs
-*.qcow2
+# Secrets (IMPORTANT)
+secrets.nix
+secrets.nix.bak
+*.age
+# On NE bloque PAS secrets.yaml car il est chiffré par SOPS
+# On NE bloque PAS .sops.yaml car il contient les règles de chiffrement
 
-# macOS
+# Temporary files
+nix-install-temp/
+*.swp
+*~
 .DS_Store
 
-# Editor files
-*.swp
-*.swo
-*~
-.vscode/
-.idea/
+# Local keys (Never commit these!)
+keys.txt

@@ -19,6 +19,8 @@
     ripgrep # Grep ultra-rapide
     fzf # Fuzzy Finder
     lazygit # Git TUI
+    sops # Secrets Management
+    age # Modern Encryption (SOPS backend)
     foot # Fast, GPU-accelerated terminal emulator
     dust # Usage Disque
     duf # Disk Usage (Better df)

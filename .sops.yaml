@@ -1,0 +1,6 @@
+# .sops.yaml - Configuration de chiffrement
+creation_rules:
+  - path_regex: secrets.yaml$
+    key_groups:
+      - age:
+          - "age184ncuqxnp4hz29kr8hgjsd6zv6ucpjfsmmjdw84glafzus9kwulsr27rpv"

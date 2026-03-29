@@ -30,7 +30,7 @@ pkgs.mkShell {
     eza
     # --- Binary Exploitation & Pwn (Zardus style) ---
     gdb
-    # pwndbg            # Powerful GDB extension (Temporarily disabled: package not found in nixpkgs)
+    pwndbg            # Powerful GDB extension (Modern standard)
     gef # Another GDB extension (good for heap)
     ropgadget # Gadget finder
     # ropper            # Alternative gadget finder (redundant, in python packages)
@@ -57,7 +57,7 @@ pkgs.mkShell {
     keystone # Assembly framework
     unicorn # CPU emulator
 
-    # --- Web Security ---
+    # --- Web Security & SAST ---
     # burpsuite # Replaced by Burp Suite Professional in home/packages.nix
     caido # Modern Web Proxy
     zap # OWASP ZAP
@@ -75,6 +75,8 @@ pkgs.mkShell {
     wget
     feroxbuster # Add feroxbuster here
     seclists # Wordlists for fuzzing
+    semgrep # Static Analysis Security Testing (SAST)
+    checkov # Infrastructure as Code (IaC) security scanner
 
     # --- Intelligence & Advanced Recon ---
     sn0int # Semi-automatic OSINT framework
@@ -96,6 +98,7 @@ pkgs.mkShell {
     maltego # Link analysis & visualization
     metadata-cleaner # Clean metadata
     exiftool # File metadata analysis
+    prowler # Cloud security audit (AWS/Azure/GCP)
 
     # --- Forensics & Steganography ---
     volatility3 # Memory forensics
@@ -179,7 +182,7 @@ pkgs.mkShell {
 
     # --- C2 & Pivoting (Modern Red Team) ---
     havoc # Modern C2 framework (Golang/C++)
-    #sliver      # C2 Framework (Go) - The modern standard
+    sliver # C2 Framework (Go) - The modern standard
     ligolo-ng # Pivoting 2.0 (Tun interfaces, better than chisel)
     chisel # TCP Tunneling (Classic)
     sshuttle # VPN over SSH
@@ -188,6 +191,7 @@ pkgs.mkShell {
     trufflehog # Secrets scanning
     # prowler # BROKEN ON UNSTABLE (azure-mgmt-network build failure)
     osv-scanner # OSV Vulnerability Scanner
+    vuls # Vulnerability Scanner for Linux
 
     # --- 8. MISC & UTILS ---
     jq # JSON processor
@@ -257,7 +261,6 @@ EOF
     function fix-set-paths() {
         echo "Creating SET-compatible symlinks in /tmp/set-bin..."
         mkdir -p /tmp/set-bin
-        ln -sf $(which dnsspoof) /tmp/set-bin/dnsspoof
         ln -sf $(which airbase-ng) /tmp/set-bin/airbase-ng
         ln -sf $(which nmap) /tmp/set-bin/nmap
         
@@ -267,7 +270,6 @@ EOF
         echo "Updating /etc/setoolkit/set_config (requires sudo)..."
         sudo mkdir -p /etc/setoolkit
         echo "AIRBASE_NG_PATH=$(which airbase-ng)" | sudo tee /etc/setoolkit/set_config
-        echo "DNSSPOOF_PATH=$(which dnsspoof)" | sudo tee -a /etc/setoolkit/set_config
         echo "Done! You can now run 'sudo setoolkit'."
     }
 
