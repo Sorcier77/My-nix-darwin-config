@@ -213,6 +213,11 @@ in
           user = "orion";
           identityFile = "~/.ssh/github";
         };
+        "git.ntnu.no" = {
+          hostname = "git.ntnu.no";
+          user = "git";
+          identityFile = "~/.ssh/secu-ntnu";
+        };
       };
     };
 
@@ -352,9 +357,6 @@ in
 
         # Nix cleanup
         clean = "nix-collect-garbage -d && nix-store --gc && nix-store --optimise";
-
-        # Sudo Nix wrapper
-        sudonix = "sudo env \"PATH=$PATH\"";
 
         # Hardening
         fedora-harden = "sudo bash ${config.home.homeDirectory}/Documents/My-nix-darwin-config/home/fedora-hardening.sh";

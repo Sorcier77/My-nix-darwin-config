@@ -123,6 +123,27 @@ pkgs.mkShell {
     urh # Universal Radio Hacker
     kismet # Wireless network sniffer & monitor (Essential SIGINT)
 
+    # --- WiFi Auditing & RedTeam (Wireless Security) ---
+    airgeddon
+    wifite2
+    aircrack-ng
+    reaverwps-t6x
+    bully
+    pixiewps
+    hcxtools
+    hcxdumptool
+    mdk4
+    cowpatty
+    asleap
+    hashcat
+    hashcat-utils
+    crunch
+    ettercap
+    hostapd
+    hostapd-mana
+    lighttpd
+    xterm
+
     # --- Stealth, Anonymity & P2P (High-Security) ---
     i2pd # C++ implementation of I2P (Lightweight & Fast)
     zeronet-conservancy # P2P decentralized network
@@ -139,8 +160,8 @@ pkgs.mkShell {
     netcat-gnu
     socat
     bettercap # MITM framework
-    aircrack-ng # WiFi auditing
     responder # LLMNR/NBT-NS/mDNS Poisoner (Essential AD)
+    dsniff # Provides dnsspoof, arpspoof, etc. (Required for SET)
     bore # Modern tunneling
     jwt-cli # JWT Manipulation Tool
 
@@ -175,6 +196,8 @@ pkgs.mkShell {
     fd # Fast find
     bat # Cat with wings
     tmux # Terminal multiplexer (essential for multi-tasking)
+    
+    social-engineer-toolkit
 
     # --- Python Environment (Essential libs) ---
     (python3.withPackages (
@@ -215,11 +238,41 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
-    # Red prompt for "Attack Mode" to clearly distinguish from normal shell
-    export PS1="\n[\033[1;31m][🚩 CTF-MODE:\w]\$ [\033[0m] "
+    # --- Robust Nix-Sudo Wrapper ---
+    # Creates a temporary wrapper that survives 'exec zsh'
+    export NIX_CTF_SUDO_DIR=$(mktemp -d)
+    cat <<EOF > "$NIX_CTF_SUDO_DIR/sudo"
+#!/bin/sh
+if [ \$# -eq 0 ]; then
+    exec /usr/bin/sudo "\$@"
+else
+    # Preserves the current Nix PATH for the sudo command
+    exec /usr/bin/sudo env PATH="\$PATH" "\$@"
+fi
+EOF
+    chmod +x "$NIX_CTF_SUDO_DIR/sudo"
+    export PATH="\$NIX_CTF_SUDO_DIR:\$PATH"
 
-    # Setup Seclists Environment
-    export SECLISTS="${pkgs.seclists}/share/wordlists/seclists"
+    # Helper function to fix SET's hardcoded paths
+    function fix-set-paths() {
+        echo "Creating SET-compatible symlinks in /tmp/set-bin..."
+        mkdir -p /tmp/set-bin
+        ln -sf $(which dnsspoof) /tmp/set-bin/dnsspoof
+        ln -sf $(which airbase-ng) /tmp/set-bin/airbase-ng
+        ln -sf $(which nmap) /tmp/set-bin/nmap
+        
+        # Add to PATH for the current session
+        export PATH="/tmp/set-bin:\$PATH"
+        
+        echo "Updating /etc/setoolkit/set_config (requires sudo)..."
+        sudo mkdir -p /etc/setoolkit
+        echo "AIRBASE_NG_PATH=$(which airbase-ng)" | sudo tee /etc/setoolkit/set_config
+        echo "DNSSPOOF_PATH=$(which dnsspoof)" | sudo tee -a /etc/setoolkit/set_config
+        echo "Done! You can now run 'sudo setoolkit'."
+    }
+
+    # Red prompt for "Attack Mode"
+    export PS1="\n[\033[1;31m][🚩 CTF-MODE:\w]\$ [\033[0m] "
     export FEROX_WORDLIST="$SECLISTS/Discovery/Web-Content/raft-medium-directories.txt"
 
     # Aliases for Bash (fallback)
@@ -232,8 +285,11 @@ pkgs.mkShell {
     alias ferox-common="feroxbuster -w $SECLISTS/Discovery/Web-Content/raft-medium-directories.txt"
     alias ferox-full="feroxbuster -w $SECLISTS/Discovery/Web-Content/directory-list-2.3-medium.txt"
 
+    # Fix airgeddon language_strings error by pointing to correct share directory
+    export scriptfolder="${pkgs.airgeddon}/share/airgeddon/"
+
     echo "CTF Environment Loaded"
-    echo "Tools: Pwn, Reverse, Crypto, Web, OSINT"
+    echo "Tools: Pwn, Reverse, Crypto, Web, OSINT, WiFi"
     echo "Wordlists: \$SECLISTS"
     echo "Specific Opti: X1 Carbon Gen 12"
 
