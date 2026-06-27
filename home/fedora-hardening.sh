@@ -181,14 +181,19 @@ echo "$BANNER_TEXT" > /etc/issue
 echo "$BANNER_TEXT" > /etc/issue.net
 chmod 644 /etc/issue /etc/issue.net
 
-# 3. MAC Randomization
-echo "Enabling MAC randomization..."
+# 3. MAC Randomization & DHCP/Hostname Anonymization (OPSEC Field Standard)
+echo "Enabling MAC randomization and DHCP anonymization..."
 cat <<EOF > /etc/NetworkManager/conf.d/00-macrandomize.conf
 [device]
 wifi.scan-rand-mac-address=yes
+
 [connection]
 wifi.cloned-mac-address=random
 ethernet.cloned-mac-address=random
+ipv4.dhcp-client-id=stable-privacy
+ipv6.dhcp-duid=stable-privacy
+ipv4.dhcp-send-hostname=false
+ipv6.dhcp-send-hostname=false
 EOF
 systemctl reload NetworkManager >/dev/null 2>&1
 
