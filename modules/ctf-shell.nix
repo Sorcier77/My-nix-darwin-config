@@ -30,7 +30,7 @@ pkgs.mkShell {
     eza
     # --- Binary Exploitation & Pwn (Zardus style) ---
     gdb
-    pwndbg            # Powerful GDB extension (Modern standard)
+    #pwndbg            # Powerful GDB extension (Modern standard)
     gef # Another GDB extension (good for heap)
     ropgadget # Gadget finder
     # ropper            # Alternative gadget finder (redundant, in python packages)
