@@ -348,4 +348,24 @@
 
   # Enable the SwayOSD background server daemon
   services.swayosd.enable = true;
+
+  # Secure Auto-Lock and Power Saving (swayidle)
+  services.swayidle = {
+    enable = true;
+    timeouts = [
+      {
+        timeout = 300; # 5 minutes: Lock screen
+        command = "${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --show-keyboard-layout --effect-blur 20x15 --ring-color ca9ee6 --key-hl-color 81c8be --text-color c6d0f5";
+      }
+      {
+        timeout = 600; # 10 minutes: Turn off display to save battery
+        command = "${pkgs.sway}/bin/swaymsg \"output * power off\"";
+        resumeCommand = "${pkgs.sway}/bin/swaymsg \"output * power on\"";
+      }
+    ];
+    events = {
+      before-sleep = "${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --show-keyboard-layout --effect-blur 20x15 --ring-color ca9ee6 --key-hl-color 81c8be --text-color c6d0f5";
+      lock = "${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --show-keyboard-layout --effect-blur 20x15 --ring-color ca9ee6 --key-hl-color 81c8be --text-color c6d0f5";
+    };
+  };
 }
