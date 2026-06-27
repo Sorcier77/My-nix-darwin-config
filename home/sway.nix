@@ -133,8 +133,8 @@
         # Screenshots (Print Screen to select a region, copy to clipboard)
         "Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.wl-clipboard}/bin/wl-copy";
         
-        # Screen Lock (Sleek blur effect with lock clock, Super+Shift+x)
-        "${modifier}+Shift+x" = "exec ${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --effect-blur 7x5 --ring-color ca9ee6 --key-hl-color 81c8be --text-color c6d0f5";
+        # Screen Lock (Sleek blur effect with lock clock, Super+Shift+x, AZERTY layout, high security blur)
+        "${modifier}+Shift+x" = "exec ${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --show-keyboard-layout --effect-blur 20x15 --ring-color ca9ee6 --key-hl-color 81c8be --text-color c6d0f5";
 
         # Sound controls (using SwayOSD client)
         "XF86AudioRaiseVolume" = "exec swayosd-client --output-volume raise";
@@ -151,7 +151,7 @@
       startup = [
         { command = "systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK"; }
         { command = "${pkgs.swaybg}/bin/swaybg -m fill -i /home/orion/Pictures/wallpaper.jpg"; always = true; }
-        { command = "pkill waybar || true; ${pkgs.waybar}/bin/waybar"; always = true; }
+        { command = "pkill waybar || true && ${pkgs.waybar}/bin/waybar"; always = true; }
         { command = "swaymsg workspace number 1"; }
       ];
     };
