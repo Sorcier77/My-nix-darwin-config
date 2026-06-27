@@ -153,9 +153,9 @@ if ! grep -q "tmpfs /dev/shm" /etc/fstab; then
     mount -o remount,noexec,nosuid,nodev /dev/shm 2>/dev/null
 fi
 
-# 2.5 DNS Optimization (Opportunistic DoT & DNSSEC to prevent timeouts)
+# 2.5 DNS Security (Strict DNSSEC & DNS-over-TLS with secure Swiss/Global fallbacks)
 if systemctl is-active systemd-resolved >/dev/null 2>&1; then
-    echo "Optimizing DNS settings (Opportunistic DoT)..."
+    echo "Securing DNS settings (Strict DoT & DNSSEC)..."
     # Clean up conflicting strict configurations
     rm -f /etc/systemd/resolved.conf.d/99-dns-over-tls.conf
     rm -f /etc/systemd/resolved.conf.d/stub-
@@ -164,9 +164,11 @@ if systemctl is-active systemd-resolved >/dev/null 2>&1; then
     mkdir -p /etc/systemd/resolved.conf.d/
     cat <<EOF > /etc/systemd/resolved.conf.d/optimization.conf
 [Resolve]
-DNSSEC=allow-downgrade
+DNS=9.9.9.9#dns.quad9.net 1.49.112.112#dns.quad9.net 2620:fe::fe#dns.quad9.net
+FallbackDNS=1.1.1.1#cloudflare-dns.com 1.0.0.1#cloudflare-dns.com 2606:4700:4700::1111#cloudflare-dns.com
+DNSSEC=yes
+DNSOverTLS=yes
 Cache=yes
-DNSOverTLS=opportunistic
 LLMNR=no
 MulticastDNS=no
 EOF
