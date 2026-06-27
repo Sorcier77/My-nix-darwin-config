@@ -3,7 +3,15 @@
 # Must be copied to /var/ossec/active-response/bin/
 
 LOG_FILE="/var/ossec/logs/active-responses.log"
-YARA_BIN="/run/current-system/sw/bin/yara"
+
+if [ -f "/home/orion/.nix-profile/bin/yara" ]; then
+    YARA_BIN="/home/orion/.nix-profile/bin/yara"
+elif [ -f "/usr/bin/yara" ]; then
+    YARA_BIN="/usr/bin/yara"
+else
+    YARA_BIN="yara"
+fi
+
 RULES="/home/orion/.yara-rules/index.yar"
 
 read -r INPUT

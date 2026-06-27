@@ -5,6 +5,7 @@
     inputs.sops-nix.homeManagerModules.sops
     ../../home
     ../../home/gnome.nix
+    ../../home/sway.nix
     ./programs.nix
     ./packages.nix
   ];

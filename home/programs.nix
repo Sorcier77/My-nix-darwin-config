@@ -66,27 +66,142 @@ in
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
 
-    # Foot Terminal Emulator
+    # Foot Terminal Emulator (Disabled - too minimalist)
     foot = {
-      enable = true;
+      enable = false;
       settings = {
         main = {
           font = "JetBrainsMono NFM:size=10";
-
-          # You can add more foot specific settings here if desired.
-          # For example, colors, keybindings, etc.
-          # Refer to the foot documentation or the web search result for more options.
         };
+        # ... (rest of foot settings)
       };
+    };
 
+    # Kitty Terminal Emulator (GPU Accelerated & Fast)
+    kitty = {
+      enable = true;
+      font = {
+        name = "JetBrainsMono NFM";
+        size = 10;
+      };
+      settings = {
+        scrollback_lines = 10000;
+        enable_audio_bell = false;
+        update_check_interval = 0;
+        confirm_os_window_close = 0;
+        
+        # Layouts
+        enabled_layouts = "splits,stack";
+
+        # Performance settings
+        repaint_delay = 10;
+        input_delay = 3;
+        sync_to_monitor = "yes";
+
+        # Appearance
+        background_opacity = "0.95";
+        window_padding_width = 4;
+        
+        # Colors (Catppuccin Frappe)
+        foreground = "#c6d0f5";
+        background = "#303446";
+        selection_foreground = "#303446";
+        selection_background = "#f2d5cf";
+        url_color = "#f2d5cf";
+        cursor = "#f2d5cf";
+        cursor_text_color = "#303446";
+        active_border_color = "#babed8";
+        inactive_border_color = "#737994";
+        bell_border_color = "#e5c890";
+        wayland_titlebar_color = "system";
+        macos_titlebar_color = "system";
+        active_tab_foreground = "#232634";
+        active_tab_background = "#ca9ee6";
+        inactive_tab_foreground = "#c6d0f5";
+        inactive_tab_background = "#292c3c";
+        tab_bar_background = "#232634";
+        color0 = "#51576d";
+        color8 = "#626880";
+        color1 = "#e78284";
+        color9 = "#e78284";
+        color2 = "#a6d189";
+        color10 = "#a6d189";
+        color3 = "#e5c890";
+        color11 = "#e5c890";
+        color4 = "#8caaee";
+        color12 = "#8caaee";
+        color5 = "#f4b8e4";
+        color13 = "#f4b8e4";
+        color6 = "#81c8be";
+        color14 = "#81c8be";
+        color7 = "#b5bfe2";
+        color15 = "#a5adce";
+      };
+      keybindings = {
+        # Splits/Panes
+        "alt+enter" = "launch --location=vsplit --cwd=current";
+        "alt+shift+enter" = "launch --location=hsplit --cwd=current";
+        "alt+w" = "close_window";
+
+        # Navigate splits with Vim-like keys or arrow keys
+        "alt+h" = "neighboring_window left";
+        "alt+l" = "neighboring_window right";
+        "alt+k" = "neighboring_window up";
+        "alt+j" = "neighboring_window down";
+        "alt+left" = "neighboring_window left";
+        "alt+right" = "neighboring_window right";
+        "alt+up" = "neighboring_window up";
+        "alt+down" = "neighboring_window down";
+
+        # Resize splits
+        "ctrl+alt+h" = "resize_window narrower";
+        "ctrl+alt+l" = "resize_window wider";
+        "ctrl+alt+k" = "resize_window taller";
+        "ctrl+alt+j" = "resize_window shorter";
+
+        # Zoom/Maximize pane (like tmux's toggle-zoom)
+        "alt+z" = "toggle_layout stack";
+
+        # Tabs
+        "alt+t" = "new_tab_with_cwd";
+        "alt+shift+l" = "next_tab";
+        "alt+shift+h" = "previous_tab";
+        "alt+1" = "goto_tab 1";
+        "alt+2" = "goto_tab 2";
+        "alt+3" = "goto_tab 3";
+        "alt+4" = "goto_tab 4";
+        "alt+5" = "goto_tab 5";
+        "alt+6" = "goto_tab 6";
+        "alt+7" = "goto_tab 7";
+        "alt+8" = "goto_tab 8";
+        "alt+9" = "goto_tab 9";
+      };
     };
 
     # Alacritty Terminal Emulator
 
-    # --- Firefox Hardened (Cyber Standard) ---
+    # --- Firefox Hardened & Optimized (Cyber Standard) ---
     firefox = {
-      enable = false;
+      enable = true;
+      package = let
+        dummy = pkgs.runCommand "firefox" {} "mkdir -p $out/bin; ln -s /usr/bin/firefox $out/bin/firefox";
+      in dummy // {
+        override = _: dummy;
+        overrideAttrs = _: dummy;
+      };
       policies = {
+        ExtensionSettings = {
+          # uBlock Origin
+          "uBlock0@raymondhill.net" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+            installation_mode = "force_installed";
+          };
+          # Bitwarden
+          "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi";
+            installation_mode = "force_installed";
+          };
+        };
         DisableTelemetry = true;
         DisableFirefoxStudies = true;
         EnableTrackingProtection = {
@@ -114,17 +229,24 @@ in
         # };
       }; # <-- Restored
 
-      # # Hardening avancé (about:config)
-      # profiles.default.settings = {
-      #   "privacy.resistFingerprinting" = true; # 🛡️ Tor Browser anti-fingerprinting (Timezone UTC, etc.)
-      #   "privacy.fingerprintingProtection" = true;
-      #   "privacy.trackingprotection.fingerprinting.enabled" = true;
-      #   "privacy.trackingprotection.cryptomining.enabled" = true;
-      #   "dom.security.https_only_mode" = true;
-      #   "network.auth.subresource-http-auth-allow" = 1;
-      #   "security.ssl.require_safe_negotiation" = true;
-      #   "security.tls.version.min" = 3; # Force TLS 1.3 (peut casser de vieux sites)
-      # };
+      # Hardening avancé (about:config) & Performance Fixes
+      profiles.default.settings = {
+        "privacy.resistFingerprinting" = true;
+        "privacy.fingerprintingProtection" = true;
+        "privacy.trackingprotection.fingerprinting.enabled" = true;
+        "privacy.trackingprotection.cryptomining.enabled" = true;
+        "dom.security.https_only_mode" = true;
+        "network.auth.subresource-http-auth-allow" = 1;
+        "security.ssl.require_safe_negotiation" = true;
+        "security.tls.version.min" = 3; # Force TLS 1.3
+        
+        # --- Performance / Hardware Acceleration (Wayland) ---
+        "gfx.webrender.all" = true;
+        "media.ffmpeg.vaapi.enabled" = true;
+        "media.rdd-ffmpeg.enabled" = true;
+        "media.av1.enabled" = false; # Peut ralentir si pas d'accélération matérielle native AV1
+        "widget.wayland.opaque-region.enabled" = true;
+      };
     }; # Modern cat replacement with syntax highlighting
     bat = {
       enable = true;
@@ -166,71 +288,47 @@ in
       enable = true;
       enableDefaultConfig = false;
 
-      matchBlocks = {
+      settings = {
         "*" = {
-          # Essential defaults
-          addKeysToAgent = "yes";
-          compression = true;
-          serverAliveInterval = 60;
-          serverAliveCountMax = 3;
-
-          # Security defaults
-
-          forwardAgent = false;
-
-          forwardX11 = false;
-
-          forwardX11Trusted = false;
-
-          hashKnownHosts = true; # 🛡️ Hache les IP/Noms des serveurs (Anti-Forensics)
-
-          # Hardened Ciphers & MACs (Cyber Standard)
-          extraOptions = {
-            VisualHostKey = "yes";
-            Ciphers = builtins.concatStringsSep "," [
-              "chacha20-poly1305@openssh.com"
-              "aes256-gcm@openssh.com"
-              "aes128-gcm@openssh.com"
-              "aes256-ctr"
-              "aes192-ctr"
-              "aes128-ctr"
-            ];
-            KexAlgorithms = builtins.concatStringsSep "," [
-              "curve25519-sha256"
-              "curve25519-sha256@libssh.org"
-              "diffie-hellman-group16-sha512"
-              "diffie-hellman-group18-sha512"
-              "diffie-hellman-group-exchange-sha256"
-            ];
-            MACs = builtins.concatStringsSep "," [
-              "hmac-sha2-256-etm@openssh.com"
-              "hmac-sha2-512-etm@openssh.com"
-              "hmac-sha2-256"
-              "hmac-sha2-512"
-            ];
-          };
-
-          # Connection defaults
-          controlMaster = "auto";
-          controlPath = "~/.ssh/sockets/%r@%h-%p";
-          controlPersist = "600";
+          # Global SSH Settings (Hardened)
+          AddKeysToAgent = "1h";
+          VisualHostKey = "yes";
+          Compression = "yes";
+          ServerAliveInterval = 60;
+          ServerAliveCountMax = 3;
+          ForwardAgent = "no";
+          ForwardX11 = "no";
+          ForwardX11Trusted = "no";
+          HashKnownHosts = "yes";
+          ControlMaster = "auto";
+          ControlPath = "~/.ssh/sockets/%r@%h-%p";
+          ControlPersist = "600";
+          
+          # Security: Hardened Ciphers & MACs
+          Ciphers = "chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr";
+          KexAlgorithms = "curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256";
+          MACs = "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512";
         };
 
         "github.com" = {
-          hostname = "github.com";
-          user = "git";
-          identityFile = "~/.ssh/github";
+          Hostname = "github.com";
+          User = "git";
+          IdentityFile = "~/.ssh/github";
         };
         "skynet" = {
-          hostname = "skynet";
-          user = "orion";
-          identityFile = "~/.ssh/github";
+          Hostname = "skynet";
+          User = "orion";
+          IdentityFile = "~/.ssh/github";
         };
-        "git.ntnu.no" = {
-          hostname = "git.ntnu.no";
-          user = "git";
-          identityFile = "~/.ssh/secu-ntnu";
+        "skynet-1" = {
+          Hostname = "skynet-1";
+          User = "orion";
+          IdentityFile = "~/.ssh/ed25519";
+          ForwardX11 = "yes";
+          ForwardX11Trusted = "yes";
+          SetEnv = { TERM = "xterm-256color"; };
         };
+        
       };
     };
 
@@ -347,6 +445,10 @@ in
         v = "nvim";
         g = "git";
 
+        # Terminal Multiplexing (Zellij)
+        zj = "zellij";
+        zja = "zellij attach -c";
+
         # System
         c = "clear";
         cat = "bat";
@@ -369,6 +471,7 @@ in
 
         # Nix cleanup
         clean = "nix-collect-garbage -d && nix-store --gc && nix-store --optimise";
+        nix-audit = "nix-store --verify --check-contents --verify-mode=all";
 
         # Hardening
         fedora-harden = "sudo bash ${config.home.homeDirectory}/Documents/My-nix-darwin-config/home/fedora-hardening.sh";
@@ -380,6 +483,12 @@ in
         myip = "curl -s ifconfig.me";
         weather = "curl wttr.in";
 
+        # Hardware & Performance
+        gpu-top = "sudo intel_gpu_top";
+        va-check = "vainfo";
+        perf-check = "sudo powertop";
+        nvtop = "nvtop";
+
         # Security
         bsp = "burpsuitepro > /dev/null 2>&1 &"; # Launch Burp Suite Professional silently
         av-scan = "bash ${config.home.homeDirectory}/Documents/My-nix-darwin-config/home/av-scan.sh";
@@ -387,8 +496,14 @@ in
         torexec = "proxychains4"; # Execute command through Tor
         tor-start = "tor > /dev/null 2>&1 & echo 'Tor started in background...'";
         tor-stop = "killall tor";
+        
+        # System Audit & Hardening
+        audit-system = "sudo lynis audit system";
+        check-vuln = "nix run nixpkgs#vulnix -- --system";
+        check-sec = "sudo bash ${config.home.homeDirectory}/Documents/My-nix-darwin-config/home/fedora-hardening.sh";
 
-        wipe = "srm -r"; # Suppression sécurisée
+        secrets = "sops ${config.home.homeDirectory}/Documents/My-nix-darwin-config/secrets.yaml";
+        wipe = "srm -v"; # Suppression sécurisée avec verbeux
 
         genpass = "tr -dc 'A-Za-z0-9!@#$%^&*' < /dev/urandom | head -c 32; echo"; # Génère mdp fort 32 chars
 
@@ -421,6 +536,9 @@ in
 
       # Zsh initialization
       initContent = lib.mkBefore ''
+        # Force local bin in PATH (for agy and other local tools)
+        export PATH="$HOME/.local/bin:$PATH"
+
         # Powerlevel10k instant prompt
         if [[ -z "$CTF_MODE" ]]; then
           if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-$USER.zsh" ]]; then
@@ -429,7 +547,7 @@ in
         fi
 
         # Security: Harden file permissions (Lynis recommendation)
-        umask 077 # 🔒 Drastique : RW pour moi, Rien pour les autres.
+        umask 077 # Drastique : RW pour moi, Rien pour les autres.
 
         # Security: Disable Core Dumps (Empêche la fuite de secrets RAM vers Disque)
         ulimit -c 0
@@ -440,7 +558,7 @@ in
         setopt HIST_IGNORE_ALL_DUPS
         setopt HIST_FIND_NO_DUPS
         setopt HIST_SAVE_NO_DUPS
-        setopt HIST_IGNORE_SPACE # 🚀 Espace au début = Pas d'historique (OpSec)
+        setopt HIST_IGNORE_SPACE # Espace au début = Pas d'historique (OpSec)
         setopt SHARE_HISTORY
 
         # Custom keybindings

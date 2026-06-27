@@ -36,13 +36,9 @@
     plugins.web-devicons.enable = true;
     plugins.lualine.enable = true;
 
-    # GitHub Copilot via copilot-lua (intégré avec blink-cmp)
+    # OpSec: GitHub Copilot désactivé pour éviter la fuite de code sensible vers des serveurs tiers
     plugins.copilot-lua = {
-      enable = true;
-      settings = {
-        suggestion.enabled = false;
-        panel.enabled = false;
-      };
+      enable = false;
     };
 
     # Keymaps
@@ -143,8 +139,8 @@
 
     ];
 
-    # Plugin pour intégrer Copilot avec blink-cmp
-    plugins.blink-copilot.enable = true;
+    # Plugin pour intégrer Copilot avec blink-cmp (Désactivé pour OpSec)
+    plugins.blink-copilot.enable = false;
 
     # Complétion avec blink-cmp
     plugins.blink-cmp = {
@@ -179,7 +175,7 @@
             "path"
             "snippets"
             "buffer"
-            "copilot"
+            # "copilot" (Désactivé)
           ];
           providers = {
             lsp = {
@@ -215,24 +211,7 @@
                 keyword_pattern = "[\\w-]+";
               };
             };
-            # Configuration Copilot pour blink-cmp
-            copilot = {
-              name = "copilot";
-              module = "blink-copilot";
-              async = true;
-              score_offset = 100; # Priorité élevée pour Copilot
-              # Options avancées
-              opts = {
-                max_completions = 5;
-                max_attempts = 8;
-                kind = "Copilot";
-                debounce = 150; # Réduit pour réponses plus rapides
-                auto_refresh = {
-                  backward = true;
-                  forward = true;
-                };
-              };
-            };
+            # Configuration Copilot (Désactivé)
           };
         };
 

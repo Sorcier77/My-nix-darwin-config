@@ -86,21 +86,54 @@ alias lsa="eza --color=always --long --git --no-filesize --icons=always --no-tim
 # Tool Initializations
 # ========================================
 
-# Pay Respects (replacement for thefuck)
-if command -v thefuck &> /dev/null; then
-    # Static function definition is much faster than eval $(thefuck --alias)
-    fuck() {
-        TF_PYTHONIOENCODING=$PYTHONIOENCODING;
-        export TF_SHELL=zsh;
-        export TF_ALIAS=fuck;
-        TF_SHELL_ALIASES=$(alias);
-        export TF_SHELL_ALIASES;
-        TF_HISTORY="$(fc -ln -10)";
-        export TF_HISTORY;
-        export PYTHONIOENCODING=utf-8;
-        TF_CMD=$(thefuck THEFUCK_ARGUMENT_PLACEHOLDER "$@") && eval "$TF_CMD";
-        unset TF_HISTORY;
-        export PYTHONIOENCODING=$TF_PYTHONIOENCODING;
-        test -n "$TF_CMD" && print -s "$TF_CMD"
-    }
-fi
+# ========================================
+# Cybersecurity & OpSec Enhancements
+# ========================================
+
+# Secure Terminal Clear (clears screen + scrollback buffer)
+cls() {
+    printf '\033c\e[3J'
+    clear
+}
+
+# Volatile History Toggle (prevents commands from being saved to disk)
+history-off() {
+    export OLD_HISTFILE="$HISTFILE"
+    unset HISTFILE
+    echo "${RED}History recording DISABLED (volatile session).${RESET}"
+}
+
+history-on() {
+    if [ -n "$OLD_HISTFILE" ]; then
+        export HISTFILE="$OLD_HISTFILE"
+    else
+        export HISTFILE="$HOME/.zsh_history"
+    fi
+    echo "${GREEN}History recording RE-ENABLED.${RESET}"
+}
+
+# Secure deletion aliases fallback
+alias shred-file="shred -u -z -n 3 -v"
+
+# ========================================
+# Terminal Multiplexing Helpers
+# ========================================
+
+# Interactive session selector for Zellij using FZF
+zjs() {
+    local session
+    if ! command -v zellij >/dev/null; then
+        echo "${RED}Error: Zellij is not installed.${RESET}"
+        return 1
+    fi
+    
+    # List active sessions, filter out headers, and let user select with fzf
+    session=$(zellij list-sessions 2>/dev/null | cut -f 1 -d ' ' | fzf --exit-0 --height=40% --border --header="Attach to Zellij session:")
+    
+    if [ -n "$session" ]; then
+        zellij attach "$session"
+    else
+        # If no session selected or lists are empty, start new or attach to default
+        zellij attach -c
+    fi
+}

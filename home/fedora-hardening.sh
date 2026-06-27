@@ -10,7 +10,12 @@ fi
 
 echo "Starting system hardening..."
 
-# 1. Services & Firewall Hardening
+# 1. Purge Bloatware & Snap
+echo "Purging Snap, Telemetry and GNOME bloatware..."
+dnf remove -y snapd abrt* gnome-tour gnome-software rhythmbox totem cheese gnome-connections yelp >/dev/null 2>&1
+rm -rf /var/cache/snapd /snap ~/snap
+
+# 2. Services & Firewall Hardening
 echo "Optimizing services and firewall..."
 SERVICES_TO_DISABLE=(
     abrtd.service abrt-journal-core.service abrt-oops.service abrt-xorg.service
@@ -48,6 +53,22 @@ kernel.yama.ptrace_scope = 1
 kernel.perf_event_paranoid = 3
 kernel.sysrq = 0
 kernel.kexec_load_disabled = 1
+dev.tty.ldisc_autoload = 0
+net.core.bpf_jit_harden = 2
+
+# Desktop Performance Optimization (fluidity)
+vm.swappiness = 10
+vm.vfs_cache_pressure = 50
+
+# Network Performance Optimization (BBR + FQ + TCP Fast Open)
+net.core.default_qdisc = fq
+net.ipv4.tcp_congestion_control = bbr
+net.core.somaxconn = 1024
+net.ipv4.tcp_fastopen = 3
+
+# Wazuh FIM (File Integrity Monitoring) Performance
+fs.inotify.max_user_watches = 1048576
+fs.inotify.max_user_instances = 1024
 
 # FS Hardening
 fs.protected_symlinks = 1
@@ -81,21 +102,15 @@ EOF
 
 sysctl -p /etc/sysctl.d/99-hardening.conf >/dev/null 2>&1
 
-# 2.1 Boot Security (Aggressive Kernel Hardening)
-# Based on KSPP and kernel-hardening-checker recommendations
-BOOT_PARAMS="init_on_free=1 init_on_alloc=1 page_alloc.shuffle=1 slab_nomerge vsyscall=none debugfs=off oops=panic quiet loglevel=0 lockdown=confidentiality module.sig_enforce=1 iommu=force intel_iommu=on iommu.passthrough=0 iommu.strict=1 noprogrammable_counters"
-
+# 2.1 Boot Security (Optimized for performance and fluidity)
+# Reverted aggressive options that degrade SSD/GPU speed and app launch times
 if [ -f /etc/default/grub ]; then
-    echo "Updating GRUB boot parameters..."
+    echo "Restoring optimized GRUB boot parameters..."
     # Backup
     cp /etc/default/grub /etc/default/grub.bak
     
-    # Check if parameters already exist, if not add them
-    for param in $BOOT_PARAMS; do
-        if ! grep -q "$param" /etc/default/grub; then
-            sed -i "s/GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"$param /" /etc/default/grub
-        fi
-    done
+    # Clean up and reset GRUB cmdline (forcing the modern 'xe' driver for Meteor Lake graphics)
+    sed -i 's/GRUB_CMDLINE_LINUX=".*"/GRUB_CMDLINE_LINUX="rhgb quiet i915.force_probe=!7d45 xe.force_probe=7d45"/' /etc/default/grub
 
     if [ -d /boot/efi/EFI/fedora ]; then
         grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg >/dev/null 2>&1
@@ -122,28 +137,49 @@ if [ -f /etc/ssh/sshd_config ]; then
     systemctl restart sshd >/dev/null 2>&1
 fi
 
-# 2.4 Filesystem Hardening (Tmpfs)
+# 2.4 Filesystem Hardening (Tmpfs & Anti-Forensics) & SSD Optimization
+# Optimizing root / partition to use noatime if it isn't already
+if grep -q "subvol=root,compress=zstd:1 " /etc/fstab; then
+    echo "Adding noatime option to root partition..."
+    sed -i 's/subvol=root,compress=zstd:1 /subvol=root,compress=zstd:1,noatime /' /etc/fstab
+fi
+
 if ! grep -q "tmpfs /dev/shm" /etc/fstab; then
-    echo "Securing /dev/shm..."
+    echo "Securing /dev/shm, /tmp and /var/tmp..."
     echo "tmpfs /dev/shm tmpfs defaults,noexec,nosuid,nodev 0 0" >> /etc/fstab
+    echo "tmpfs /tmp tmpfs defaults,nosuid,nodev 0 0" >> /etc/fstab
+    echo "tmpfs /var/tmp tmpfs defaults,nosuid,nodev 0 0" >> /etc/fstab
     systemctl daemon-reload
     mount -o remount,noexec,nosuid,nodev /dev/shm 2>/dev/null
 fi
 
-# 2.5 DNS Optimization
+# 2.5 DNS Optimization (Opportunistic DoT & DNSSEC to prevent timeouts)
 if systemctl is-active systemd-resolved >/dev/null 2>&1; then
-    echo "DNS Optimization (DoT)..."
+    echo "Optimizing DNS settings (Opportunistic DoT)..."
+    # Clean up conflicting strict configurations
+    rm -f /etc/systemd/resolved.conf.d/99-dns-over-tls.conf
+    rm -f /etc/systemd/resolved.conf.d/stub-
+    rm -f /etc/systemd/resolved.conf.d/stub-listener.conf
+    
     mkdir -p /etc/systemd/resolved.conf.d/
     cat <<EOF > /etc/systemd/resolved.conf.d/optimization.conf
 [Resolve]
-DNSSEC=yes
+DNSSEC=allow-downgrade
 Cache=yes
-DNSOverTLS=yes
+DNSOverTLS=opportunistic
 LLMNR=no
 MulticastDNS=no
 EOF
     systemctl restart systemd-resolved >/dev/null 2>&1
 fi
+
+# 2.6 Legal Banners
+echo "Configuring legal banners /etc/issue and /etc/issue.net..."
+BANNER_TEXT="WARNING: Authorized users only. All activities may be monitored and recorded."
+rm -f /etc/issue /etc/issue.net
+echo "$BANNER_TEXT" > /etc/issue
+echo "$BANNER_TEXT" > /etc/issue.net
+chmod 644 /etc/issue /etc/issue.net
 
 # 3. MAC Randomization
 echo "Enabling MAC randomization..."
@@ -195,19 +231,41 @@ echo "Ensuring SELinux is Enforcing..."
 setenforce 1 >/dev/null 2>&1
 sed -i 's/SELINUX=permissive/SELINUX=enforcing/g' /etc/selinux/config
 
-# 8. SUID Fix & Wazuh Optimization
+# 8. SUID & File Permissions Fix & Wazuh Optimization
 [ -f /opt/pt/bin/updatepttp ] && chmod u-s /opt/pt/bin/updatepttp
 
-# Optimization: Wazuh-agent boot delay fix (Truly non-blocking)
-if [ -f /usr/lib/systemd/system/wazuh-agent.service ]; then
-    echo "Optimizing Wazuh-agent boot (Background mode)..."
-    mkdir -p /etc/systemd/system/wazuh-agent.service.d
-    cat <<EOF > /etc/systemd/system/wazuh-agent.service.d/override.conf
+# Restrict permissions of cron / at files if they exist (FILE-7524)
+for f in /etc/crontab /etc/cron.deny /etc/at.deny; do
+    if [ -f "$f" ]; then
+        chmod 600 "$f"
+        chown root:root "$f"
+    fi
+done
+
+# Optimization: Wazuh-agent boot delay fix (Avoid blocking on network-online.target)
+if [ -f /usr/lib/systemd/system/wazuh-agent.service ] || [ -f /etc/systemd/system/wazuh-agent.service ]; then
+    echo "Optimizing Wazuh-agent boot..."
+    cat <<EOF > /etc/systemd/system/wazuh-agent.service
+[Unit]
+Description=Wazuh agent
+After=network.target
+Wants=network.target
+
 [Service]
-TimeoutStartSec=5
-Restart=on-failure
-RestartSec=30
+Type=forking
+ExecStart=/usr/bin/env /var/ossec/bin/wazuh-control start
+ExecStop=/usr/bin/env /var/ossec/bin/wazuh-control stop
+ExecReload=/usr/bin/env /var/ossec/bin/wazuh-control reload
+KillMode=mixed
+RemainAfterExit=yes
+TimeoutStartSec=180s
+TimeoutStopSec=180s
+
+[Install]
+WantedBy=multi-user.target
 EOF
+    # Clean up old override directory to prevent conflict
+    rm -rf /etc/systemd/system/wazuh-agent.service.d
     systemctl daemon-reload
 fi
 
@@ -218,6 +276,36 @@ if ! grep -q "umask 077" /etc/profile; then
 fi
 if [ -f /etc/login.defs ]; then
     sed -i 's/^UMASK.*/UMASK           077/' /etc/login.defs
+    # Configure password hashing rounds
+    if ! grep -q "^SHA_CRYPT_MIN_ROUNDS" /etc/login.defs; then
+        echo "SHA_CRYPT_MIN_ROUNDS 5000" >> /etc/login.defs
+    fi
+    if ! grep -q "^SHA_CRYPT_MAX_ROUNDS" /etc/login.defs; then
+        echo "SHA_CRYPT_MAX_ROUNDS 10000" >> /etc/login.defs
+    fi
+    # Configure password aging limits
+    sed -i 's/^PASS_MAX_DAYS.*/PASS_MAX_DAYS   90/' /etc/login.defs || echo "PASS_MAX_DAYS   90" >> /etc/login.defs
+    sed -i 's/^PASS_MIN_DAYS.*/PASS_MIN_DAYS   1/' /etc/login.defs || echo "PASS_MIN_DAYS   1" >> /etc/login.defs
+    sed -i 's/^PASS_WARN_AGE.*/PASS_WARN_AGE   7/' /etc/login.defs || echo "PASS_WARN_AGE   7" >> /etc/login.defs
+# 2.7 Systemd Timeout Optimization (Fast Shutdown/Reboot)
+echo "Optimizing systemd stop timeouts..."
+mkdir -p /etc/systemd/system.conf.d/
+cat <<EOF > /etc/systemd/system.conf.d/99-timeouts.conf
+[Manager]
+DefaultTimeoutStartSec=10s
+DefaultTimeoutStopSec=10s
+EOF
+
+# 2.8 Journald Logs Limit (Save disk space & speed up queries)
+echo "Limiting journald log sizes..."
+mkdir -p /etc/systemd/journald.conf.d/
+cat <<EOF > /etc/systemd/journald.conf.d/99-limits.conf
+[Journal]
+SystemMaxUse=200M
+SystemMaxFileSize=50M
+EOF
+systemctl restart systemd-journald >/dev/null 2>&1
+
 fi
 
 echo "Hardening complete. Please reboot to apply all changes."

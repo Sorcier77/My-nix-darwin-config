@@ -11,7 +11,17 @@
   home.sessionPath = [
     "$HOME/.nix-profile/bin"
     "$HOME/.npm-global/bin"
+    "$HOME/.local/bin"
   ];
+
+  # Global environment variables
+  home.sessionVariables = {
+    # Force Java applications to render correctly in tiling window managers and Wayland
+    _JAVA_AWT_WM_NONREPARENTING = "1";
+    _JAVA_OPTIONS = "-Dsun.java2d.uiScale=1.0";
+    JDK_JAVA_OPTIONS = "-Dsun.java2d.uiScale=1.0";
+    JAVA_TOOL_OPTIONS = "-Dsun.java2d.uiScale=1.0";
+  };
 
   home.file.".npmrc".text = ''
     prefix=''${HOME}/.npm-global

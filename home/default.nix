@@ -8,5 +8,6 @@
     ./nixvim.nix
     ./sublime.nix
     ./tmux.nix
+    ./zellij.nix
   ];
 }
