@@ -183,12 +183,7 @@ in
     # --- Firefox Hardened & Optimized (Cyber Standard) ---
     firefox = {
       enable = true;
-      package = let
-        dummy = pkgs.runCommand "firefox" {} "mkdir -p $out/bin; ln -s /usr/bin/firefox $out/bin/firefox";
-      in dummy // {
-        override = _: dummy;
-        overrideAttrs = _: dummy;
-      };
+      package = pkgs.firefox;
       policies = {
         ExtensionSettings = {
           # uBlock Origin
