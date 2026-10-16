@@ -1,6 +1,7 @@
-# Mistral Gruvbox Material - Color Palette
+# Mistral Gruvbox Material (Soft) - Color Palette
 
 This is the unified color palette for the Mistral AI style with Gruvbox Material influences.
+**Soft version** - Less flashy, more readable with subtle accents.
 
 ## Base Colors (Charbon / Dark)
 
@@ -20,17 +21,29 @@ This is the unified color palette for the Mistral AI style with Gruvbox Material
 | **fg2** | `#a89984` | Comments, line numbers, secondary text |
 | **fg3** | `#83a598` | Blue-ish foreground |
 
-## Accent Colors (Gruvbox Material + Mistral)
+## Accent Colors (Soft Gruvbox Material + Mistral)
 
 | Name | Hex | Usage |
 |------|-----|-------|
-| **red** | `#fb4934` | Errors, deletions, critical |
-| **green** | `#b8bb26` | Success, strings, additions |
-| **yellow** | `#fabd2f` | Warnings, numbers |
-| **blue** | `#83a598` | Info, functions |
-| **purple** | `#d3869b` | Keywords, special |
-| **orange** | `#ff9500` | **Mistral signature orange** - constants, operators, highlights |
-| **cyan** | `#8ec07c` | Types, hints |
+| **red** | `#e06c75` | Errors, deletions (softer) |
+| **green** | `#98c379` | Success, strings (softer) |
+| **yellow** | `#e5c07b` | Warnings, numbers (softer) |
+| **blue** | `#7aa2f7` | **Mistral blue** - Info, functions, primary accent |
+| **purple** | `#9d75d0` | **Mistral purple** - Keywords, cursor, secondary accent |
+| **orange** | `#d68750` | Soft Mistral orange - constants, highlights |
+| **cyan** | `#7dcfff` | Types, hints (softer) |
+
+## Bright Variants
+
+| Name | Hex | Usage |
+|------|-----|-------|
+| **bright_red** | `#ff8a8a` | Brighter red (softer) |
+| **bright_green** | `#a8d868` | Brighter green |
+| **bright_yellow** | `#f5ab35` | Brighter yellow-orange (softer) |
+| **bright_blue** | `#9bb0f2` | Brighter blue |
+| **bright_purple** | `#b895e6` | Brighter purple |
+| **bright_cyan** | `#9ce7ff` | Brighter cyan |
+| **bright_fg** | `#fbf1c7` | Bright foreground |
 
 ## Bright Variants
 
