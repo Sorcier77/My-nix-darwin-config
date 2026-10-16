@@ -14,27 +14,6 @@
       resurrect
       continuum
       logging
-      {
-        plugin = catppuccin;
-        extraConfig = ''
-          set -g @catppuccin_flavour 'frappe'
-          set -g @catppuccin_window_left_separator ""
-          set -g @catppuccin_window_right_separator " "
-          set -g @catppuccin_window_middle_separator " █"
-          set -g @catppuccin_window_number_position "right"
-          set -g @catppuccin_window_default_fill "number"
-          set -g @catppuccin_window_default_text "#W"
-          set -g @catppuccin_window_current_fill "number"
-          set -g @catppuccin_window_current_text "#W"
-          set -g @catppuccin_status_modules_right "directory user host session"
-          set -g @catppuccin_status_left_separator  " "
-          set -g @catppuccin_status_right_separator ""
-          set -g @catppuccin_status_right_separator_inverse "no"
-          set -g @catppuccin_status_fill "icon"
-          set -g @catppuccin_status_connect_separator "no"
-          set -g @catppuccin_directory_text "#{pane_current_path}"
-        '';
-      }
     ];
 
     extraConfig = ''
@@ -45,6 +24,40 @@
       set -as terminal-features ",foot:RGB"
       set -as terminal-features ",xterm-kitty:RGB"
       set -as terminal-overrides ",xterm*:Tc"
+
+      # ===========================================================================
+      # MISTRAL GRUVBOX MATERIAL COLORS
+      # Dark theme with Mistral's signature orange and Gruvbox Material palette
+      # ===========================================================================
+      # Background colors
+      set -g status-style "bg=#1a1a1a,fg=#ebdbb2"
+      set -g window-status-current-style "bg=#282828,fg=#ff9500,bold"
+      set -g window-status-style "bg=#1a1a1a,fg=#83a598"
+      set -g pane-border-style "fg=#3a3a3a"
+      set -g pane-active-border-style "fg=#ff9500"
+
+      # Status bar - left side
+      set -g status-left-length 20
+      set -g status-left-style "bg=#282828,fg=#ebdbb2"
+      set -g status-left "[\#S]"
+
+      # Status bar - right side
+      set -g status-right-style "bg=#282828,fg=#ebdbb2"
+      set -g status-right "%H:%M:%S | %Y-%m-%d | #{host}"
+
+      # Window style
+      set -g window-style "bg=#1a1a1a,fg=#ebdbb2"
+      set -g window-active-style "bg=#282828,fg=#ff9500"
+
+      # Message style
+      set -g message-style "bg=#1a1a1a,fg=#fabd2f,bold"
+      set -g message-command-style "bg=#1a1a1a,fg=#b8bb26"
+
+      # Mode style
+      set -g mode-style "bg=#ff9500,fg=#1a1a1a,bold"
+
+      # Custom color palette (256 colors)
+      set -ga terminal-colors ",#1a1a1a,#fb4934,#b8bb26,#fabd2f,#83a598,#d3869b,#8ec07c,#ebdbb2,#3a3a3a,#ff9500,#83a598,#b8bb26,#fabd2f,#8ec07c,#fb4934,#d3869b,#fbf1c7"
 
       # Increase scrollback buffer
       set -g history-limit 100000

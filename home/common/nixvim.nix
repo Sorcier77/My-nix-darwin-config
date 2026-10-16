@@ -33,16 +33,37 @@
     globals.mapleader = " ";
 
     # =============================================================================
-    # MISTRALGRUV COLORSCHEME
-    # Professional cybersecurity theme: Gruvbox readability + Mistral AI colors
+    # MISTRAL GRUVBOX MATERIAL COLORSCHEME
+    # Dark theme with Mistral's signature orange + Gruvbox Material palette
     # =============================================================================
     extraConfigLua = ''
-      -- MistralGruv: Deep dark with signature purple/blue
+      -- Mistral Gruvbox Material: Charbon backgrounds + Mistral orange + Gruvbox colors
       local c = {
-        bg0 = "#1a1a2e", bg1 = "#16213e", bg2 = "#0f3460",
-        fg0 = "#e8e8e8", fg1 = "#d4d4d4", fg2 = "#a8a8a8",
-        purple = "#9d75d0", blue = "#7aa2f7", cyan = "#7dcfff",
-        green = "#98c379", red = "#e06c75", orange = "#e5895e", yellow = "#e5c07b"
+        -- Backgrounds (Charbon / Dark)
+        bg0 = "#1a1a1a",      -- Main background (charbon)
+        bg1 = "#282828",      -- Slightly lighter background
+        bg2 = "#3a3a3a",      -- Selection/visual background
+        bg3 = "#000000",      -- Pure black for contrast
+        
+        -- Foregrounds
+        fg0 = "#ebdbb2",      -- Main foreground (Gruvbox light)
+        fg1 = "#d4be98",      -- Dimmer foreground
+        fg2 = "#a89984",      -- Comments, line numbers
+        fg3 = "#83a598",      -- Blue-ish foreground
+        
+        -- Accent colors (Gruvbox Material + Mistral)
+        red = "#fb4934",       -- Errors, deletions
+        green = "#b8bb26",     -- Success, strings
+        yellow = "#fabd2f",    -- Warnings, numbers
+        blue = "#83a598",      -- Info, functions
+        purple = "#d3869b",    -- Keywords, special
+        orange = "#ff9500",    -- Mistral signature orange (constants, operators)
+        cyan = "#8ec07c",      -- Types, hints
+        
+        -- Bright variants
+        bright_red = "#fe8019",
+        bright_orange = "#ffa500",
+        bright_fg = "#fbf1c7"
       }
       
       local function hl(g, fg, bg, attr)
@@ -56,42 +77,115 @@
       vim.cmd("hi clear")
       vim.opt.background = "dark"
       
-      -- Base
+      -- Base highlighting
       hl("Normal", c.fg0, c.bg0)
-      hl("Cursor", c.bg0, c.purple)
+      hl("NormalFloat", c.fg0, c.bg1)
+      hl("FloatBorder", c.fg2, c.bg1)
+      hl("Cursor", c.bg0, c.orange)
       hl("CursorLine", nil, c.bg1)
-      hl("CursorLineNr", c.purple, c.bg1, "bold")
+      hl("CursorLineNr", c.orange, c.bg1, "bold")
       hl("LineNr", c.fg2, c.bg0)
-      hl("StatusLine", c.fg1, c.bg1)
+      hl("StatusLine", c.fg0, c.bg2, "bold")
       hl("StatusLineNC", c.fg2, c.bg1)
       hl("Visual", nil, c.bg2)
-      hl("VertSplit", c.fg3, c.bg0)
+      hl("VertSplit", c.fg2, c.bg0)
+      hl("WinSeparator", c.fg2, c.bg0)
+      hl("Folded", c.fg2, c.bg1)
+      hl("FoldColumn", c.fg2, c.bg0)
+      hl("SignColumn", c.fg2, c.bg0)
       
-      -- Syntax
+      -- Syntax highlighting
       hl("Comment", c.fg2, nil, "italic")
-      hl("Keyword", c.purple)
+      hl("Keyword", c.purple, nil, "bold")
+      hl("Conditional", c.purple)
+      hl("Repeat", c.purple)
+      hl("Operator", c.orange)
       hl("String", c.green)
-      hl("Number", c.orange)
+      hl("Character", c.green)
+      hl("Number", c.yellow)
+      hl("Boolean", c.yellow)
+      hl("Float", c.yellow)
       hl("Function", c.blue)
-      hl("Type", c.cyan)
-      hl("Constant", c.yellow)
+      hl("Method", c.blue)
       hl("Identifier", c.fg0)
-      hl("Operator", c.fg0)
+      hl("Type", c.cyan)
+      hl("StorageClass", c.cyan)
+      hl("Structure", c.cyan)
+      hl("Constant", c.orange, nil, "bold")
+      hl("PreProc", c.orange)
+      hl("Include", c.orange)
+      hl("Define", c.orange)
+      hl("Macro", c.orange)
+      hl("Tag", c.blue)
+      hl("Special", c.cyan)
+      hl("SpecialChar", c.cyan)
+      hl("SpecialComment", c.fg2, nil, "italic")
+      hl("Error", c.red, nil, "bold,underline")
+      hl("Todo", c.bg0, c.yellow, "bold")
       
-      -- Diagnostics
-      hl("ErrorMsg", c.red, nil, "bold")
-      hl("WarningMsg", c.orange, nil, "bold")
-      hl("LspDiagnosticsDefaultError", c.red)
-      hl("LspDiagnosticsDefaultWarning", c.orange)
-      hl("LspDiagnosticsDefaultInformation", c.blue)
-      hl("LspDiagnosticsDefaultHint", c.cyan)
+      -- LSP & Diagnostics
+      hl("DiagnosticError", c.red)
+      hl("DiagnosticWarn", c.yellow)
+      hl("DiagnosticInfo", c.blue)
+      hl("DiagnosticHint", c.cyan)
+      hl("DiagnosticOk", c.green)
+      hl("DiagnosticVirtualTextError", c.red, c.bg0)
+      hl("DiagnosticVirtualTextWarn", c.yellow, c.bg0)
+      hl("DiagnosticVirtualTextInfo", c.blue, c.bg0)
+      hl("DiagnosticVirtualTextHint", c.cyan, c.bg0)
+      hl("LspReferenceText", nil, c.bg2)
+      hl("LspReferenceRead", nil, c.bg2, "underline")
+      hl("LspReferenceWrite", nil, c.bg2, "underline")
+      hl("LspCodeLens", c.fg2)
+      hl("LspCodeLensSeparator", c.fg2)
+      hl("LspSignatureActiveParameter", c.orange, nil, "underline")
+      
+      -- Completion menu
+      hl("Pmenu", c.fg0, c.bg2)
+      hl("PmenuSel", c.bg0, c.orange, "bold")
+      hl("PmenuSbar", c.fg2, c.bg1)
+      hl("PmenuThumb", c.fg0, c.bg2)
       
       -- Diff
       hl("DiffAdd", c.green, "#284728")
       hl("DiffDelete", c.red, "#452828")
       hl("DiffChange", c.yellow, "#283b45")
+      hl("DiffText", c.fg0, "#283b45")
       
-      vim.g.colors_name = "mistralgruv"
+      -- Search
+      hl("Search", c.bg0, c.orange)
+      hl("IncSearch", c.bg0, c.orange)
+      hl("CurSearch", c.bg0, c.bright_orange)
+      
+      -- Messages
+      hl("ErrorMsg", c.red, c.bg0, "bold")
+      hl("WarningMsg", c.yellow, c.bg0, "bold")
+      hl("MoreMsg", c.blue)
+      hl("ModeMsg", c.fg0)
+      hl("NonText", c.fg2)
+      
+      -- Tabs
+      hl("TabLine", c.fg2, c.bg1)
+      hl("TabLineSel", c.fg0, c.bg2, "bold")
+      hl("TabLineFill", c.fg2, c.bg0)
+      
+      -- Spell checking
+      hl("SpellBad", c.red, nil, "underline")
+      hl("SpellCap", c.yellow, nil, "underline")
+      hl("SpellRare", c.purple, nil, "underline")
+      hl("SpellLocal", c.cyan, nil, "underline")
+      
+      -- Whitespace
+      hl("Whitespace", c.fg2)
+      hl("EndOfBuffer", c.bg0)
+      
+      -- UI Elements
+      hl("MatchParen", c.orange, nil, "bold")
+      hl("Directory", c.blue)
+      hl("Title", c.fg0, nil, "bold")
+      hl("Question", c.yellow)
+      
+      vim.g.colors_name = "mistral-gruvbox-material"
     '';
 
     # Disable catppuccin

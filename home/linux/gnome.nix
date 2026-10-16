@@ -147,6 +147,8 @@ in
         icon-theme = "Papirus-Dark";
         cursor-theme = "Bibata-Modern-Ice";
         cursor-size = 20;
+        # Custom accent color (Mistral orange)
+        accent-color = lib.mkForce "#ff9500";
       };
 
       # --- Window Manager (Minimalisme Pur) ---
@@ -357,6 +359,60 @@ in
       papirus-icon-theme
       adw-gtk3
       bibata-cursors
+      
+      # Custom GTK CSS for Mistral Gruvbox Material theme
+      (pkgs.writeText "mistral-gruvbox-gtk.css" ''
+        /* Mistral Gruvbox Material GTK Theme Overrides */
+        @define-color bg_color #1a1a1a;
+        @define-color fg_color #ebdbb2;
+        @define-color base_color #282828;
+        @define-color text_color #ebdbb2;
+        @define-color accent_color #ff9500;
+        @define-color accent_bg #3a3a3a;
+        @define-color selected_fg #1a1a1a;
+        @define-color selected_bg #ff9500;
+        @define-color error_color #fb4934;
+        @define-color success_color #b8bb26;
+        @define-color warning_color #fabd2f;
+        
+        /* Dark background */
+        windowframe, window, placessidebar, headerbar {
+          background-color: @bg_color;
+          color: @text_color;
+        }
+        
+        /* Accent color for selected items */
+        row:selected, button:checked, switch:checked {
+          background-color: @selected_bg;
+          color: @selected_fg;
+        }
+        
+        /* Entry and text fields */
+        entry, textview, text {
+          background-color: @base_color;
+          color: @text_color;
+          border-color: @accent_color;
+        }
+        
+        /* Buttons */
+        button {
+          background-color: @base_color;
+          color: @text_color;
+          border-color: @accent_color;
+        }
+        
+        button:hover {
+          background-color: @accent_bg;
+          border-color: @accent_color;
+        }
+        
+        /* Notification banners */
+        .notification-banner {
+          background-color: @base_color;
+          border-color: @accent_color;
+          color: @text_color;
+        }
+      '')
 
       # Hardware tools
       fprintd

@@ -53,9 +53,8 @@
     thc-hydra # Network Logon Cracker
     john # Password Cracker (Jumbo)
     hashcat # Advanced Password Recovery (GPU)
-    netexec # Modern Successor to CrackMapExec
-    bloodhound-py # Python Ingestor for BloodHound
-    bloodhound-ce # Modern BloodHound Community Edition
+    #netexec # Modern Successor to CrackMapExec
+    #bloodhound-ce # Modern BloodHound Community Edition
 
     # Network Attacks & MitM
     socat # Netcat avancé (Relais, Tunnels)
