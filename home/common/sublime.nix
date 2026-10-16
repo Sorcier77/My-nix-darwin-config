@@ -63,7 +63,7 @@
   '';
 
   # Mistral Gruvbox Material color scheme for Sublime Text
-  home.file.".config/sublime-text/Packages/User/Mistral-Gruvbox-Material.sublime-color-scheme".text = pkgs.writeText "mistral-gruvbox-scheme" ''{
+  home.file.".config/sublime-text/Packages/User/Mistral-Gruvbox-Material.sublime-color-scheme".text = ''{
     "name": "Mistral Gruvbox Material",
     "author": "Mistral AI",
     "base": "dark",
