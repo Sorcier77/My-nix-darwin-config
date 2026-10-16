@@ -101,13 +101,14 @@ in
       };
 
       # Mistral Gruvbox Material (Soft) window border coloring
+      # Charbon backgrounds with subtle Mistral orange accents
       colors = {
         focused = {
-          border = "#7aa2f7";      # Mistral blue (subtler than orange)
+          border = "#d68750";      # Soft Mistral orange
           background = "#1a1a1a";   # Charbon
           text = "#ebdbb2";        # Gruvbox fg
-          indicator = "#7aa2f7";    # Mistral blue
-          childBorder = "#7aa2f7";  # Mistral blue
+          indicator = "#d68750";    # Soft Mistral orange
+          childBorder = "#d68750";  # Soft Mistral orange
         };
         focusedInactive = {
           border = "#83a598";      # Gruvbox blue
@@ -119,7 +120,7 @@ in
         unfocused = {
           border = "#3a3a3a";      # Dark gray/charbon
           background = "#1a1a1a";   # Charbon
-          text = "#83a598";        # Gruvbox blue (dim)
+          text = "#666666";        # Dim gray
           indicator = "#3a3a3a";    # Dark gray
           childBorder = "#3a3a3a";  # Dark gray
         };
@@ -207,8 +208,8 @@ in
         # Screenshots (Print Screen to select a region, copy to clipboard)
         "Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.wl-clipboard}/bin/wl-copy";
         
-        # Screen Lock (Soft Mistral Gruvbox Material theme)
-        "${modifier}+Shift+x" = "exec /usr/bin/swaylock -f -c 1a1a1a --indicator-idle-visible --show-keyboard-layout --inside-color 1a1a1a00 --ring-color 7aa2f7 --key-hl-color 7aa2f7 --text-color ebdbb2 --line-color 7aa2f700 --inside-ver-color 7aa2f700 --ring-ver-color 98c379 --inside-wrong-color e06c7500 --ring-wrong-color e06c75";
+        # Screen Lock (Soft Mistral orange)
+        "${modifier}+Shift+x" = "exec /usr/bin/swaylock -f -c 1a1a1a --indicator-idle-visible --show-keyboard-layout --inside-color 1a1a1a00 --ring-color d68750 --key-hl-color d68750 --text-color cccccc --line-color d6875000 --inside-ver-color d6875000 --ring-ver-color 888888 --inside-wrong-color ff000000 --ring-wrong-color ff0000";
 
         # Sound controls (using swayosd-client for OSD indicators, auto-unmuting when raising volume)
         "XF86AudioRaiseVolume" = "exec ${pkgs.swayosd}/bin/swayosd-client --output-volume raise --max-volume 150 && /usr/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ 0";
@@ -293,36 +294,36 @@ in
       }
       window#waybar {
         background-color: #1a1a1a;
-        border-bottom: 1px solid #3a3a3a;
-        color: #ebdbb2;
+        border-bottom: 1px solid #333333;
+        color: #cccccc;
       }
       #workspaces button {
         padding: 0 12px;
         background-color: transparent;
-        color: #83a598;
+        color: #888888;
         border-bottom: 2px solid transparent;
       }
       #workspaces button.focused {
         background-color: #282828;
-        border-bottom: 2px solid #7aa2f7;
-        color: #7aa2f7;
+        border-bottom: 2px solid #d68750;
+        color: #d68750;
       }
       #workspaces button:hover {
-        background-color: #3a3a3a;
-        color: #ebdbb2;
+        background-color: #333333;
+        color: #cccccc;
       }
       #clock, #cpu, #memory, #battery, #custom-power, #custom-vpn, #network, #pulseaudio, #wireplumber {
         padding: 0 10px;
         margin: 0 2px;
-        color: #98c379;
+        color: #aaaaaa;
       }
       #battery.critical:not(.charging) {
-        background-color: #e06c75;
+        background-color: #d68750;
         color: #1a1a1a;
         font-weight: bold;
       }
       #battery.charging {
-        color: #98c379;
+        color: #d68750;
       }
     '';
   };
@@ -347,10 +348,10 @@ in
     * {
       bg: #1a1a1a;
       bg-alt: #282828;
-      fg: #ebdbb2;
-      fg-alt: #83a598;
-      accent: #7aa2f7;
-      urgent: #e06c75;
+      fg: #cccccc;
+      fg-alt: #888888;
+      accent: #d68750;
+      urgent: #d68750;
       
       background-color: @bg;
       text-color: @fg;
@@ -363,7 +364,7 @@ in
     window {
       width: 40%;
       border: 1px;
-      border-color: #3a3a3a;
+      border-color: #333333;
       border-radius: 4px;
       padding: 18px;
     }
@@ -375,7 +376,7 @@ in
     inputbar {
       background-color: @bg-alt;
       border: 1px;
-      border-color: #3a3a3a;
+      border-color: #333333;
       border-radius: 4px;
       padding: 10px 14px;
       children: [ prompt, entry ];
@@ -440,7 +441,7 @@ in
     timeouts = [
       {
         timeout = 300; # 5 minutes: Lock screen
-        command = "/usr/bin/swaylock -f -c 1a1a1a --indicator-idle-visible --show-keyboard-layout --inside-color 1a1a1a00 --ring-color 7aa2f7 --key-hl-color 7aa2f7 --text-color ebdbb2 --line-color 7aa2f700 --inside-ver-color 7aa2f700 --ring-ver-color 98c379 --inside-wrong-color e06c7500 --ring-wrong-color e06c75";
+        command = "/usr/bin/swaylock -f -c 1a1a1a --indicator-idle-visible --show-keyboard-layout --inside-color 1a1a1a00 --ring-color d68750 --key-hl-color d68750 --text-color cccccc --line-color d6875000 --inside-ver-color d6875000 --ring-ver-color 888888 --inside-wrong-color ff000000 --ring-wrong-color ff0000";
       }
       {
         timeout = 600; # 10 minutes: Turn off display to save battery
@@ -449,8 +450,8 @@ in
       }
     ];
     events = {
-      before-sleep = "/usr/bin/swaylock -f -c 1a1a1a --indicator-idle-visible --show-keyboard-layout --inside-color 1a1a1a00 --ring-color 7aa2f7 --key-hl-color 7aa2f7 --text-color ebdbb2 --line-color 7aa2f700 --inside-ver-color 7aa2f700 --ring-ver-color 98c379 --inside-wrong-color e06c7500 --ring-wrong-color e06c75";
-      lock = "/usr/bin/swaylock -f -c 1a1a1a --indicator-idle-visible --show-keyboard-layout --inside-color 1a1a1a00 --ring-color 7aa2f7 --key-hl-color 7aa2f7 --text-color ebdbb2 --line-color 7aa2f700 --inside-ver-color 7aa2f700 --ring-ver-color 98c379 --inside-wrong-color e06c7500 --ring-wrong-color e06c75";
+      before-sleep = "/usr/bin/swaylock -f -c 1a1a1a --indicator-idle-visible --show-keyboard-layout --inside-color 1a1a1a00 --ring-color d68750 --key-hl-color d68750 --text-color cccccc --line-color d6875000 --inside-ver-color d6875000 --ring-ver-color 888888 --inside-wrong-color ff000000 --ring-wrong-color ff0000";
+      lock = "/usr/bin/swaylock -f -c 1a1a1a --indicator-idle-visible --show-keyboard-layout --inside-color 1a1a1a00 --ring-color d68750 --key-hl-color d68750 --text-color cccccc --line-color d6875000 --inside-ver-color d6875000 --ring-ver-color 888888 --inside-wrong-color ff000000 --ring-wrong-color ff0000";
     };
   };
 }
