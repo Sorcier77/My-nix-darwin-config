@@ -63,81 +63,61 @@
   '';
 
   # Mistral Gruvbox Material color scheme for Sublime Text
-  home.file.".config/sublime-text/Packages/User/Mistral-Gruvbox-Material.sublime-color-scheme".text = builtins.toJSON {
-    name = "Mistral Gruvbox Material";
-    author = "Mistral AI";
-    base = "dark";
-    
-    globals = {
-      background = "#1a1a1a";
-      foreground = "#ebdbb2";
-      caret = "#ff9500";
-      line_highlight = "#282828";
-      selection = "#3a3a3a";
-      selection_border = "#ff9500";
-      inactive_selection = "#3a3a3a80";
-      find_highlight = "#ff950040";
-      find_highlight_foreground = "#1a1a1a";
-      bracket_contents_foreground = "#ebdbb2";
-      bracket_contents_options = [ "underline" ];
-      tags_options = [ "stippled_underline" ];
-    };
-    
-    rules = [
-      { name = "Comment"; foreground = "#83a598"; font_style = "italic"; },
-      { name = "Keyword"; foreground = "#d3869b"; font_style = "bold"; },
-      { name = "String"; foreground = "#b8bb26"; },
-      { name = "Number"; foreground = "#fabd2f"; },
-      { name = "Function"; foreground = "#83a598"; },
-      { name = "Type"; foreground = "#8ec07c"; font_style = "bold"; },
-      { name = "Constant"; foreground = "#ff9500"; },
-      { name = "Operator"; foreground = "#ff9500"; },
-      { name = "Punctuation"; foreground = "#ebdbb2"; },
-      { name = "Entity.Other.Attribute-Name"; foreground = "#d3869b"; },
-      { name = "Meta.Preprocessor"; foreground = "#ff9500"; },
-      { name = "Meta.Tag"; foreground = "#83a598"; },
-      { name = "Support.Class"; foreground = "#8ec07c"; font_style = "bold"; },
-      { name = "Support.Function"; foreground = "#83a598"; },
-      { name = "Support.Constant"; foreground = "#ff9500"; },
-      { name = "Support.Type"; foreground = "#8ec07c"; },
-      { name = "Invalid"; foreground = "#fb4934"; background = "#1a1a1a"; },
-      { name = "Error"; foreground = "#fb4934"; },
-      { name = "Warning"; foreground = "#fabd2f"; },
-      
-      # Background
-      { name = "Background"; background = "#1a1a1a"; },
-      
-      # Line numbers and gutter
-      { name = "Gutter"; foreground = "#83a598"; },
-      { name = "Line Number"; foreground = "#83a598"; },
-      { name = "Current Line Number"; foreground = "#ff9500"; font_style = "bold"; },
-      
-      # Brackets
-      { name = "BracketMatch"; foreground = "#ff9500"; font_style = "bold"; },
-      
-      # Find in files
-      { name = "Find In Files Match"; foreground = "#ebdbb2"; background = "#ff950040"; },
-      
-      # Selection
-      { name = "Selection"; background = "#3a3a3a"; foreground = "#ebdbb2"; },
-      
-      # Whitespace
-      { name = "Whitespace"; foreground = "#3a3a3a"; },
-      
-      # Tabs
-      { name = "TabActive"; foreground = "#ff9500"; background = "#282828"; },
-      { name = "TabInactive"; foreground = "#83a598"; background = "#1a1a1a"; },
-      
-      # Status bar
-      { name = "Status Bar"; foreground = "#ebdbb2"; background = "#1a1a1a"; },
-      { name = "Status Bar Text"; foreground = "#ebdbb2"; },
-      
-      # Side bar
-      { name = "Side Bar"; foreground = "#ebdbb2"; background = "#282828"; },
-      { name = "Side Bar Tree Row"; foreground = "#ebdbb2"; },
-      { name = "Side Bar Tree Row Selected"; foreground = "#1a1a1a"; background = "#ff9500"; },
-    ];
-  };
+  home.file.".config/sublime-text/Packages/User/Mistral-Gruvbox-Material.sublime-color-scheme".text = pkgs.writeText "mistral-gruvbox-scheme" ''{
+    "name": "Mistral Gruvbox Material",
+    "author": "Mistral AI",
+    "base": "dark",
+    "globals": {
+      "background": "#1a1a1a",
+      "foreground": "#ebdbb2",
+      "caret": "#ff9500",
+      "line_highlight": "#282828",
+      "selection": "#3a3a3a",
+      "selection_border": "#ff9500",
+      "inactive_selection": "#3a3a3a80",
+      "find_highlight": "#ff950040",
+      "find_highlight_foreground": "#1a1a1a",
+      "bracket_contents_foreground": "#ebdbb2",
+      "bracket_contents_options": ["underline"],
+      "tags_options": ["stippled_underline"]
+    },
+    "rules": [
+      {"name": "Comment", "foreground": "#83a598", "font_style": "italic"},
+      {"name": "Keyword", "foreground": "#d3869b", "font_style": "bold"},
+      {"name": "String", "foreground": "#b8bb26"},
+      {"name": "Number", "foreground": "#fabd2f"},
+      {"name": "Function", "foreground": "#83a598"},
+      {"name": "Type", "foreground": "#8ec07c", "font_style": "bold"},
+      {"name": "Constant", "foreground": "#ff9500"},
+      {"name": "Operator", "foreground": "#ff9500"},
+      {"name": "Punctuation", "foreground": "#ebdbb2"},
+      {"name": "Entity.Other.Attribute-Name", "foreground": "#d3869b"},
+      {"name": "Meta.Preprocessor", "foreground": "#ff9500"},
+      {"name": "Meta.Tag", "foreground": "#83a598"},
+      {"name": "Support.Class", "foreground": "#8ec07c", "font_style": "bold"},
+      {"name": "Support.Function", "foreground": "#83a598"},
+      {"name": "Support.Constant", "foreground": "#ff9500"},
+      {"name": "Support.Type", "foreground": "#8ec07c"},
+      {"name": "Invalid", "foreground": "#fb4934", "background": "#1a1a1a"},
+      {"name": "Error", "foreground": "#fb4934"},
+      {"name": "Warning", "foreground": "#fabd2f"},
+      {"name": "Background", "background": "#1a1a1a"},
+      {"name": "Gutter", "foreground": "#83a598"},
+      {"name": "Line Number", "foreground": "#83a598"},
+      {"name": "Current Line Number", "foreground": "#ff9500", "font_style": "bold"},
+      {"name": "BracketMatch", "foreground": "#ff9500", "font_style": "bold"},
+      {"name": "Find In Files Match", "foreground": "#ebdbb2", "background": "#ff950040"},
+      {"name": "Selection", "background": "#3a3a3a", "foreground": "#ebdbb2"},
+      {"name": "Whitespace", "foreground": "#3a3a3a"},
+      {"name": "TabActive", "foreground": "#ff9500", "background": "#282828"},
+      {"name": "TabInactive", "foreground": "#83a598", "background": "#1a1a1a"},
+      {"name": "Status Bar", "foreground": "#ebdbb2", "background": "#1a1a1a"},
+      {"name": "Status Bar Text", "foreground": "#ebdbb2"},
+      {"name": "Side Bar", "foreground": "#ebdbb2", "background": "#282828"},
+      {"name": "Side Bar Tree Row", "foreground": "#ebdbb2"},
+      {"name": "Side Bar Tree Row Selected", "foreground": "#1a1a1a", "background": "#ff9500"}
+    ]
+  }'';
 
   home.file.".config/sublime-text/Packages/User/apple-template.tex".text = ''
     \documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$paper,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{article}

@@ -230,7 +230,7 @@ in
         custom-keybindings = [];
       };
 
-      # --- Terminal: Ptyxis Configuration (The most 'pleasant' GTK4 terminal) ---
+      # --- Terminal: Ptyxis Configuration (Mistral Gruvbox Material theme) ---
       "org/gnome/Ptyxis" = {
         restore-session = true;
         use-header-bar = true;
@@ -240,8 +240,10 @@ in
         audible-bell = false;
         visual-bell = false;
         scrollbar-policy = "never";
-        # Palette: Catppuccin Frappe-ish
-        # Ptyxis uses named profiles or system theme by default.
+        # Mistral Gruvbox Material palette
+        # Ptyxis uses named profiles or system theme by default
+        # Colors are controlled via GTK theme, but we can set a custom profile
+        # Using system GTK dark theme with our accent colors
       };
 
       "org/gnome/mutter" = {
