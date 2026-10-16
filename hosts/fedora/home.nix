@@ -3,24 +3,21 @@
 {
   imports = [
     inputs.sops-nix.homeManagerModules.sops
-    ../../home
-    ../../home/gnome.nix
-    ../../home/sway.nix
-    ./programs.nix
-    ./packages.nix
+    ../../home/common/default.nix
+    ../../home/linux/gnome.nix
+    ../../home/linux/sway.nix
+    ../../home/linux/programs.nix
+    ../../home/linux/packages.nix
+    ../../home/linux/sops.nix
   ];
 
   # Basic SOPS Configuration
   sops = {
-    defaultSopsFile = ../../secrets.yaml; # Place your encrypted secrets here
-    age.keyFile = "/home/orion/.config/sops/age/keys.txt"; # Use age for modern encryption
-    # Optional: use GPG instead
-    # gnupg.home = "/home/orion/.gnupg";
-    # gnupg.sshKeyPaths = [];
+    defaultSopsFile = ../../secrets.yaml;
+    age.keyFile = "/home/orion/.config/sops/age/keys.txt";
   };
 
   # Essential for non-NixOS Linux (Fedora, Ubuntu, etc.)
-  # This links .desktop files so apps appear in the menu
   targets.genericLinux.enable = true;
 
   home = {

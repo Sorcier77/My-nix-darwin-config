@@ -1,22 +1,17 @@
-{
-  pkgs,
-  inputs,
-  ...
-}:
+{ pkgs, inputs, ... }:
 
 {
   home.packages = with pkgs; [
     # =================================================================
-    #  LINUX ONLY TOOLS (Specific versions or overrides)
+    #  LINUX-SPECIFIC PACKAGES
     # =================================================================
-    inputs.burpsuitepro.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.burpsuitepro.packages.x86_64-linux.default
     pandoc # Document Converter
     helix # Modern Editor
 
+    # System utilities
     strace # System Call Tracer (Linux only)
     ltrace # Library Call Tracer (Linux only)
-
-    # Utilities
     wl-clipboard # Wayland Clipboard Support
   ];
 }

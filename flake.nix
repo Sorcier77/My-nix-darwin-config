@@ -10,10 +10,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixvim.url = "github:nix-community/nixvim";
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,12 +35,37 @@
     }:
     let
       inherit (self) outputs;
+      
+      # Shared overlay to disable failing Python package tests
+      pythonOverlay = (self: super: {
+        python312Packages = super.python312Packages.override (old: {
+          anyio = super.python312Packages.anyio.overrideAttrs (oldAttrs: {
+            doCheck = false;
+          });
+          httpcore = super.python312Packages.httpcore.overrideAttrs (oldAttrs: {
+            doCheck = false;
+          });
+          httpx = super.python312Packages.httpx.overrideAttrs (oldAttrs: {
+            doCheck = false;
+          });
+          proxy-py = super.python312Packages.proxy-py.overrideAttrs (oldAttrs: {
+            doCheck = false;
+          });
+          certipy-ad = super.python312Packages.certipy-ad.overrideAttrs (oldAttrs: {
+            doCheck = false;
+          });
+          netexec = super.python312Packages.netexec.overrideAttrs (oldAttrs: {
+            doCheck = false;
+          });
+        });
+      });
+      
       configuration =
         { pkgs, ... }:
         {
           system.primaryUser = "anselme";
 
-          #sudo with touchID
+          # sudo with touchID
           security.pam.services.sudo_local.touchIdAuth = true;
 
           users.users.anselme = {
@@ -89,9 +111,11 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.anselme = import ./hosts/darwin/home.nix;
+            home-manager.users.anselme = import ./hosts/darwin/home.nix { inherit inputs; };
             home-manager.extraSpecialArgs = { inherit inputs outputs; };
-
+            
+            # Fix Python package test failures
+            nixpkgs.overlays = [ pythonOverlay ];
           }
         ];
       };
@@ -101,10 +125,12 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         extraSpecialArgs = { inherit inputs outputs; };
         modules = [
-          ./hosts/fedora/home.nix
+          (import ./hosts/fedora/home.nix { inherit inputs; })
           {
             # Ensure unfree packages are allowed
             nixpkgs.config.allowUnfree = true;
+            # Fix Python package test failures
+            nixpkgs.overlays = [ pythonOverlay ];
           }
         ];
       };

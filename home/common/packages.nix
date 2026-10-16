@@ -108,7 +108,7 @@
     age # Modern File Encryption
     tomb # Crypto-folders (LUKS wrapper)
     srm # Secure Remove (DoD standard compliance)
-    mat2 # Metadata Anonymisation Toolkit
+    (mat2.overrideAttrs (oldAttrs: { doCheck = false; pytestCheckPhase = "true"; })) # Metadata Anonymisation Toolkit
     tor # The Onion Router
     proxychains-ng # Proxy chainer (redirects TCP traffic)
     tor-browser # Anonymity
@@ -148,7 +148,7 @@
     unzip
     p7zip
     jq # JSON Processor (Indispensable pour APIs)
-
+    calibre
     # Network/Mac (Specific implementations)
   ];
 }

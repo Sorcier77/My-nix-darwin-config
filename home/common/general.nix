@@ -27,6 +27,13 @@
     prefix=''${HOME}/.npm-global
   '';
 
+  # Link kitty terminfo to user's home directory so non-Nix / setuid binaries (e.g. system screen/tmux) can find it
+  home.file.".terminfo/x/xterm-kitty" = {
+    source = "${pkgs.kitty.terminfo}/share/terminfo/x/xterm-kitty";
+    force = true;
+  };
+
+
   home.activation.installNerdFonts = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     echo "Linking Nerd Fonts to ~/.local/share/fonts..."
     mkdir -p $HOME/.local/share/fonts

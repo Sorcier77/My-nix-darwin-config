@@ -1,8 +1,44 @@
 { pkgs, lib, config, ... }:
 
+let
+  power-menu = pkgs.writeShellScriptBin "power-menu" ''
+    #!/usr/bin/env bash
+    export PATH="/usr/sbin:/usr/bin:/bin:$PATH"
+
+    ACTIVE_PROFILE=$(tuned-adm active 2>/dev/null | cut -d' ' -f4-)
+
+    if [ -z "$ACTIVE_PROFILE" ]; then
+        exit 1
+    fi
+
+    if [[ "$ACTIVE_PROFILE" =~ "performance" ]]; then
+        STATUS="PERFORMANCE"
+    elif [[ "$ACTIVE_PROFILE" =~ "powersave" || "$ACTIVE_PROFILE" =~ "battery" ]]; then
+        STATUS="POWERSAVE"
+    else
+        STATUS="BALANCED"
+    fi
+
+    OPTIONS="1. Switch to POWERSAVE (Silent)\n2. Switch to BALANCED (Default)\n3. Switch to PERFORMANCE (Turbo)"
+    CHOICE=$(echo -e "$OPTIONS" | ${pkgs.rofi}/bin/rofi -dmenu -p " POWER: $STATUS " -config $HOME/.config/rofi/config.rasi)
+
+    case "$CHOICE" in
+        *POWERSAVE*)
+            tuned-adm profile powersave
+            ;;
+        *BALANCED*)
+            tuned-adm profile balanced
+            ;;
+        *PERFORMANCE*)
+            tuned-adm profile throughput-performance
+            ;;
+    esac
+  '';
+in
 {
   # Install Sway-related user utilities
   home.packages = with pkgs; [
+    power-menu
     waybar
     rofi
     swaybg
@@ -40,16 +76,53 @@
         };
       };
       
-      # Gaps (makes the interface look clean and premium)
+      # Gaps (makes the interface look clean and premium, hides gaps/borders when only one window is open)
       gaps = {
         inner = 8;
         outer = 4;
+        smartGaps = true;
+        smartBorders = "on";
       };
 
       # Window borders configuration
       window = {
         border = 1;
         titlebar = false; # Hide titlebars for a cleaner, modern look
+        commands = [
+          {
+            command = "move scratchpad, resize set 950 600, move position center";
+            criteria = { app_id = "scratchpad_term"; };
+          }
+          {
+            command = "floating enable, resize set 800 500, move position center";
+            criteria = { app_id = "network_manager"; };
+          }
+        ];
+      };
+
+      # Monochrome window border coloring (focused window white, inactive dark gray)
+      colors = {
+        focused = {
+          border = "#ffffff";
+          background = "#000000";
+          text = "#ffffff";
+          indicator = "#ffffff";
+          childBorder = "#ffffff";
+        };
+        focusedInactive = {
+          border = "#222222";
+          background = "#000000";
+          text = "#888888";
+          indicator = "#222222";
+          childBorder = "#222222";
+        };
+        unfocused = {
+          border = "#111111";
+          background = "#000000";
+          text = "#888888";
+          indicator = "#111111";
+          childBorder = "#111111";
+        };
       };
 
       # Status bar configuration (disable default swaybar to use Waybar)
@@ -59,6 +132,7 @@
       keybindings = lib.mkOptionDefault {
         "${modifier}+Return" = "exec ${terminal}";
         "${modifier}+d" = "exec ${menu}";
+        "${modifier}+Escape" = "exec swaymsg [app_id=\"scratchpad_term\"] scratchpad show || exec ${pkgs.kitty}/bin/kitty --class scratchpad_term";
         
         # Close active window (Super+q for fast, professional exit, Alt+F4 fallback)
         "${modifier}+q" = "kill";
@@ -133,18 +207,18 @@
         # Screenshots (Print Screen to select a region, copy to clipboard)
         "Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.wl-clipboard}/bin/wl-copy";
         
-        # Screen Lock (Sleek blur effect with lock clock, Super+Shift+x, AZERTY layout, high security blur)
-        "${modifier}+Shift+x" = "exec ${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --show-keyboard-layout --effect-blur 20x15 --ring-color ca9ee6 --key-hl-color 81c8be --text-color c6d0f5";
+        # Screen Lock (Sleek monochrome lock screen utilizing system-wide PAM)
+        "${modifier}+Shift+x" = "exec /usr/bin/swaylock -f -c 000000 --indicator-idle-visible --show-keyboard-layout --inside-color 00000000 --ring-color ffffff --key-hl-color ffffff --text-color ffffff --line-color 00000000 --inside-ver-color 00000000 --ring-ver-color 888888 --inside-wrong-color 00000000 --ring-wrong-color ff0000";
 
-        # Sound controls (using SwayOSD client)
-        "XF86AudioRaiseVolume" = "exec swayosd-client --output-volume raise";
-        "XF86AudioLowerVolume" = "exec swayosd-client --output-volume lower";
-        "XF86AudioMute" = "exec swayosd-client --output-volume mute-toggle";
-        "XF86AudioMicMute" = "exec swayosd-client --input-volume mute-toggle";
+        # Sound controls (using swayosd-client for OSD indicators, auto-unmuting when raising volume)
+        "XF86AudioRaiseVolume" = "exec ${pkgs.swayosd}/bin/swayosd-client --output-volume raise --max-volume 150 && /usr/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ 0";
+        "XF86AudioLowerVolume" = "exec ${pkgs.swayosd}/bin/swayosd-client --output-volume lower";
+        "XF86AudioMute" = "exec ${pkgs.swayosd}/bin/swayosd-client --output-volume mute-toggle";
+        "XF86AudioMicMute" = "exec ${pkgs.swayosd}/bin/swayosd-client --input-volume mute-toggle";
 
-        # Brightness controls (using SwayOSD client)
-        "XF86MonBrightnessUp" = "exec swayosd-client --brightness raise";
-        "XF86MonBrightnessDown" = "exec swayosd-client --brightness lower";
+        # Brightness controls (using swayosd-client for OSD indicators)
+        "XF86MonBrightnessUp" = "exec ${pkgs.swayosd}/bin/swayosd-client --brightness raise";
+        "XF86MonBrightnessDown" = "exec ${pkgs.swayosd}/bin/swayosd-client --brightness lower";
       };
 
       # Startup applications
@@ -167,10 +241,10 @@
         height = 30;
         modules-left = [ "sway/workspaces" "sway/mode" ];
         modules-center = [ "clock" ];
-        modules-right = [ "cpu" "memory" "battery" "network" "pulseaudio" ];
+        modules-right = [ "cpu" "memory" "battery" "network" "custom/vpn" "wireplumber" ];
         
         clock = {
-          format = "SYS: {:%Y-%m-%d %H:%M}";
+          format = "ORION | {:%Y-%m-%d %H:%M}";
           tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
         };
         cpu = {
@@ -191,13 +265,20 @@
           format-charging = "BAT: {capacity}%";
           format-plugged = "BAT: {capacity}%";
           format-alt = "BAT: {time}";
+          on-click-right = "${power-menu}/bin/power-menu";
         };
         network = {
-          format-wifi = "WIFI: {essid} | IP: {ipaddr}";
-          format-ethernet = "ETH: {ifname} | IP: {ipaddr}";
-          format-disconnected = "NET: Offline";
+          format-wifi = "IP: {ipaddr}";
+          format-ethernet = "IP: {ipaddr}";
+          format-disconnected = "Offline";
+          on-click = "${pkgs.kitty}/bin/kitty --class network_manager nmtui";
         };
-        pulseaudio = {
+        "custom/vpn" = {
+          exec = "ip addr | grep -E 'inet ' | grep -E 'tun|wg|tap' | awk '{print $2}' | cut -d'/' -f1 | head -n 1 | sed 's/^/VPN: /'";
+          interval = 5;
+          format = "{}";
+        };
+        wireplumber = {
           format = "VOL: {volume}%";
           format-muted = "VOL: Muted";
         };
@@ -211,35 +292,37 @@
         border-radius: 0;
       }
       window#waybar {
-        background-color: #1b1d24;
-        border-bottom: 1px solid #2d3139;
-        color: #c6d0f5;
+        background-color: #000000;
+        border-bottom: 1px solid #222222;
+        color: #ffffff;
       }
       #workspaces button {
         padding: 0 12px;
         background-color: transparent;
-        color: #c6d0f5;
+        color: #888888;
         border-bottom: 2px solid transparent;
       }
       #workspaces button.focused {
-        background-color: #2d3139;
-        border-bottom: 2px solid #8caaee;
-        color: #fff;
+        background-color: #111111;
+        border-bottom: 2px solid #ffffff;
+        color: #ffffff;
       }
       #workspaces button:hover {
-        background-color: #23252e;
+        background-color: #222222;
+        color: #ffffff;
       }
-      #clock, #cpu, #memory, #battery, #network, #pulseaudio {
+      #clock, #cpu, #memory, #battery, #custom-power, #custom-vpn, #network, #pulseaudio, #wireplumber {
         padding: 0 10px;
         margin: 0 2px;
-        color: #b5bfe2;
+        color: #cccccc;
       }
       #battery.critical:not(.charging) {
-        background-color: #e78284;
-        color: #1b1d24;
+        background-color: #ffffff;
+        color: #000000;
+        font-weight: bold;
       }
       #battery.charging {
-        color: #a6da95; /* Cyber green text when charging */
+        color: #ffffff;
       }
     '';
   };
@@ -255,19 +338,19 @@
       location: 0;
       disable-history: false;
       hide-scrollbar: true;
-      display-drun: " APPS ";
-      display-run: " RUN ";
+      display-drun: " ORION ";
+      display-run: " SECURE ";
     }
 
     @theme "/dev/null"
 
     * {
-      bg: #1b1d24;
-      bg-alt: #2d3139;
-      fg: #c6d0f5;
-      fg-alt: #8b92b6;
-      accent: #8caaee;
-      urgent: #e78284;
+      bg: #000000;
+      bg-alt: #111111;
+      fg: #ffffff;
+      fg-alt: #888888;
+      accent: #ffffff;
+      urgent: #ffffff;
       
       background-color: @bg;
       text-color: @fg;
@@ -278,11 +361,11 @@
     }
 
     window {
-      width: 45%;
+      width: 40%;
       border: 1px;
-      border-color: @bg-alt;
-      border-radius: 12px;
-      padding: 16px;
+      border-color: #222222;
+      border-radius: 4px;
+      padding: 18px;
     }
 
     mainbox {
@@ -291,23 +374,25 @@
 
     inputbar {
       background-color: @bg-alt;
-      border-radius: 8px;
+      border: 1px;
+      border-color: #222222;
+      border-radius: 4px;
       padding: 10px 14px;
       children: [ prompt, entry ];
-      spacing: 10px;
-      margin: 0 0 12px 0;
+      spacing: 12px;
+      margin: 0 0 14px 0;
     }
 
     prompt {
       background-color: @accent;
       text-color: @bg;
-      font: "JetBrainsMono Nerd Font Bold 12";
-      padding: 4px 8px;
-      border-radius: 4px;
+      font: "JetBrainsMono Nerd Font Bold 11";
+      padding: 4px 10px;
+      border-radius: 2px;
     }
 
     entry {
-      placeholder: "Search applications...";
+      placeholder: "Decrypting access to applications...";
       placeholder-color: @fg-alt;
       font: "JetBrainsMono Nerd Font 12";
       vertical-align: 0.5;
@@ -323,13 +408,13 @@
 
     element {
       padding: 8px 12px;
-      border-radius: 6px;
+      border-radius: 3px;
       spacing: 12px;
     }
 
     element selected {
-      background-color: @bg-alt;
-      text-color: @accent;
+      background-color: @accent;
+      text-color: @bg;
     }
 
     element-icon {
@@ -355,7 +440,7 @@
     timeouts = [
       {
         timeout = 300; # 5 minutes: Lock screen
-        command = "${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --show-keyboard-layout --effect-blur 20x15 --ring-color ca9ee6 --key-hl-color 81c8be --text-color c6d0f5";
+        command = "/usr/bin/swaylock -f -c 000000 --indicator-idle-visible --show-keyboard-layout --inside-color 00000000 --ring-color ffffff --key-hl-color ffffff --text-color ffffff --line-color 00000000 --inside-ver-color 00000000 --ring-ver-color 888888 --inside-wrong-color 00000000 --ring-wrong-color ff0000";
       }
       {
         timeout = 600; # 10 minutes: Turn off display to save battery
@@ -364,8 +449,8 @@
       }
     ];
     events = {
-      before-sleep = "${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --show-keyboard-layout --effect-blur 20x15 --ring-color ca9ee6 --key-hl-color 81c8be --text-color c6d0f5";
-      lock = "${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --show-keyboard-layout --effect-blur 20x15 --ring-color ca9ee6 --key-hl-color 81c8be --text-color c6d0f5";
+      before-sleep = "/usr/bin/swaylock -f -c 000000 --indicator-idle-visible --show-keyboard-layout --inside-color 00000000 --ring-color ffffff --key-hl-color ffffff --text-color ffffff --line-color 00000000 --inside-ver-color 00000000 --ring-ver-color 888888 --inside-wrong-color 00000000 --ring-wrong-color ff0000";
+      lock = "/usr/bin/swaylock -f -c 000000 --indicator-idle-visible --show-keyboard-layout --inside-color 00000000 --ring-color ffffff --key-hl-color ffffff --text-color ffffff --line-color 00000000 --inside-ver-color 00000000 --ring-ver-color 888888 --inside-wrong-color 00000000 --ring-wrong-color ff0000";
     };
   };
 }

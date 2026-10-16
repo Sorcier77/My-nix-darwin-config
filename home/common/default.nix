@@ -9,5 +9,6 @@
     ./sublime.nix
     ./tmux.nix
     ./zellij.nix
+    ./retroarch.nix
   ];
 }

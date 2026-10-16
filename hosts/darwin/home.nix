@@ -1,9 +1,10 @@
-{ ... }:
+{ inputs, ... }:
 
 {
   imports = [
-    ../../home
-    ./programs.nix
+    ../../home/common/default.nix
+    ../../home/darwin/programs.nix
+    ../../home/darwin/packages.nix
   ];
 
   home = {

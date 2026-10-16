@@ -18,21 +18,8 @@ let
   #     };
 in
 {
-  # SOPS Configuration for Home Manager
-  sops.secrets = {
-    "git/name" = { };
-    "git/email" = { };
-  };
-
-  # Template pour générer un fichier de config Git propre à partir des secrets
-  sops.templates."git-config".content = ''
-    [user]
-      name = "${config.sops.placeholder."git/name"}"
-      email = "${config.sops.placeholder."git/email"}"
-  '';
-
   # Restore the Powerlevel10k configuration file
-  home.file.".p10k.zsh".source = ./.p10k.zsh;
+  home.file.".p10k.zsh".source = ../../.p10k.zsh;
 
   # Create SSH sockets directory for connection multiplexing
   home.file.".ssh/sockets/.keep".text = "";
@@ -57,7 +44,7 @@ in
     enable = true;
     enableZshIntegration = true;
     # enableSshSupport = true; # Désactivé pour permettre l'utilisation de clés SSH basées sur fichiers
-    pinentry.package = pkgs.pinentry-gnome3;
+    pinentry.package = if pkgs.stdenv.hostPlatform.isDarwin then pkgs.pinentry-mac else pkgs.pinentry-gnome3;
     defaultCacheTtl = 600;
     maxCacheTtl = 7200;
   };
@@ -102,40 +89,43 @@ in
         background_opacity = "0.95";
         window_padding_width = 4;
         
-        # Colors (Catppuccin Frappe)
-        foreground = "#c6d0f5";
-        background = "#303446";
-        selection_foreground = "#303446";
-        selection_background = "#f2d5cf";
-        url_color = "#f2d5cf";
-        cursor = "#f2d5cf";
-        cursor_text_color = "#303446";
-        active_border_color = "#babed8";
-        inactive_border_color = "#737994";
-        bell_border_color = "#e5c890";
-        wayland_titlebar_color = "system";
-        macos_titlebar_color = "system";
-        active_tab_foreground = "#232634";
-        active_tab_background = "#ca9ee6";
-        inactive_tab_foreground = "#c6d0f5";
-        inactive_tab_background = "#292c3c";
-        tab_bar_background = "#232634";
-        color0 = "#51576d";
-        color8 = "#626880";
-        color1 = "#e78284";
-        color9 = "#e78284";
-        color2 = "#a6d189";
-        color10 = "#a6d189";
-        color3 = "#e5c890";
-        color11 = "#e5c890";
-        color4 = "#8caaee";
-        color12 = "#8caaee";
-        color5 = "#f4b8e4";
-        color13 = "#f4b8e4";
-        color6 = "#81c8be";
-        color14 = "#81c8be";
-        color7 = "#b5bfe2";
-        color15 = "#a5adce";
+        # Colors (MistralGruv - Custom Cyber Theme)
+        # Deep dark background with Mistral purple/blue accents
+        foreground = "#e8e8e8";
+        background = "#1a1a2e";
+        selection_foreground = "#1a1a2e";
+        selection_background = "#9d75d0";
+        url_color = "#7aa2f7";
+        cursor = "#9d75d0";
+        cursor_text_color = "#1a1a2e";
+        active_border_color = "#7aa2f7";
+        inactive_border_color = "#243b55";
+        bell_border_color = "#e5895e";
+        wayland_titlebar_color = "#1a1a2e";
+        macos_titlebar_color = "#1a1a2e";
+        active_tab_foreground = "#16213e";
+        active_tab_background = "#9d75d0";
+        inactive_tab_foreground = "#d4d4d4";
+        inactive_tab_background = "#16213e";
+        tab_bar_background = "#16213e";
+        
+        # ANSI colors - Gruvbox inspired with Mistral accents
+        color0 = "#1a1a2e";   # Black
+        color8 = "#4a4a6a";   # Bright black
+        color1 = "#e06c75";   # Red
+        color9 = "#ff8a8a";   # Bright red
+        color2 = "#98c379";   # Green
+        color10 = "#a8d868";  # Bright green
+        color3 = "#e5c07b";   # Yellow
+        color11 = "#f0d878";  # Bright yellow
+        color4 = "#7aa2f7";   # Blue (Mistral blue)
+        color12 = "#9bb0f2";  # Bright blue
+        color5 = "#9d75d0";   # Purple (Mistral purple)
+        color13 = "#b895e6";  # Bright purple
+        color6 = "#7dcfff";   # Cyan
+        color14 = "#9ce7ff";  # Bright cyan
+        color7 = "#b5bfe2";   # White
+        color15 = "#e8e8e8";  # Bright white
       };
       keybindings = {
         # Splits/Panes
@@ -183,7 +173,8 @@ in
     # --- Firefox Hardened & Optimized (Cyber Standard) ---
     firefox = {
       enable = true;
-      package = pkgs.firefox;
+      package = pkgs.firefox; # Utilise la derniere version depuis nixpkgs-unstable
+      configPath = "${config.xdg.configHome}/mozilla/firefox"; # Nouveau chemin XDG
       policies = {
         ExtensionSettings = {
           # uBlock Origin
@@ -194,6 +185,11 @@ in
           # Bitwarden
           "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi";
+            installation_mode = "force_installed";
+          };
+          # passbolt
+          "passbolt@passbolt.com" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/file/4868504/passbolt-5.13.4.xpi";
             installation_mode = "force_installed";
           };
         };
@@ -318,7 +314,7 @@ in
         "skynet-1" = {
           Hostname = "skynet-1";
           User = "orion";
-          IdentityFile = "~/.ssh/ed25519";
+          IdentityFile = "~/.ssh/id_ed25519";
           ForwardX11 = "yes";
           ForwardX11Trusted = "yes";
           SetEnv = { TERM = "xterm-256color"; };

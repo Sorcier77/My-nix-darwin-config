@@ -21,6 +21,282 @@ let
     ];
     doCheck = false;
   };
+
+  # Custom script to initialize a structured CTF directory and launch Zellij
+  ctf-init = pkgs.writeShellScriptBin "ctf-init" ''
+    #!/usr/bin/env bash
+    
+    # Clear colors
+    RED='\033[1;31m'
+    GREEN='\033[1;32m'
+    BLUE='\033[1;34m'
+    CYAN='\033[1;36m'
+    WHITE='\033[1;37m'
+    GRAY='\033[0;90m'
+    NC='\033[0m' # No Color
+
+    # Help Menu
+    if [ "$1" == "-h" ] || [ "$1" == "--help" ] || [ -z "$1" ]; then
+        echo -e "$CYAN┌──────────────────────────────────────────────┐$NC"
+        echo -e "$CYAN│$NC  $WHITE""ORION CTF WORKSPACE INITIALIZER""$NC           $CYAN│$NC"
+        echo -e "$CYAN├──────────────────────────────────────────────┤$NC"
+        echo -e "$CYAN│$NC  $GRAY""Usage:""$NC                                      $CYAN│$NC"
+        echo -e "$CYAN│$NC  ctf-init <session-name> [category]       $CYAN│$NC"
+        echo -e "$CYAN│$NC                                           $CYAN│$NC"
+        echo -e "$CYAN│$NC  $GRAY""Available Categories:""$NC                     $CYAN│$NC"
+        echo -e "$CYAN│$NC  - $WHITE""web""$NC      (Recon/Exploits/Web directories)  $CYAN│$NC"
+        echo -e "$CYAN│$NC  - $WHITE""pwn""$NC      (Binary/Exploits/GDB tabs)       $CYAN│$NC"
+        echo -e "$CYAN│$NC  - $WHITE""crypto""$NC   (Inputs/Scripts/Python tabs)     $CYAN│$NC"
+        echo -e "$CYAN│$NC  - $WHITE""wifi""$NC     (Captures/Cracking/Aircrack tabs)$CYAN│$NC"
+        echo -e "$CYAN└──────────────────────────────────────────────┘$NC"
+        exit 0
+    fi
+
+    NAME="$1"
+    TYPE=$(echo "''${2:-web}" | tr 'a-z' 'A-Z')
+    BASE_DIR="$HOME/Documents/CTF/$NAME"
+    
+    echo -e " $CYAN⚙$NC Initializing CTF Workspace: $WHITE$NAME$NC ($BLUE$TYPE$NC)..."
+    
+    # Create layout file name
+    LAYOUT_DIR="$HOME/.config/zellij/layouts"
+    mkdir -p "$LAYOUT_DIR"
+    LAYOUT_FILE="$LAYOUT_DIR/$NAME.kdl"
+
+    # Default structure based on category
+    case "$TYPE" in
+        PWN|REV|REVERSE)
+            mkdir -p "$BASE_DIR/binary"
+            mkdir -p "$BASE_DIR/exploits"
+            
+            cat <<EOF > "$LAYOUT_FILE"
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab name="Analysis & Debug" focus=true {
+        pane split_direction="vertical" {
+            pane name="Decompiler / Disassembler" cwd="$BASE_DIR/binary"
+            pane name="GDB / Debugger" cwd="$BASE_DIR/binary"
+        }
+    }
+    tab name="Exploitation" {
+        pane split_direction="horizontal" {
+            pane name="Exploit Script (Python/Pwntools)" cwd="$BASE_DIR/exploits"
+            pane name="Local Execution / Shell" cwd="$BASE_DIR/exploits"
+        }
+    }
+    tab name="Notes" {
+        pane name="Notes Editor" edit="$BASE_DIR/notes.md"
+    }
+}
+EOF
+            ;;
+            
+        CRYPTO|MATH|MISC)
+            mkdir -p "$BASE_DIR/inputs"
+            mkdir -p "$BASE_DIR/scripts"
+            
+            cat <<EOF > "$LAYOUT_FILE"
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab name="Workspace" focus=true {
+        pane split_direction="vertical" {
+            pane name="Python Scripting" cwd="$BASE_DIR/scripts"
+            pane name="Ciphertexts & Raw Data" cwd="$BASE_DIR/inputs"
+        }
+    }
+    tab name="Notes" {
+        pane name="Notes Editor" edit="$BASE_DIR/notes.md"
+    }
+}
+EOF
+            ;;
+
+        WIFI|WIRELESS|NET)
+            mkdir -p "$BASE_DIR/captures"
+            mkdir -p "$BASE_DIR/wordlists"
+            mkdir -p "$BASE_DIR/scripts"
+            
+            cat <<EOF > "$LAYOUT_FILE"
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab name="Captures" focus=true {
+        pane split_direction="vertical" {
+            pane name="Packet Captures" cwd="$BASE_DIR/captures"
+            pane name="Monitoring / Aircrack" cwd="$BASE_DIR/captures"
+        }
+    }
+    tab name="Cracking" {
+        pane split_direction="horizontal" {
+            pane name="Cracking Scripts" cwd="$BASE_DIR/scripts"
+            pane name="Wordlists & Dicts" cwd="$BASE_DIR/wordlists"
+        }
+    }
+    tab name="Notes" {
+        pane name="Notes Editor" edit="$BASE_DIR/notes.md"
+    }
+}
+EOF
+            ;;
+
+        *)
+            # Default Web/Boot2Root
+            mkdir -p "$BASE_DIR/recon"
+            mkdir -p "$BASE_DIR/exploits"
+            mkdir -p "$BASE_DIR/web"
+            
+            cat <<EOF > "$LAYOUT_FILE"
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab name="Recon" focus=true {
+        pane split_direction="vertical" {
+            pane name="Active Scans" cwd="$BASE_DIR/recon"
+            pane name="Web Recon" cwd="$BASE_DIR/web"
+        }
+    }
+    tab name="Exploits" {
+        pane split_direction="horizontal" {
+            pane name="Payloads & Exploitation" cwd="$BASE_DIR/exploits"
+            pane name="Reverse Shell Listener" cwd="$BASE_DIR/exploits"
+        }
+    }
+    tab name="Notes" {
+        pane name="Notes Editor" edit="$BASE_DIR/notes.md"
+    }
+}
+EOF
+            ;;
+    esac
+    
+    # Create notes file template
+    NOTES_FILE="$BASE_DIR/notes.md"
+    if [ ! -f "$NOTES_FILE" ]; then
+        case "$TYPE" in
+            PWN|REV|REVERSE)
+                cat <<EOF > "$NOTES_FILE"
+# CTF Pwn/Rev Session: $NAME
+Date: \$(date +%Y-%m-%d)
+Target Binary: 
+
+## 1. Binary Scouting (checksec, file, ldd)
+- Arch: 
+- Protections (NX, Canary, PIE):
+- libc version:
+
+## 2. Reverse Engineering Notes
+- Vulnerability found:
+- Offset to EIP/RIP:
+- Useful functions/gadgets (win, syscall, pop rdi):
+
+## 3. Exploit Strategy
+1. 
+EOF
+                ;;
+                
+            CRYPTO|MATH|MISC)
+                cat <<EOF > "$NOTES_FILE"
+# CTF Crypto Session: $NAME
+Date: \$(date +%Y-%m-%d)
+
+## 1. Scouting & Analysis
+- Cipher type:
+- Parameters (N, e, c, g, p):
+
+## 2. Cryptanalysis & Attacks Tested
+- Wiener's attack: [ ]
+- Fermat factorization: [ ]
+- Chinese Remainder Theorem: [ ]
+- Coppersmith's: [ ]
+
+## 3. Solve Script Output
+\`\`\`python
+# solve code
+\`\`\`
+EOF
+                ;;
+
+            WIFI|WIRELESS|NET)
+                cat <<EOF > "$NOTES_FILE"
+# CTF Wireless Session: $NAME
+Date: \$(date +%Y-%m-%d)
+Target ESSID/BSSID: 
+
+## 1. Reconnaissance
+- Frequency (2.4GHz / 5GHz):
+- Encryption type (WEP, WPA2, WPA3):
+- Channel:
+
+## 2. Attacks & Captures
+- PMKID Captured: [ ]
+- WPA Handshake Captured: [ ]
+- Deauth Attack: [ ]
+
+## 3. Cracking Results
+- Key: 
+EOF
+                ;;
+                
+            *)
+                cat <<EOF > "$NOTES_FILE"
+# CTF Web Session: $NAME
+Date: \$(date +%Y-%m-%d)
+Target IP/URL: 
+
+## 1. Scouting & Recon (Nmap / Web)
+- Open Ports:
+- Directory Busting:
+- Technologies used:
+
+## 2. Credentials & Loot
+- Users:
+- Passwords/Keys:
+- Flags:
+  - User: 
+  - Root: 
+
+## 3. Exploitation Steps
+1. 
+EOF
+                ;;
+        esac
+    fi
+    
+    echo -e " $GREEN✓$NC Workspace created at $BASE_DIR"
+    echo -e " $CYAN⚙$NC Launching Zellij workspace..."
+    export SHELL=$(which zsh 2>/dev/null || echo "/bin/zsh")
+    exec zellij --layout "$NAME"
+  '';
 in
 pkgs.mkShell {
   name = "ctf-env";
@@ -28,6 +304,13 @@ pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
     zsh
     eza
+    ctf-init
+    zellij
+    coreutils
+    gnused
+    gnugrep
+    findutils
+    which
     # --- Binary Exploitation & Pwn (Zardus style) ---
     gdb
     #pwndbg            # Powerful GDB extension (Modern standard)
@@ -76,7 +359,7 @@ pkgs.mkShell {
     feroxbuster # Add feroxbuster here
     seclists # Wordlists for fuzzing
     semgrep # Static Analysis Security Testing (SAST)
-    checkov # Infrastructure as Code (IaC) security scanner
+    # checkov # Infrastructure as Code (IaC) security scanner
 
     # --- Intelligence & Advanced Recon ---
     sn0int # Semi-automatic OSINT framework
@@ -182,7 +465,7 @@ pkgs.mkShell {
 
     # --- C2 & Pivoting (Modern Red Team) ---
     havoc # Modern C2 framework (Golang/C++)
-    sliver # C2 Framework (Go) - The modern standard
+      #sliver # C2 Framework (Go) - The modern standard
     ligolo-ng # Pivoting 2.0 (Tun interfaces, better than chisel)
     chisel # TCP Tunneling (Classic)
     sshuttle # VPN over SSH
@@ -255,7 +538,7 @@ else
 fi
 EOF
     chmod +x "$NIX_CTF_SUDO_DIR/sudo"
-    export PATH="\$NIX_CTF_SUDO_DIR:\$PATH"
+    export PATH="$NIX_CTF_SUDO_DIR:$PATH:/usr/bin:/bin"
 
     # Helper function to fix SET's hardcoded paths
     function fix-set-paths() {
@@ -265,7 +548,7 @@ EOF
         ln -sf $(which nmap) /tmp/set-bin/nmap
         
         # Add to PATH for the current session
-        export PATH="/tmp/set-bin:\$PATH"
+        export PATH="/tmp/set-bin:$PATH"
         
         echo "Updating /etc/setoolkit/set_config (requires sudo)..."
         sudo mkdir -p /etc/setoolkit
@@ -290,14 +573,15 @@ EOF
     # Fix airgeddon language_strings error by pointing to correct share directory
     export scriptfolder="${pkgs.airgeddon}/share/airgeddon/"
 
-    echo "CTF Environment Loaded"
-    echo "Tools: Pwn, Reverse, Crypto, Web, OSINT, WiFi"
-    echo "Wordlists: \$SECLISTS"
-    echo "Specific Opti: X1 Carbon Gen 12"
+    echo -e "\033[1;30m┌──────────────────────────────────────────────┐\033[0m"
+    echo -e "\033[1;30m│\033[0m  \033[1;37mORION CONSTELLATION - SECURE CTF SHELL      \033[0m\033[1;30m│\033[0m"
+    echo -e "\033[1;30m├──────────────────────────────────────────────┤\033[0m"
+    echo -e "\033[1;30m│\033[0m  \033[0;90mTo start a workflow session, run:           \033[0m\033[1;30m│\033[0m"
+    echo -e "\033[1;30m│\033[0m  \033[1;32mctf-init <session-name>                     \033[0m\033[1;30m│\033[0m"
+    echo -e "\033[1;30m└──────────────────────────────────────────────┘\033[0m"
 
-    # Launch ZSH if available for full user experience
-    if command -v zsh >/dev/null 2>&1;
-      then
+    # Launch ZSH if available (only in interactive shells)
+    if [[ $- == *i* ]] && command -v zsh >/dev/null 2>&1; then
       export CTF_MODE=1
       exec zsh
     fi
