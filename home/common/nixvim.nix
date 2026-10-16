@@ -37,7 +37,7 @@
     # Dark theme with Mistral's signature orange + Gruvbox Material palette
     # =============================================================================
     extraConfigLua = ''
-      -- Mistral Gruvbox Material: Charbon backgrounds + Mistral orange + Gruvbox colors
+      -- Mistral Gruvbox Material (Soft): Charbon backgrounds + subtle Mistral orange + Gruvbox
       local c = {
         -- Backgrounds (Charbon / Dark)
         bg0 = "#1a1a1a",      -- Main background (charbon)
@@ -51,18 +51,18 @@
         fg2 = "#a89984",      -- Comments, line numbers
         fg3 = "#83a598",      -- Blue-ish foreground
         
-        -- Accent colors (Gruvbox Material + Mistral)
-        red = "#fb4934",       -- Errors, deletions
-        green = "#b8bb26",     -- Success, strings
-        yellow = "#fabd2f",    -- Warnings, numbers
-        blue = "#83a598",      -- Info, functions
-        purple = "#d3869b",    -- Keywords, special
-        orange = "#ff9500",    -- Mistral signature orange (constants, operators)
-        cyan = "#8ec07c",      -- Types, hints
+        -- Accent colors (Gruvbox Material + Soft Mistral)
+        red = "#e06c75",       -- Errors, deletions (softer)
+        green = "#98c379",     -- Success, strings (softer)
+        yellow = "#e5c07b",    -- Warnings, numbers (softer)
+        blue = "#7aa2f7",      -- Info, functions (Mistral blue)
+        purple = "#9d75d0",    -- Keywords, special (Mistral purple)
+        orange = "#d68750",    -- Soft Mistral orange (constants, operators)
+        cyan = "#7dcfff",      -- Types, hints
         
         -- Bright variants
-        bright_red = "#fe8019",
-        bright_orange = "#ffa500",
+        bright_red = "#ff8a8a",
+        bright_orange = "#e5895e",
         bright_fg = "#fbf1c7"
       }
       
@@ -81,9 +81,9 @@
       hl("Normal", c.fg0, c.bg0)
       hl("NormalFloat", c.fg0, c.bg1)
       hl("FloatBorder", c.fg2, c.bg1)
-      hl("Cursor", c.bg0, c.orange)
+      hl("Cursor", c.bg0, c.purple)  -- Purple for cursor (more subtle than orange)
       hl("CursorLine", nil, c.bg1)
-      hl("CursorLineNr", c.orange, c.bg1, "bold")
+      hl("CursorLineNr", c.purple, c.bg1, "bold")
       hl("LineNr", c.fg2, c.bg0)
       hl("StatusLine", c.fg0, c.bg2, "bold")
       hl("StatusLineNC", c.fg2, c.bg1)
@@ -99,7 +99,7 @@
       hl("Keyword", c.purple, nil, "bold")
       hl("Conditional", c.purple)
       hl("Repeat", c.purple)
-      hl("Operator", c.orange)
+      hl("Operator", c.fg0)  -- Less distracting operator color
       hl("String", c.green)
       hl("Character", c.green)
       hl("Number", c.yellow)
@@ -147,15 +147,15 @@
       hl("PmenuThumb", c.fg0, c.bg2)
       
       -- Diff
-      hl("DiffAdd", c.green, "#284728")
+      hl("DiffAdd", c.green, "#283a28")
       hl("DiffDelete", c.red, "#452828")
-      hl("DiffChange", c.yellow, "#283b45")
+      hl("DiffChange", c.yellow, "#3a3a28")
       hl("DiffText", c.fg0, "#283b45")
       
       -- Search
-      hl("Search", c.bg0, c.orange)
-      hl("IncSearch", c.bg0, c.orange)
-      hl("CurSearch", c.bg0, c.bright_orange)
+      hl("Search", c.bg0, c.blue)  -- Blue instead of orange for search
+      hl("IncSearch", c.bg0, c.blue)
+      hl("CurSearch", c.bg0, c.bright_red)
       
       -- Messages
       hl("ErrorMsg", c.red, c.bg0, "bold")
@@ -166,7 +166,7 @@
       
       -- Tabs
       hl("TabLine", c.fg2, c.bg1)
-      hl("TabLineSel", c.fg0, c.bg2, "bold")
+      hl("TabLineSel", c.fg0, c.bg2)
       hl("TabLineFill", c.fg2, c.bg0)
       
       -- Spell checking

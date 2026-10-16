@@ -90,44 +90,44 @@ in
         window_padding_width = 4;
         
         # =======================================================================
-        # MISTRAL GRUVBOX MATERIAL COLORS
-        # Charbon backgrounds + Mistral orange + Gruvbox palette
+        # MISTRAL GRUVBOX MATERIAL COLORS (Soft)
+        # Charbon backgrounds + subtle Mistral colors + Gruvbox palette
         # =======================================================================
         foreground = "#ebdbb2";
         background = "#1a1a1a";
         selection_foreground = "#1a1a1a";
-        selection_background = "#ff9500";
-        url_color = "#83a598";
-        cursor = "#ff9500";
+        selection_background = "#d68750";  # Softer orange
+        url_color = "#7aa2f7";
+        cursor = "#9d75d0";  # Purple for cursor (subtle)
         cursor_text_color = "#1a1a1a";
-        active_border_color = "#ff9500";
+        active_border_color = "#7aa2f7";  # Blue instead of bright orange
         inactive_border_color = "#3a3a3a";
-        bell_border_color = "#ff9500";
+        bell_border_color = "#d68750";  # Softer orange
         wayland_titlebar_color = "#1a1a1a";
         macos_titlebar_color = "#1a1a1a";
         active_tab_foreground = "#1a1a1a";
-        active_tab_background = "#ff9500";
+        active_tab_background = "#7aa2f7";  # Blue for active tab
         inactive_tab_foreground = "#83a598";
         inactive_tab_background = "#282828";
         tab_bar_background = "#1a1a1a";
         
-        # ANSI colors - Mistral Gruvbox Material palette
+        # ANSI colors - Soft Mistral Gruvbox Material palette
         color0 = "#1a1a1a";   # Black (charbon)
         color8 = "#3a3a3a";   # Bright black
-        color1 = "#fb4934";   # Red (Gruvbox)
-        color9 = "#fe8019";   # Bright red
-        color2 = "#b8bb26";   # Green (Gruvbox)
-        color10 = "#83a598";  # Bright green
-        color3 = "#fabd2f";   # Yellow (Gruvbox)
-        color11 = "#ffa500";  # Bright yellow (Mistral orange variant)
-        color4 = "#83a598";   # Blue (Gruvbox)
-        color12 = "#d3869b";  # Bright blue (purple)
-        color5 = "#d3869b";   # Purple/Magenta (Gruvbox)
-        color13 = "#ff9500";  # Bright purple (Mistral orange)
-        color6 = "#8ec07c";   # Cyan (Gruvbox)
-        color14 = "#b8bb26";  # Bright cyan (green)
-        color7 = "#ebdbb2";   # White (Gruvbox fg)
-        color15 = "#fbf1c7";  # Bright white
+        color1 = "#e06c75";   # Red (softer)
+        color9 = "#ff8a8a";   # Bright red (softer)
+        color2 = "#98c379";   # Green (softer)
+        color10 = "#a8d868";  # Bright green
+        color3 = "#e5c07b";   # Yellow (softer)
+        color11 = "#f5ab35";  # Bright yellow (softer orange)
+        color4 = "#7aa2f7";   # Blue (Mistral blue)
+        color12 = "#9bb0f2";  # Bright blue
+        color5 = "#9d75d0";   # Purple (Mistral purple)
+        color13 = "#b895e6";  # Bright purple
+        color6 = "#7dcfff";   # Cyan
+        color14 = "#9ce7ff";  # Bright cyan
+        color7 = "#b5bfe2";   # White
+        color15 = "#ebdbb2";  # Bright white
       };
       keybindings = {
         # Splits/Panes
@@ -587,28 +587,28 @@ in
   
   # Custom bat theme for Mistral Gruvbox Material
   xdg.configFile."bat/themes/Mistral-Gruvbox-Material.tmTheme".text = ''
--- Mistral Gruvbox Material theme for bat
--- Colors: Charbon backgrounds + Mistral orange + Gruvbox palette
+-- Mistral Gruvbox Material (Soft) theme for bat
+-- Colors: Charbon backgrounds + subtle Mistral colors + Gruvbox palette
 
 # ANSI Color Codes
 [colors]
 ansi = "#1a1a1a"  # black/charbon
-red = "#fb4934"    # red
-green = "#b8bb26"  # green
-yellow = "#fabd2f" # yellow
-blue = "#83a598"   # blue
-magenta = "#d3869b" # purple/magenta
-cyan = "#8ec07c"   # cyan
+red = "#e06c75"    # softer red
+green = "#98c379"  # softer green
+yellow = "#e5c07b" # softer yellow
+blue = "#7aa2f7"   # Mistral blue
+magenta = "#9d75d0" # Mistral purple
+cyan = "#7dcfff"   # softer cyan
 white = "#ebdbb2"  # white/foreground
 
 # Bright ANSI colors
 bright_black = "#3a3a3a"
-bright_red = "#fe8019"
-bright_green = "#83a598"
-bright_yellow = "#ffa500"  # Mistral orange variant
-bright_blue = "#d3869b"
-bright_magenta = "#ff9500"  # Mistral orange
-bright_cyan = "#b8bb26"
+bright_red = "#ff8a8a"
+bright_green = "#a8d868"
+bright_yellow = "#f5ab35"  # softer orange
+bright_blue = "#9bb0f2"
+bright_magenta = "#b895e6"
+bright_cyan = "#9ce7ff"
 bright_white = "#fbf1c7"
 
 # Syntax highlighting
@@ -619,33 +619,33 @@ italic = true
 
 [[highlight]]
 name = "Keyword"
-fg = "#d3869b"
+fg = "#9d75d0"
 bold = true
 
 [[highlight]]
 name = "String"
-fg = "#b8bb26"
+fg = "#98c379"
 
 [[highlight]]
 name = "Number"
-fg = "#fabd2f"
+fg = "#e5c07b"
 
 [[highlight]]
 name = "Type"
-fg = "#8ec07c"
+fg = "#7dcfff"
 bold = true
 
 [[highlight]]
 name = "Function"
-fg = "#83a598"
+fg = "#7aa2f7"
 
 [[highlight]]
 name = "Constant"
-fg = "#ff9500"
+fg = "#d68750"
 
 [[highlight]]
 name = "Operator"
-fg = "#ff9500"
+fg = "#ebdbb2"
 
 [[highlight]]
 name = "Punctuation"
@@ -653,7 +653,7 @@ fg = "#ebdbb2"
 
 [[highlight]]
 name = "Attribute"
-fg = "#d3869b"
+fg = "#9d75d0"
 
 [[highlight]]
 name = "Generic"
@@ -661,7 +661,7 @@ fg = "#ebdbb2"
 
 [[highlight]]
 name = "Title"
-fg = "#ff9500"
+fg = "#7aa2f7"
 bold = true
 '';
 }

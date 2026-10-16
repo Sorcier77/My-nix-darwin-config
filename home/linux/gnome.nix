@@ -147,8 +147,8 @@ in
         icon-theme = "Papirus-Dark";
         cursor-theme = "Bibata-Modern-Ice";
         cursor-size = 20;
-        # Custom accent color (Mistral orange)
-        accent-color = lib.mkForce "#ff9500";
+        # Custom accent color (Soft Mistral blue)
+        accent-color = lib.mkForce "#7aa2f7";
       };
 
       # --- Window Manager (Minimalisme Pur) ---

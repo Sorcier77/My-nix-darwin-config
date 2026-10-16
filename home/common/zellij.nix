@@ -8,18 +8,18 @@
       theme = "mistral-gruvbox";
       themes = {
         "mistral-gruvbox" = {
-          # Mistral Gruvbox Material - Dark theme with Mistral's signature orange
+          # Mistral Gruvbox Material (Soft) - Dark theme with subtle Mistral colors
           fg = "#ebdbb2";          # Foreground (Gruvbox light)
           bg = "#1a1a1a";          # Background (Charbon)
           black = "#1a1a1a";       # Charbon
-          red = "#fb4934";         # Gruvbox red
-          green = "#b8bb26";       # Gruvbox green
-          yellow = "#fabd2f";      # Gruvbox yellow
-          blue = "#83a598";        # Gruvbox blue
-          magenta = "#d3869b";     # Gruvbox purple/pink
-          cyan = "#8ec07c";        # Gruvbox cyan
+          red = "#e06c75";         # Softer red
+          green = "#98c379";       # Softer green
+          yellow = "#e5c07b";      # Softer yellow
+          blue = "#7aa2f7";        # Mistral blue
+          magenta = "#9d75d0";     # Mistral purple
+          cyan = "#7dcfff";        # Softer cyan
           white = "#fbf1c7";       # Gruvbox bright fg
-          orange = "#ff9500";      # Mistral signature orange
+          orange = "#d68750";      # Soft Mistral orange
         };
       };
       pane_frames = false; # Clean look without thick borders

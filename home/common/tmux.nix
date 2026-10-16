@@ -31,10 +31,10 @@
       # ===========================================================================
       # Background colors
       set -g status-style "bg=#1a1a1a,fg=#ebdbb2"
-      set -g window-status-current-style "bg=#282828,fg=#ff9500,bold"
+      set -g window-status-current-style "bg=#282828,fg=#7aa2f7,bold"
       set -g window-status-style "bg=#1a1a1a,fg=#83a598"
       set -g pane-border-style "fg=#3a3a3a"
-      set -g pane-active-border-style "fg=#ff9500"
+      set -g pane-active-border-style "fg=#7aa2f7"
 
       # Status bar - left side
       set -g status-left-length 20
@@ -47,17 +47,17 @@
 
       # Window style
       set -g window-style "bg=#1a1a1a,fg=#ebdbb2"
-      set -g window-active-style "bg=#282828,fg=#ff9500"
+      set -g window-active-style "bg=#282828,fg=#9d75d0"
 
       # Message style
-      set -g message-style "bg=#1a1a1a,fg=#fabd2f,bold"
-      set -g message-command-style "bg=#1a1a1a,fg=#b8bb26"
+      set -g message-style "bg=#1a1a1a,fg=#e5c07b,bold"
+      set -g message-command-style "bg=#1a1a1a,fg=#98c379"
 
       # Mode style
-      set -g mode-style "bg=#ff9500,fg=#1a1a1a,bold"
+      set -g mode-style "bg=#7aa2f7,fg=#1a1a1a,bold"
 
-      # Custom color palette (256 colors)
-      set -ga terminal-colors ",#1a1a1a,#fb4934,#b8bb26,#fabd2f,#83a598,#d3869b,#8ec07c,#ebdbb2,#3a3a3a,#ff9500,#83a598,#b8bb26,#fabd2f,#8ec07c,#fb4934,#d3869b,#fbf1c7"
+      # Custom color palette (256 colors) - Soft Mistral Gruvbox
+      set -ga terminal-colors ",#1a1a1a,#e06c75,#98c379,#e5c07b,#7aa2f7,#9d75d0,#7dcfff,#ebdbb2,#3a3a3a,#d68750,#83a598,#98c379,#e5c07b,#9ce7ff,#e06c75,#9d75d0,#fbf1c7"
 
       # Increase scrollback buffer
       set -g history-limit 100000
