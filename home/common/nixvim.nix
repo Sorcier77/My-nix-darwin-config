@@ -37,7 +37,8 @@
     # Dark theme with Mistral's signature orange + Gruvbox Material palette
     # =============================================================================
     extraConfigLua = ''
-      -- Mistral Gruvbox Material (Soft): Charbon backgrounds + subtle Mistral orange + Gruvbox
+      -- Gruvbox Material Dark style with Mistral orange accent
+      -- Charbon backgrounds + Gruvbox Material colors + soft Mistral orange
       local c = {
         -- Backgrounds (Charbon / Dark)
         bg0 = "#1a1a1a",      -- Main background (charbon)
@@ -51,14 +52,14 @@
         fg2 = "#a89984",      -- Comments, line numbers
         fg3 = "#83a598",      -- Blue-ish foreground
         
-        -- Accent colors (Gruvbox Material + Soft Mistral)
-        red = "#e06c75",       -- Errors, deletions (softer)
-        green = "#98c379",     -- Success, strings (softer)
-        yellow = "#e5c07b",    -- Warnings, numbers (softer)
-        blue = "#7aa2f7",      -- Info, functions (Mistral blue)
-        purple = "#9d75d0",    -- Keywords, special (Mistral purple)
+        -- Accent colors (Gruvbox Material Dark)
+        red = "#fb4934",       -- Errors, deletions
+        green = "#b8bb26",     -- Success, strings
+        yellow = "#fabd2f",    -- Warnings, numbers, cursor
+        blue = "#83a598",      -- Info, functions
+        purple = "#d3869b",    -- Keywords, special
         orange = "#d68750",    -- Soft Mistral orange (constants, operators)
-        cyan = "#7dcfff",      -- Types, hints
+        cyan = "#8ec07c",      -- Types, hints
         
         -- Bright variants
         bright_red = "#ff8a8a",
@@ -81,9 +82,9 @@
       hl("Normal", c.fg0, c.bg0)
       hl("NormalFloat", c.fg0, c.bg1)
       hl("FloatBorder", c.fg2, c.bg1)
-      hl("Cursor", c.bg0, c.purple)  -- Purple for cursor (more subtle than orange)
+      hl("Cursor", c.bg0, c.yellow)  -- Yellow cursor like Gruvbox Material
       hl("CursorLine", nil, c.bg1)
-      hl("CursorLineNr", c.purple, c.bg1, "bold")
+      hl("CursorLineNr", c.yellow, c.bg1, "bold")
       hl("LineNr", c.fg2, c.bg0)
       hl("StatusLine", c.fg0, c.bg2, "bold")
       hl("StatusLineNC", c.fg2, c.bg1)
