@@ -249,85 +249,7 @@ in
       };
     };
 
-    # Custom bat theme for Mistral Gruvbox Material
-    xdg.configFile."bat/themes/Mistral-Gruvbox-Material.tmTheme".text = ''
--- Mistral Gruvbox Material theme for bat
--- Colors: Charbon backgrounds + Mistral orange + Gruvbox palette
 
-# ANSI Color Codes
-[colors]
-ansi = "#1a1a1a"  # black/charbon
-red = "#fb4934"    # red
-green = "#b8bb26"  # green
-yellow = "#fabd2f" # yellow
-blue = "#83a598"   # blue
-magenta = "#d3869b" # purple/magenta
-cyan = "#8ec07c"   # cyan
-white = "#ebdbb2"  # white/foreground
-
-# Bright ANSI colors
-bright_black = "#3a3a3a"
-bright_red = "#fe8019"
-bright_green = "#83a598"
-bright_yellow = "#ffa500"  # Mistral orange variant
-bright_blue = "#d3869b"
-bright_magenta = "#ff9500"  # Mistral orange
-bright_cyan = "#b8bb26"
-bright_white = "#fbf1c7"
-
-# Syntax highlighting
-[[highlight]]
-name = "Comment"
-fg = "#83a598"
-italic = true
-
-[[highlight]]
-name = "Keyword"
-fg = "#d3869b"
-bold = true
-
-[[highlight]]
-name = "String"
-fg = "#b8bb26"
-
-[[highlight]]
-name = "Number"
-fg = "#fabd2f"
-
-[[highlight]]
-name = "Type"
-fg = "#8ec07c"
-bold = true
-
-[[highlight]]
-name = "Function"
-fg = "#83a598"
-
-[[highlight]]
-name = "Constant"
-fg = "#ff9500"
-
-[[highlight]]
-name = "Operator"
-fg = "#ff9500"
-
-[[highlight]]
-name = "Punctuation"
-fg = "#ebdbb2"
-
-[[highlight]]
-name = "Attribute"
-fg = "#d3869b"
-
-[[highlight]]
-name = "Generic"
-fg = "#ebdbb2"
-
-[[highlight]]
-name = "Title"
-fg = "#ff9500"
-bold = true
-'';
 
     # A modern replacement for 'ls'
     eza = {
@@ -662,4 +584,84 @@ bold = true
       '';
     };
   };
+  
+  # Custom bat theme for Mistral Gruvbox Material
+  xdg.configFile."bat/themes/Mistral-Gruvbox-Material.tmTheme".text = ''
+-- Mistral Gruvbox Material theme for bat
+-- Colors: Charbon backgrounds + Mistral orange + Gruvbox palette
+
+# ANSI Color Codes
+[colors]
+ansi = "#1a1a1a"  # black/charbon
+red = "#fb4934"    # red
+green = "#b8bb26"  # green
+yellow = "#fabd2f" # yellow
+blue = "#83a598"   # blue
+magenta = "#d3869b" # purple/magenta
+cyan = "#8ec07c"   # cyan
+white = "#ebdbb2"  # white/foreground
+
+# Bright ANSI colors
+bright_black = "#3a3a3a"
+bright_red = "#fe8019"
+bright_green = "#83a598"
+bright_yellow = "#ffa500"  # Mistral orange variant
+bright_blue = "#d3869b"
+bright_magenta = "#ff9500"  # Mistral orange
+bright_cyan = "#b8bb26"
+bright_white = "#fbf1c7"
+
+# Syntax highlighting
+[[highlight]]
+name = "Comment"
+fg = "#83a598"
+italic = true
+
+[[highlight]]
+name = "Keyword"
+fg = "#d3869b"
+bold = true
+
+[[highlight]]
+name = "String"
+fg = "#b8bb26"
+
+[[highlight]]
+name = "Number"
+fg = "#fabd2f"
+
+[[highlight]]
+name = "Type"
+fg = "#8ec07c"
+bold = true
+
+[[highlight]]
+name = "Function"
+fg = "#83a598"
+
+[[highlight]]
+name = "Constant"
+fg = "#ff9500"
+
+[[highlight]]
+name = "Operator"
+fg = "#ff9500"
+
+[[highlight]]
+name = "Punctuation"
+fg = "#ebdbb2"
+
+[[highlight]]
+name = "Attribute"
+fg = "#d3869b"
+
+[[highlight]]
+name = "Generic"
+fg = "#ebdbb2"
+
+[[highlight]]
+name = "Title"
+fg = "#ff9500"
+bold = true
+'';
 }
